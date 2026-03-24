@@ -14,7 +14,7 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="drikklogg"
+        name="drink-log"
         options={{
           title: 'Drikklogg',
           tabBarIcon: ({ color }) => (
@@ -23,7 +23,7 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="dagbok"
+        name="diary"
         options={{
           title: 'Dagbok',
           tabBarIcon: ({ color }) => (
@@ -32,7 +32,7 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="prestasjoner"
+        name="achievements"
         options={{
           title: 'Prestasjoner',
           tabBarIcon: ({ color }) => (
@@ -50,7 +50,7 @@ export default function Layout() {
         }}
       />
 
-      {/* Skjul onboarding fra tab-baren */}
+      {/* Hide onboarding screens from tab bar */}
       <Tabs.Screen
         name="onboarding/index"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
@@ -60,11 +60,11 @@ export default function Layout() {
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
       />
       <Tabs.Screen
-        name="onboarding/maal"
+        name="onboarding/goal"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
       />
       <Tabs.Screen
-        name="onboarding/inspirasjon"
+        name="onboarding/inspiration"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
       />
     </Tabs>
