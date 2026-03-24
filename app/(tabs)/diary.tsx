@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "react-native";
-import RegularButton from "./components/ui/button";
-import FunctionBox from "./components/ui/functionBox";
+import RegularButton from "../components/ui/button";
+import FunctionBox from "../components/ui/functionBox";
 
-export default function Drikkelogg() {
+export default function diary() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <RegularButton
