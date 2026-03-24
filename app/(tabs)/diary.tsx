@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { theme } from './theme/constantStyling';
+import { theme } from '../theme/constantStyling';
 
-export default function Info() {
+export default function Diary() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Info</Text>
+      <Text style={styles.text}>Dagbok</Text>
     </View>
   );
 }

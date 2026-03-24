@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { theme } from './theme/constantStyling';
+import { theme } from '../theme/constantStyling';
 
 export default function Achievements() {
   return (

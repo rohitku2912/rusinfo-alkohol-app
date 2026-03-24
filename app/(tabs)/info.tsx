@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { theme } from './theme/constantStyling';
+import { theme } from '../theme/constantStyling';
 
-export default function DrinkLog() {
+export default function Info() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Drikklogg</Text>
+      <Text style={styles.text}>Info</Text>
     </View>
   );
 }
