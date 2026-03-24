@@ -8,15 +8,17 @@ export const theme = {
     text: "#222222",
   },
   fonts: {
-    main: "Arial, sans-serif",
-    heading: "Georgia, serif",
+    main: "Arial",
+    heading: "Georgia",
   },
   spacing: {
-    small: "8px",
-    medium: "16px",
-    large: "24px",
+    small: 8,
+    medium: 16,
+    large: 24,
   },
   borderRadius: {
-    small: "4px",
+    small: 4,
+    medium: 12,
+    large: 24,
   },
 };
