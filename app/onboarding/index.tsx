@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from '../theme/constantStyling';
 
-export default function Velkommen() {
+export default function Welcome() {
   const router = useRouter();
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export default function Velkommen() {
       router.push('/onboarding/info' as any);
     }, 2500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   return (
     <View style={styles.container}>

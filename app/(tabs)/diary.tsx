@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { theme } from './theme/constantStyling';
+import { StyleSheet, Text, View } from "react-native";
+import { theme } from "../theme/constantStyling";
 
-export default function Info() {
+export default function Diary() {
   return (
     <View style={styles.container}>
-      <Text style={styles.tekst}>Info</Text>
+      <Text style={styles.text}>Dagbok</Text>
     </View>
   );
 }
@@ -12,11 +12,11 @@ export default function Info() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: theme.colors.background,
   },
-  tekst: {
+  text: {
     fontSize: 24,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
