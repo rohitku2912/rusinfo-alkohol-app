@@ -11,7 +11,7 @@ export default function Welcome() {
       router.push('/onboarding/info' as any);
     }, 2500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [router]);
 
   return (
     <View style={styles.container}>

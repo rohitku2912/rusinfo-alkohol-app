@@ -13,7 +13,7 @@ export default function Inspiration() {
 
   const complete = async () => {
     await AsyncStorage.setItem('onboardingCompleted', 'true');
-    router.replace('/');
+    router.replace('/(tabs)' as any);
   };
 
   return (
