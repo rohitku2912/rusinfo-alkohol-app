@@ -4,54 +4,54 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { theme } from '../theme/constantStyling';
 
-const alternativer = ['Helsen min', 'Familien min', 'Økonomi', 'Jobbe bedre', 'Trene mer'];
+const options = ['Helsen min', 'Familien min', 'Økonomi', 'Jobbe bedre', 'Trene mer'];
 
-export default function Inspirasjon() {
+export default function Inspiration() {
   const router = useRouter();
-  const [valgt, setValgt] = useState('');
-  const [annetTekst, setAnnetTekst] = useState('');
+  const [selected, setSelected] = useState('');
+  const [otherText, setOtherText] = useState('');
 
-  const fullfor = async () => {
-    await AsyncStorage.setItem('onboardingFullfort', 'true');
-    router.replace('/');
+  const complete = async () => {
+    await AsyncStorage.setItem('onboardingCompleted', 'true');
+    router.replace('/(tabs)' as any);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.tittel}>Hva er din inspirasjon?</Text>
-      <Text style={styles.undertittel}>dette kan endres senere</Text>
+      <Text style={styles.title}>Hva er din inspirasjon?</Text>
+      <Text style={styles.subtitle}>dette kan endres senere</Text>
 
-      {alternativer.map(a => (
+      {options.map(o => (
         <TouchableOpacity
-          key={a}
-          style={[styles.alternativ, valgt === a && styles.valgt]}
-          onPress={() => { setValgt(a); setAnnetTekst(''); }}
+          key={o}
+          style={[styles.option, selected === o && styles.selectedStyle]}
+          onPress={() => { setSelected(o); setOtherText(''); }}
         >
-          <Text style={styles.alternativTekst}>{a}</Text>
+          <Text style={styles.optionText}>{o}</Text>
         </TouchableOpacity>
       ))}
 
       <TouchableOpacity
-        style={[styles.alternativ, valgt === 'annet' && styles.valgt]}
-        onPress={() => setValgt('annet')}
+        style={[styles.option, selected === 'other' && styles.selectedStyle]}
+        onPress={() => setSelected('other')}
       >
-        <Text style={styles.alternativTekst}>Annet</Text>
+        <Text style={styles.optionText}>Annet</Text>
       </TouchableOpacity>
 
-      {valgt === 'annet' && (
+      {selected === 'other' && (
         <TextInput
-          style={styles.tekstfelt}
+          style={styles.textInput}
           placeholder="jeg ønsker å slutte å drikke fordi..."
           placeholderTextColor="#aaa"
           multiline
-          value={annetTekst}
-          onChangeText={setAnnetTekst}
+          value={otherText}
+          onChangeText={setOtherText}
         />
       )}
 
-      {(valgt !== '' && (valgt !== 'annet' || annetTekst.length > 0)) && (
-        <TouchableOpacity style={styles.knapp} onPress={fullfor}>
-          <Text style={styles.knappTekst}>bekreft</Text>
+      {(selected !== '' && (selected !== 'other' || otherText.length > 0)) && (
+        <TouchableOpacity style={styles.button} onPress={complete}>
+          <Text style={styles.buttonText}>bekreft</Text>
         </TouchableOpacity>
       )}
     </ScrollView>
@@ -65,27 +65,27 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     flexGrow: 1,
   },
-  tittel: {
+  title: {
     fontSize: 22,
     fontWeight: '600',
     marginBottom: theme.spacing.small,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
   },
-  undertittel: {
+  subtitle: {
     fontSize: 14,
     color: '#888',
     marginBottom: 28,
   },
-  alternativ: {
+  option: {
     backgroundColor: '#e8e8e3',
     borderRadius: theme.borderRadius.medium,
     padding: 18,
     marginBottom: theme.spacing.small,
   },
-  valgt: { backgroundColor: '#d0e8d0' },
-  alternativTekst: { fontSize: 16, color: theme.colors.text },
-  tekstfelt: {
+  selectedStyle: { backgroundColor: '#d0e8d0' },
+  optionText: { fontSize: 16, color: theme.colors.text },
+  textInput: {
     backgroundColor: '#fff',
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     color: theme.colors.text,
   },
-  knapp: {
+  button: {
     backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
@@ -104,5 +104,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 32,
   },
-  knappTekst: { fontSize: 16, color: '#fff' },
+  buttonText: { fontSize: 16, color: '#fff' },
 });
