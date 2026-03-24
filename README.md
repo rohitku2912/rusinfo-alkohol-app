@@ -1,50 +1,70 @@
-# Welcome to your Expo app 👋
+# Rusinfo Alkohol Selvhjelpsapp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Om prosjektet
+En anonym digital selvhjelpsapp for unge alkoholbrukere, utviklet i samarbeid med 
+RUSinfo (Velferdsetaten, Oslo kommune). Appen hjelper brukere å bli mer bevisste 
+på eget alkoholforbruk gjennom logging, dagbok og gamification.
 
-## Get started
+## Tech Stack
+- **React Native / Expo** – cross-platform (iOS og Android)
+- **Firebase Authentication** – anonym innlogging (ingen persondata)
+- **Firebase Firestore** – lagring av anonyme AUDIT-svar til RUSinfo
+- **AsyncStorage** – lokal lagring på brukerens enhet
+- **Expo Router** – navigasjon
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+## Mappestruktur
+```
+app/
+├── onboarding/
+│   ├── index.tsx        ← velkomstskjerm (auto-videre etter 2.5s)
+│   ├── info.tsx         ← alder, kjønn, fylke (sendes til Firebase)
+│   ├── maal.tsx         ← brukerens mål (lagres lokalt)
+│   └── inspirasjon.tsx  ← brukerens inspirasjon (lagres lokalt)
+├── index.tsx            ← dashboard/hjem
+├── drikklogg.tsx        ← logg alkoholinntak (lokalt)
+├── dagbok.tsx           ← private notater (lokalt)
+├── prestasjoner.tsx     ← badges og streaks (lokalt)
+├── info.tsx             ← informasjon om alkohol
+└── _layout.tsx          ← tab-navigasjon
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Datalagring
+| Data | Hvor | Hvorfor |
+|---|---|---|
+| Drikklogg | AsyncStorage (lokalt) | Sensitiv, aldri forlater telefonen |
+| Dagbok | AsyncStorage (lokalt) | Privat |
+| Prestasjoner/streaks | AsyncStorage (lokalt) | Personlig |
+| Mål og inspirasjon | AsyncStorage (lokalt) | Personlig |
+| Alder/kjønn/fylke | Firebase Firestore | Statistikk for RUSinfo |
+| AUDIT-svar | Firebase Firestore | RUSinfo trenger denne dataen |
+| Bruker-ID | Firebase Auth | Anonym, ingen persondata |
 
-## Learn more
+## Onboarding-flyt
+1. Velkomstskjerm (auto-videre etter 2.5 sek)
+2. Fyll inn info (alder, kjønn, fylke)
+3. Velg mål (slutte / drikke mindre / få oversikt)
+4. Velg inspirasjon (forhåndsdefinerte valg + "Annet")
+5. → Dashboard
 
-To learn more about developing your project with Expo, look at the following resources:
+Når onboarding er fullført lagres `onboardingFullfort: true` i AsyncStorage.
+Neste gang appen åpnes hoppes onboarding over.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Kjøre prosjektet
+```bash
+npm install
+npx expo start
+```
+Scan QR-koden med Expo Go på telefonen.
 
-## Join the community
+## Branching
+- `main` – stabil, ferdig kode
+- `dev` – aktiv utvikling (alle pusher hit)
 
-Join our community of developers creating universal apps.
+## Gruppemedlemmer
+- Rohit Kumar 
+- Tuva Solhaug
+- Morten Simensen
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Oppdragsgiver
+RUSinfo / Velferdsetaten, Oslo kommune  
+Kontakt: sturla.johansen@vel.oslo.kommune.no

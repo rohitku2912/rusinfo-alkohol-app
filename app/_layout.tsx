@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 
 export default function Layout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: '#2E75B6' }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: '#2E7D32' }}>
       <Tabs.Screen
         name="index"
         options={{
@@ -41,13 +41,31 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="Info"
+        name="info"
         options={{
-          title: 'Prestasjoner',
+          title: 'Info',
           tabBarIcon: ({ color }) => (
-            <Ionicons name="trophy" size={24} color={color} />
+            <Ionicons name="information-circle" size={24} color={color} />
           ),
         }}
+      />
+
+      {/* Skjul onboarding fra tab-baren */}
+      <Tabs.Screen
+        name="onboarding/index"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
+      />
+      <Tabs.Screen
+        name="onboarding/info"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
+      />
+      <Tabs.Screen
+        name="onboarding/maal"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
+      />
+      <Tabs.Screen
+        name="onboarding/inspirasjon"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' } }}
       />
     </Tabs>
   );
