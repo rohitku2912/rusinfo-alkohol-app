@@ -3,32 +3,32 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { theme } from '../theme/constantStyling';
 
-const maal = ['Slutte å drikke', 'Drikke mindre', 'Få oversikt over min drikking'];
+const goals = ['Slutte å drikke', 'Drikke mindre', 'Få oversikt over min drikking'];
 
-export default function Maal() {
+export default function Goal() {
   const router = useRouter();
-  const [valgt, setValgt] = useState('');
+  const [selected, setSelected] = useState('');
 
   return (
     <View style={styles.container}>
-      <Text style={styles.tittel}>Hva er ditt mål?</Text>
-      <Text style={styles.undertittel}>dette kan endres senere</Text>
+      <Text style={styles.title}>Hva er ditt mål?</Text>
+      <Text style={styles.subtitle}>dette kan endres senere</Text>
 
-      {maal.map(m => (
+      {goals.map(g => (
         <TouchableOpacity
-          key={m}
-          style={[styles.alternativ, valgt === m && styles.valgt]}
-          onPress={() => setValgt(m)}
+          key={g}
+          style={[styles.option, selected === g && styles.selectedStyle]}
+          onPress={() => setSelected(g)}
         >
-          <Text style={styles.alternativTekst}>{m}</Text>
+          <Text style={styles.optionText}>{g}</Text>
           <Text style={{ color: theme.colors.text }}>›</Text>
         </TouchableOpacity>
       ))}
 
-      {valgt !== '' && (
-        <TouchableOpacity style={styles.knapp}
-          onPress={() => router.push('/onboarding/inspirasjon' as any)}>
-          <Text style={styles.knappTekst}>videre →</Text>
+      {selected !== '' && (
+        <TouchableOpacity style={styles.button}
+          onPress={() => router.push('/onboarding/inspiration' as any)}>
+          <Text style={styles.buttonText}>videre →</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -42,19 +42,19 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     backgroundColor: theme.colors.background,
   },
-  tittel: {
+  title: {
     fontSize: 22,
     fontWeight: '600',
     marginBottom: theme.spacing.small,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
   },
-  undertittel: {
+  subtitle: {
     fontSize: 14,
     color: '#888',
     marginBottom: 28,
   },
-  alternativ: {
+  option: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -63,9 +63,9 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: theme.spacing.small,
   },
-  valgt: { backgroundColor: '#d0e8d0' },
-  alternativTekst: { fontSize: 16, color: theme.colors.text },
-  knapp: {
+  selectedStyle: { backgroundColor: '#d0e8d0' },
+  optionText: { fontSize: 16, color: theme.colors.text },
+  button: {
     backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
@@ -74,5 +74,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 32,
   },
-  knappTekst: { fontSize: 16, color: '#fff' },
+  buttonText: { fontSize: 16, color: '#fff' },
 });

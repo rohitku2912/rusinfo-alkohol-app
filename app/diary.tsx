@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from './theme/constantStyling';
 
-export default function Drikklogg() {
+export default function Diary() {
   return (
     <View style={styles.container}>
-      <Text style={styles.tekst}>Drikklogg</Text>
+      <Text style={styles.text}>Dagbok</Text>
     </View>
   );
 }
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.background,
   },
-  tekst: {
+  text: {
     fontSize: 24,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,

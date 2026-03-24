@@ -3,62 +3,62 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { theme } from '../theme/constantStyling';
 
-const aldersgrupper = ['Under 18', '18-20', '21-25', '26-30', '31-40', '41+'];
-const kjønn = ['Mann', 'Kvinne', 'Ikke-binær', 'Vil ikke oppgi'];
-const fylker = ['Oslo', 'Viken', 'Innlandet', 'Vestfold og Telemark', 'Agder',
+const ageGroups = ['Under 18', '18-20', '21-25', '26-30', '31-40', '41+'];
+const genders = ['Mann', 'Kvinne', 'Ikke-binær', 'Vil ikke oppgi'];
+const counties = ['Oslo', 'Viken', 'Innlandet', 'Vestfold og Telemark', 'Agder',
   'Rogaland', 'Vestland', 'Møre og Romsdal', 'Trøndelag', 'Nordland', 'Troms og Finnmark'];
 
 export default function Info() {
   const router = useRouter();
-  const [alder, setAlder] = useState('');
-  const [kjønnValg, setKjønnValg] = useState('');
-  const [fylke, setFylke] = useState('');
-  const [visAlder, setVisAlder] = useState(false);
-  const [visKjønn, setVisKjønn] = useState(false);
-  const [visFylke, setVisFylke] = useState(false);
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [county, setCounty] = useState('');
+  const [showAge, setShowAge] = useState(false);
+  const [showGender, setShowGender] = useState(false);
+  const [showCounty, setShowCounty] = useState(false);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.tittel}>Fyll inn din informasjon</Text>
+      <Text style={styles.title}>Fyll inn din informasjon</Text>
 
-      {/* Alder */}
-      <TouchableOpacity style={styles.rad} onPress={() => setVisAlder(!visAlder)}>
+      {/* Age */}
+      <TouchableOpacity style={styles.row} onPress={() => setShowAge(!showAge)}>
         <Text style={styles.label}>Alder</Text>
-        <Text style={styles.velg}>{alder || 'velg ▾'}</Text>
+        <Text style={styles.select}>{age || 'velg ▾'}</Text>
       </TouchableOpacity>
-      {visAlder && aldersgrupper.map(a => (
-        <TouchableOpacity key={a} style={styles.alternativ}
-          onPress={() => { setAlder(a); setVisAlder(false); }}>
-          <Text style={styles.alternativTekst}>{a}</Text>
+      {showAge && ageGroups.map(a => (
+        <TouchableOpacity key={a} style={styles.option}
+          onPress={() => { setAge(a); setShowAge(false); }}>
+          <Text style={styles.optionText}>{a}</Text>
         </TouchableOpacity>
       ))}
 
-      {/* Kjønn */}
-      <TouchableOpacity style={styles.rad} onPress={() => setVisKjønn(!visKjønn)}>
+      {/* Gender */}
+      <TouchableOpacity style={styles.row} onPress={() => setShowGender(!showGender)}>
         <Text style={styles.label}>Kjønn</Text>
-        <Text style={styles.velg}>{kjønnValg || 'velg ▾'}</Text>
+        <Text style={styles.select}>{gender || 'velg ▾'}</Text>
       </TouchableOpacity>
-      {visKjønn && kjønn.map(k => (
-        <TouchableOpacity key={k} style={styles.alternativ}
-          onPress={() => { setKjønnValg(k); setVisKjønn(false); }}>
-          <Text style={styles.alternativTekst}>{k}</Text>
+      {showGender && genders.map(g => (
+        <TouchableOpacity key={g} style={styles.option}
+          onPress={() => { setGender(g); setShowGender(false); }}>
+          <Text style={styles.optionText}>{g}</Text>
         </TouchableOpacity>
       ))}
 
-      {/* Fylke */}
-      <TouchableOpacity style={styles.rad} onPress={() => setVisFylke(!visFylke)}>
+      {/* County */}
+      <TouchableOpacity style={styles.row} onPress={() => setShowCounty(!showCounty)}>
         <Text style={styles.label}>Fylke</Text>
-        <Text style={styles.velg}>{fylke || 'velg ▾'}</Text>
+        <Text style={styles.select}>{county || 'velg ▾'}</Text>
       </TouchableOpacity>
-      {visFylke && fylker.map(f => (
-        <TouchableOpacity key={f} style={styles.alternativ}
-          onPress={() => { setFylke(f); setVisFylke(false); }}>
-          <Text style={styles.alternativTekst}>{f}</Text>
+      {showCounty && counties.map(c => (
+        <TouchableOpacity key={c} style={styles.option}
+          onPress={() => { setCounty(c); setShowCounty(false); }}>
+          <Text style={styles.optionText}>{c}</Text>
         </TouchableOpacity>
       ))}
 
-      <TouchableOpacity style={styles.knapp} onPress={() => router.push('/onboarding/maal' as any)}>
-        <Text style={styles.knappTekst}>straks klar →</Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/onboarding/goal' as any)}>
+        <Text style={styles.buttonText}>straks klar →</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -71,14 +71,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     flexGrow: 1,
   },
-  tittel: {
+  title: {
     fontSize: 20,
     fontWeight: '600',
     marginBottom: theme.spacing.large,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
   },
-  rad: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -88,16 +88,16 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.small,
   },
   label: { fontSize: 16, color: theme.colors.text },
-  velg: { fontSize: 14, color: '#666' },
-  alternativ: {
+  select: { fontSize: 14, color: '#666' },
+  option: {
     backgroundColor: '#fff',
     padding: 14,
     borderRadius: theme.borderRadius.small,
     marginBottom: 6,
     paddingLeft: theme.spacing.large,
   },
-  alternativTekst: { color: theme.colors.text },
-  knapp: {
+  optionText: { color: theme.colors.text },
+  button: {
     backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
@@ -106,5 +106,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingHorizontal: 32,
   },
-  knappTekst: { fontSize: 16, color: '#fff' },
+  buttonText: { fontSize: 16, color: '#fff' },
 });

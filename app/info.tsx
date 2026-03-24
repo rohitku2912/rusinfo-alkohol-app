@@ -4,7 +4,7 @@ import { theme } from './theme/constantStyling';
 export default function Info() {
   return (
     <View style={styles.container}>
-      <Text style={styles.tekst}>Info</Text>
+      <Text style={styles.text}>Info</Text>
     </View>
   );
 }
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.background,
   },
-  tekst: {
+  text: {
     fontSize: 24,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,

@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { theme } from './theme/constantStyling';
 
-export default function Dagbok() {
+export default function Achievements() {
   return (
     <View style={styles.container}>
-      <Text style={styles.tekst}>Dagbok</Text>
+      <Text style={styles.text}>Prestasjoner</Text>
     </View>
   );
 }
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.background,
   },
-  tekst: {
+  text: {
     fontSize: 24,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
