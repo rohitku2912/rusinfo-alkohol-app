@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { theme } from '../theme/constantStyling';
+import { StyleSheet, Text, View } from "react-native";
+import theme from "../theme/constantStyling";
 
 export default function Info() {
   return (
@@ -12,8 +12,8 @@ export default function Info() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: theme.colors.background,
   },
   text: {
