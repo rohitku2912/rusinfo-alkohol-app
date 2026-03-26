@@ -2,9 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import SavingsCalcModal from "../components/SavingsCalcModal";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
+import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
 import theme from "../theme/constantStyling";
 
 export default function Dashboard() {
@@ -32,11 +32,7 @@ export default function Dashboard() {
         </View>
       </FunctionBox>
 
-      <SavingsCalcModal
-        isVisible={isVisible}
-        setIsVisible={setIsVisible}
-        confirmcalculation={() => {}}
-      />
+      <SavingsCalcModal isVisible={isVisible} setIsVisible={setIsVisible} />
 
       {/* reset onboarding button */}
       <Button

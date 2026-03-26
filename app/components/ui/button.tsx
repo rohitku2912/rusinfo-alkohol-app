@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 50,
     paddingHorizontal: 16,
-    alignSelf: "flex-end",
+    // plasserer knappen til høyre
   },
   text: {
     color: "#ffecec",
