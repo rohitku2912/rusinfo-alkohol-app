@@ -1,229 +1,439 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Keyboard, Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Keyboard,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import RegularButton from "../../components/ui/button";
-import { DrinkType, Entry } from "./SavingsCalcModal";
-
-function calculateSavings(entry: Entry): number {
-  const now = new Date();
-  const diffMs = now.getTime() - entry.startDate.getTime();
-
-  const days = diffMs / (1000 * 60 * 60 * 24);
-
-  let periods = 0;
-
-  if (entry.frequency === "dag") {
-    periods = days;
-  } else if (entry.frequency === "uke") {
-    periods = days / 7;
-  } else {
-    periods = days / 30;
-  }
-
-  return Math.floor(periods) * entry.amount * entry.price;
-}
+import {
+  DRINK_PRESETS,
+  DrinkPreset,
+  Entry,
+  FREQUENCIES,
+} from "./config";
+import { calculateSavings, formatNumber, parsePrice } from "./utils";
 
 type Props = {
   entry: Entry;
-  setEntry: React.Dispatch<React.SetStateAction<Entry>>;
+  onChangeEntry: (changes: Partial<Entry>) => void;
   onBack: () => void;
   onSave: () => void;
 };
 
-const DRINK_CONFIG: Record<
-  DrinkType,
-  {
-    sizes: number[];
-    prices: { store: number; bar: number };
-  }
-> = {
-  ØL: {
-    sizes: [0.33, 0.4, 0.5],
-    prices: { store: 27, bar: 110 },
-  },
-  VIN: {
-    sizes: [0.15, 0.75],
-    prices: { store: 150, bar: 120 },
-  },
-  BRENNEVIN: {
-    sizes: [0.04, 0.7],
-    prices: { store: 400, bar: 120 },
-  },
-};
-
 export default function DrinkFormScreen({
   entry,
-  setEntry,
+  onChangeEntry,
   onBack,
   onSave,
 }: Props) {
-  const config = DRINK_CONFIG[entry.type];
+  const presets = DRINK_PRESETS[entry.type];
+  const currentSavings = calculateSavings(entry);
+  const selectedPreset = presets.find((preset) => preset.label === entry.label);
 
   const [showPicker, setShowPicker] = useState(false);
 
+  function updateEntry(changes: Partial<Entry>) {
+    onChangeEntry(changes);
+  }
+
+  function choosePreset(preset: DrinkPreset) {
+    updateEntry({
+      label: preset.label,
+      price: preset.price,
+      calories: preset.calories,
+    });
+  }
+
+  function changeAmount(nextAmount: number) {
+    updateEntry({
+      amount: Math.max(0, nextAmount),
+    });
+  }
+
+  function changeFrequency(frequency: Entry["frequency"]) {
+    updateEntry({ frequency });
+  }
+
+  function changePrice(text: string) {
+    updateEntry({
+      price: parsePrice(text),
+    });
+  }
+
+  function toggleDatePicker() {
+    Keyboard.dismiss();
+    setShowPicker((isOpen) => !isOpen);
+  }
+
+  function handleDateChange(selectedDate?: Date) {
+    if (!selectedDate) {
+      return;
+    }
+
+    updateEntry({
+      startDate: selectedDate,
+    });
+  }
+
   return (
-    <>
-      <Text style={styles.header}>Du legger nå til: {entry.type}</Text>
+    <View style={styles.container}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        contentContainerStyle={styles.scrollContent}
+        stickyHeaderIndices={[1]}
+      >
+        <View style={styles.hero}>
+          <Text style={styles.eyebrow}>Valgt kategori</Text>
+          <Text style={styles.header}>{entry.type}</Text>
+          <Text style={styles.heroBody}>
+            Juster mengde, pris og startdato for å se hvor mye dette koster over
+            tid.
+          </Text>
+        </View>
 
-      {/* SIZE */}
-      <Text>Velg størrelse</Text>
-      <View style={styles.row}>
-        {config.sizes.map((size) => (
+        <View style={styles.summaryCard}>
+          <Text style={styles.summaryLabel}>Beregnet spart</Text>
+          <Text style={styles.summaryValue}>{formatNumber(currentSavings)} kr</Text>
+          <Text style={styles.summaryMeta}>{entry.amount} {entry.label.toLowerCase()} per {entry.frequency}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Startdato</Text>
+
           <RegularButton
-            key={size}
-            title={`${size}L`}
-            onPress={() => setEntry((prev) => ({ ...prev, unitSize: size }))}
+            title={showPicker ? "Skjul dato" : entry.startDate.toDateString()}
+            onPress={toggleDatePicker}
+            style={styles.dateButton}
           />
-        ))}
-      </View>
 
-      {/* FREQUENCY */}
-      <Text>Velg tidsmål</Text>
-      <View style={styles.row}>
-        {(["dag", "uke", "måned"] as const).map((f) => (
-          <RegularButton
-            key={f}
-            title={f}
-            onPress={() => setEntry((prev) => ({ ...prev, frequency: f }))}
-          />
-        ))}
-      </View>
+          {showPicker && (
+            <View style={styles.pickerContainer}>
+              <DateTimePicker
+                value={entry.startDate}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                themeVariant="light"
+                onChange={(event, selectedDate) => {
+                  if (Platform.OS === "android") {
+                    setShowPicker(false);
+                  }
 
-      {/* AMOUNT */}
-      <Text>Antall: {entry.amount}</Text>
-      <View style={styles.row}>
-        <RegularButton
-          title="-"
-          onPress={() =>
-            setEntry((prev) => ({
-              ...prev,
-              amount: Math.max(0, prev.amount - 1),
-            }))
-          }
-        />
-        <RegularButton
-          title="+"
-          onPress={() =>
-            setEntry((prev) => ({
-              ...prev,
-              amount: prev.amount + 1,
-            }))
-          }
-        />
-      </View>
+                  handleDateChange(selectedDate);
+                }}
+              />
+            </View>
+          )}
+        </View>
 
-      {/* PRICE */}
-      <Text>Pris</Text>
-      <View style={styles.row}>
-        <RegularButton
-          title="butikk"
-          onPress={() =>
-            setEntry((prev) => ({
-              ...prev,
-              price: config.prices.store,
-            }))
-          }
-        />
-        <RegularButton
-          title="bar"
-          onPress={() =>
-            setEntry((prev) => ({
-              ...prev,
-              price: config.prices.bar,
-            }))
-          }
-        />
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Hva pleier du å kjøpe?</Text>
+          <View style={styles.presetList}>
+            {presets.map((preset) => {
+              const isSelected = preset.label === entry.label;
 
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        placeholder="Egen pris"
-        value={entry.price ? String(entry.price) : ""}
-        returnKeyType="done"
-        blurOnSubmit
-        onSubmitEditing={Keyboard.dismiss}
-        onChangeText={(text) =>
-          setEntry((prev) => ({
-            ...prev,
-            price: Number(text) || 0,
-          }))
-        }
-      />
+              return (
+                <Pressable
+                  key={preset.label}
+                  style={[
+                    styles.presetCard,
+                    isSelected && styles.presetCardSelected,
+                  ]}
+                  onPress={() => choosePreset(preset)}
+                >
+                  <View>
+                    <Text
+                      style={[
+                        styles.presetTitle,
+                        isSelected && styles.presetTitleSelected,
+                      ]}
+                    >
+                      {preset.label}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.presetDetails,
+                        isSelected && styles.presetDetailsSelected,
+                      ]}
+                    >
+                      {preset.details}
+                    </Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.presetPrice,
+                      isSelected && styles.presetPriceSelected,
+                    ]}
+                  >
+                    {formatNumber(preset.price)} kr
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
 
-      <Text>Startdato</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Antall</Text>
+          <View style={styles.amountCard}>
+            <RegularButton
+              title="-"
+              onPress={() => changeAmount(entry.amount - 1)}
+              style={styles.amountButton}
+            />
+            <Text style={styles.amountValue}>{entry.amount}</Text>
+            <RegularButton
+              title="+"
+              onPress={() => changeAmount(entry.amount + 1)}
+              style={styles.amountButton}
+            />
+          </View>
+        </View>
 
-      <RegularButton
-        title={showPicker ? "Skjul dato" : entry.startDate.toDateString()}
-        onPress={() => {
-          Keyboard.dismiss();
-          setShowPicker((prev) => !prev);
-        }}
-      />
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Hvor ofte?</Text>
+          <View style={styles.row}>
+            {FREQUENCIES.map((frequency) => (
+              <RegularButton
+                key={frequency}
+                title={frequency}
+                onPress={() => changeFrequency(frequency)}
+                style={styles.optionButton}
+              />
+            ))}
+          </View>
+        </View>
 
-      {showPicker && (
-        <View style={styles.pickerContainer}>
-          <DateTimePicker
-            value={entry.startDate}
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            themeVariant="light"
-            onChange={(event, selectedDate) => {
-              if (Platform.OS === "android") {
-                setShowPicker(false);
-              }
-
-              if (selectedDate) {
-                setEntry((prev) => ({
-                  ...prev,
-                  startDate: selectedDate,
-                }));
-              }
-            }}
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Egen pris hvis du vil justere</Text>
+          {selectedPreset && (
+            <Text style={styles.helperText}>
+              Valgt preset: {selectedPreset.label} ({formatNumber(selectedPreset.price)} kr)
+            </Text>
+          )}
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="Skriv inn egen pris"
+            placeholderTextColor="#9a877a"
+            value={entry.price ? String(entry.price) : ""}
+            returnKeyType="done"
+            blurOnSubmit
+            onSubmitEditing={Keyboard.dismiss}
+            onChangeText={changePrice}
           />
         </View>
-      )}
 
-      <Text style={styles.summary}>
-        {entry.amount} × {entry.unitSize}L per {entry.frequency}
-      </Text>
-
-      <Text style={styles.summary}>Spart: {calculateSavings(entry)} kr 💰</Text>
-
-      <RegularButton title="Lagre" onPress={onSave} />
-      <RegularButton title="Tilbake" onPress={onBack} />
-    </>
+        <View style={styles.actionRow}>
+          <RegularButton
+            title="Tilbake"
+            onPress={onBack}
+            style={styles.secondaryAction}
+          />
+          <RegularButton
+            title="Lagre"
+            onPress={onSave}
+            style={styles.primaryAction}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 12,
+  },
+  hero: {
+    backgroundColor: "#fffaf4",
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "rgba(133, 92, 66, 0.12)",
+  },
+  eyebrow: {
+    textTransform: "uppercase",
+    letterSpacing: 1.2,
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#9c5f34",
+    marginBottom: 8,
+  },
   header: {
-    fontSize: 20,
-    textAlign: "center",
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#2f221b",
+  },
+  heroBody: {
+    marginTop: 8,
+    color: "#6b5649",
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  summaryCard: {
+    marginTop: 14,
+    marginBottom: 14,
+    backgroundColor: "#c55c2f",
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "rgba(94, 63, 48, 0.12)",
+  },
+  summaryLabel: {
+    color: "rgba(255,255,255,0.82)",
+    fontSize: 12,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  summaryValue: {
+    color: "#fffaf4",
+    fontSize: 24,
+    fontWeight: "800",
+    marginTop: 4,
+  },
+  summaryMeta: {
+    color: "rgba(255,255,255,0.84)",
+    fontSize: 13,
+    marginTop: 6,
+  },
+  section: {
+    backgroundColor: "#fffaf4",
+    borderRadius: 22,
+    padding: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: "rgba(133, 92, 66, 0.12)",
+  },
+  sectionLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#4b382e",
+    marginBottom: 12,
+  },
+  helperText: {
+    color: "#7b675a",
+    fontSize: 13,
     marginBottom: 10,
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 10,
+    gap: 10,
+  },
+  presetList: {
+    gap: 10,
+  },
+  presetCard: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#e4d4c4",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  presetCardSelected: {
+    backgroundColor: "#c55c2f",
+    borderColor: "#c55c2f",
+  },
+  presetTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#2f221b",
+  },
+  presetTitleSelected: {
+    color: "#fffaf4",
+  },
+  presetDetails: {
+    marginTop: 4,
+    fontSize: 13,
+    color: "#7b675a",
+  },
+  presetDetailsSelected: {
+    color: "rgba(255,250,244,0.84)",
+  },
+  presetPrice: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#9c5f34",
+  },
+  presetPriceSelected: {
+    color: "#fffaf4",
+  },
+  optionButton: {
+    flex: 1,
+    height: 48,
+    borderRadius: 16,
+  },
+  amountCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#f2e6d8",
+    borderRadius: 18,
+    padding: 10,
+  },
+  amountButton: {
+    width: 56,
+    borderRadius: 14,
+  },
+  amountValue: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#2f221b",
   },
   input: {
+    marginTop: 12,
     borderWidth: 1,
-    padding: 8,
-    marginVertical: 10,
-    borderRadius: 8,
+    borderColor: "#d8c2af",
+    backgroundColor: "#fff",
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 16,
+    borderRadius: 16,
+    color: "#2f221b",
+  },
+  dateButton: {
+    width: "100%",
+    borderRadius: 16,
   },
   pickerContainer: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 4,
     borderRadius: 16,
     backgroundColor: "#fff",
     alignItems: "center",
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#eadbcc",
   },
-  summary: {
-    textAlign: "center",
-    marginVertical: 20,
-    fontWeight: "600",
+  actionRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 4,
+  },
+  secondaryAction: {
+    flex: 1,
+    borderRadius: 18,
+    backgroundColor: "#6b5649",
+  },
+  primaryAction: {
+    flex: 1,
+    borderRadius: 18,
+    backgroundColor: "#c55c2f",
   },
 });
