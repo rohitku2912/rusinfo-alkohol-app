@@ -1,32 +1,40 @@
+import theme from "@/app/theme/constantStyling";
 import React from "react";
-import {
-    StyleProp,
-    StyleSheet,
-    TouchableOpacity,
-    ViewStyle,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type FunctionBoxProps = {
   title: string;
-  onPress: () => void;
-  style?: StyleProp<ViewStyle>;
+  description: string;
+  onPress?: () => void;
+  children?: React.ReactNode;
 };
 
-export default function FunctionBox({ title, description, onPress }) {
+export default function FunctionBox({
+  title,
+  description,
+  children,
+  onPress,
+}: FunctionBoxProps) {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.container}
+      activeOpacity={onPress ? 0.8 : 1} // only act as button if onpress exist
+    >
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
+      {children && <View>{children}</View>}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
+    width: "95%",
+    backgroundColor: "#392e2e",
     padding: 20,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: theme.borderRadius.large,
   },
   title: {
     fontSize: 18,

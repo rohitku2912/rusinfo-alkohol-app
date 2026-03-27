@@ -1,7 +1,18 @@
-import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  clearPendingDemographics,
+  flushPendingDemographics,
+  queueDemographicsSync,
+} from "@/lib/firestore/demographics";
+import {
+  completeOnboarding,
+  getOnboardingData,
+  mergeOnboardingData,
+  saveOnboardingData,
+} from "@/lib/storage/onboarding";
+import type { OnboardingData } from "@/types/onboarding";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -11,30 +22,27 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import {
-  clearPendingDemographics,
-  flushPendingDemographics,
-  queueDemographicsSync,
-} from '@/lib/firestore/demographics';
-import {
-  saveOnboardingData,
-  getOnboardingData,
-  completeOnboarding,
-  mergeOnboardingData,
-} from '@/lib/storage/onboarding';
-import type { OnboardingData } from '@/types/onboarding';
-import { theme } from '../theme/constantStyling';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import theme from "../theme/constantStyling";
 
-const options = ['Helsen min', 'Familien min', 'Økonomi', 'Jobbe bedre', 'Trene mer'];
+const options = [
+  "Helsen min",
+  "Familien min",
+  "Økonomi",
+  "Jobbe bedre",
+  "Trene mer",
+];
 
 export default function Inspiration() {
   const router = useRouter();
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [otherSelected, setOtherSelected] = useState(false);
-  const [otherText, setOtherText] = useState('');
+  const [otherText, setOtherText] = useState("");
   const scrollViewRef = useRef<ScrollView>(null);
-  const canConfirm = selectedOptions.length > 0 || (otherSelected && otherText.trim().length > 0);
+  const canConfirm =
+    selectedOptions.length > 0 ||
+    (otherSelected && otherText.trim().length > 0);
 
   useEffect(() => {
     const loadDraft = async () => {
@@ -44,12 +52,16 @@ export default function Inspiration() {
       const inspirations = Array.isArray(draft.inspiration)
         ? draft.inspiration
         : [draft.inspiration];
-      const presetSelections = inspirations.filter((item) => options.includes(item));
-      const customSelections = inspirations.filter((item) => !options.includes(item));
+      const presetSelections = inspirations.filter((item) =>
+        options.includes(item),
+      );
+      const customSelections = inspirations.filter(
+        (item) => !options.includes(item),
+      );
 
       setSelectedOptions(presetSelections);
       setOtherSelected(customSelections.length > 0);
-      setOtherText(customSelections.join(', '));
+      setOtherText(customSelections.join(", "));
     };
     loadDraft();
   }, []);
@@ -90,7 +102,7 @@ export default function Inspiration() {
   const toggleOther = () => {
     setOtherSelected((current) => {
       if (current) {
-        setOtherText('');
+        setOtherText("");
         void mergeOnboardingData({ inspiration: selectedOptions });
       } else {
         void mergeOnboardingData({ inspiration: selectedOptions });
@@ -118,10 +130,10 @@ export default function Inspiration() {
     const draft = await getOnboardingData();
     const onboardingData: OnboardingData = {
       shareAnonymousStats: draft.shareAnonymousStats ?? false,
-      age: draft.age ?? '',
-      gender: draft.gender ?? '',
-      county: draft.county ?? '',
-      goal: draft.goal ?? '',
+      age: draft.age ?? "",
+      gender: draft.gender ?? "",
+      county: draft.county ?? "",
+      goal: draft.goal ?? "",
       inspiration,
     };
 
@@ -140,7 +152,7 @@ export default function Inspiration() {
       await clearPendingDemographics();
     }
 
-    router.replace('/(tabs)' as any);
+    router.replace("/(tabs)" as any);
     void flushPendingDemographics();
   };
 
@@ -148,7 +160,7 @@ export default function Inspiration() {
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <ScrollView
           ref={scrollViewRef}
@@ -159,18 +171,30 @@ export default function Inspiration() {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="interactive"
         >
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={18} color={theme.colors.primary} />
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <Ionicons
+              name="chevron-back"
+              size={18}
+              color={theme.colors.primary}
+            />
             <Text style={styles.backButtonText}>Tilbake</Text>
           </TouchableOpacity>
 
           <Text style={styles.title}>Hva er din inspirasjon?</Text>
-          <Text style={styles.subtitle}>Dette lagres lokalt og kan endres senere.</Text>
+          <Text style={styles.subtitle}>
+            Dette lagres lokalt og kan endres senere.
+          </Text>
 
-          {options.map(o => (
+          {options.map((o) => (
             <TouchableOpacity
               key={o}
-              style={[styles.option, selectedOptions.includes(o) && styles.selectedStyle]}
+              style={[
+                styles.option,
+                selectedOptions.includes(o) && styles.selectedStyle,
+              ]}
               onPress={() => toggleOption(o)}
             >
               <View style={styles.optionRow}>
@@ -200,7 +224,9 @@ export default function Inspiration() {
 
           {otherSelected && (
             <View style={styles.textInputWrapper}>
-              <Text style={styles.textInputLabel}>Hva motiverer deg akkurat nå?</Text>
+              <Text style={styles.textInputLabel}>
+                Hva motiverer deg akkurat nå?
+              </Text>
               <TextInput
                 style={styles.textInput}
                 placeholder="Beskriv med egne ord..."
@@ -211,10 +237,16 @@ export default function Inspiration() {
                 value={otherText}
                 onChangeText={handleChangeOtherText}
                 onFocus={() => {
-                  setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 300);
+                  setTimeout(
+                    () =>
+                      scrollViewRef.current?.scrollToEnd({ animated: true }),
+                    300,
+                  );
                 }}
               />
-              <Text style={styles.characterCount}>{otherText.trim().length}/300</Text>
+              <Text style={styles.characterCount}>
+                {otherText.trim().length}/300
+              </Text>
             </View>
           )}
         </ScrollView>
@@ -247,45 +279,45 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
     gap: 6,
     marginBottom: theme.spacing.medium,
   },
   backButtonText: {
     fontSize: 15,
     color: theme.colors.primary,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: theme.spacing.small,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
   },
   subtitle: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
     marginBottom: 28,
   },
   option: {
-    backgroundColor: '#e8e8e3',
+    backgroundColor: "#e8e8e3",
     borderRadius: theme.borderRadius.medium,
     padding: 18,
     marginBottom: theme.spacing.small,
     borderWidth: 1,
-    borderColor: 'transparent',
+    borderColor: "transparent",
   },
   selectedStyle: {
-    backgroundColor: '#dcefdc',
-    borderColor: '#9bc49d',
+    backgroundColor: "#dcefdc",
+    borderColor: "#9bc49d",
   },
   optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     gap: theme.spacing.small,
   },
   optionText: { fontSize: 16, color: theme.colors.text },
@@ -294,35 +326,35 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   textInputWrapper: {
     height: 180,
     borderRadius: theme.borderRadius.medium,
     marginBottom: theme.spacing.small,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: theme.spacing.medium,
     borderWidth: 1,
-    borderColor: '#d9d9d3',
+    borderColor: "#d9d9d3",
   },
   textInputLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: theme.colors.text,
     marginBottom: theme.spacing.small,
   },
   textInput: {
     flex: 1,
     fontSize: 15,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     color: theme.colors.text,
   },
   characterCount: {
     marginTop: theme.spacing.small,
     fontSize: 12,
-    color: '#888',
-    alignSelf: 'flex-end',
+    color: "#888",
+    alignSelf: "flex-end",
   },
   bottomBar: {
     paddingHorizontal: theme.spacing.large,
@@ -334,7 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
-    alignItems: 'center',
+    alignItems: "center",
   },
-  buttonText: { fontSize: 16, color: '#fff' },
+  buttonText: { fontSize: 16, color: "#fff" },
 });

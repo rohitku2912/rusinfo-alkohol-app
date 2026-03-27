@@ -1,21 +1,28 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { getOnboardingData, mergeOnboardingData } from '@/lib/storage/onboarding';
-import { theme } from '../theme/constantStyling';
+import {
+  getOnboardingData,
+  mergeOnboardingData,
+} from "@/lib/storage/onboarding";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import theme from "../theme/constantStyling";
 
-const goals = ['Slutte å drikke', 'Drikke mindre', 'Få oversikt over min drikking'];
+const goals = [
+  "Slutte å drikke",
+  "Drikke mindre",
+  "Få oversikt over min drikking",
+];
 
 export default function Goal() {
   const router = useRouter();
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState("");
 
   useEffect(() => {
     const loadDraft = async () => {
       const draft = await getOnboardingData();
-      setSelected(draft.goal ?? '');
+      setSelected(draft.goal ?? "");
     };
 
     loadDraft();
@@ -23,7 +30,7 @@ export default function Goal() {
 
   const handleContinue = async () => {
     await mergeOnboardingData({ goal: selected });
-    router.push('/onboarding/inspiration' as any);
+    router.push("/onboarding/inspiration" as any);
   };
 
   const handleSelectGoal = async (goal: string) => {
@@ -34,15 +41,24 @@ export default function Goal() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={18} color={theme.colors.primary} />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={18}
+            color={theme.colors.primary}
+          />
           <Text style={styles.backButtonText}>Tilbake</Text>
         </TouchableOpacity>
 
         <Text style={styles.title}>Hva er ditt mål?</Text>
-        <Text style={styles.subtitle}>Dette lagres lokalt og kan endres senere.</Text>
+        <Text style={styles.subtitle}>
+          Dette lagres lokalt og kan endres senere.
+        </Text>
 
-        {goals.map(g => (
+        {goals.map((g) => (
           <TouchableOpacity
             key={g}
             style={[styles.option, selected === g && styles.selectedStyle]}
@@ -55,7 +71,7 @@ export default function Goal() {
           </TouchableOpacity>
         ))}
 
-        {selected !== '' && (
+        {selected !== "" && (
           <TouchableOpacity style={styles.button} onPress={handleContinue}>
             <Text style={styles.buttonText}>Videre →</Text>
           </TouchableOpacity>
@@ -77,48 +93,48 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
     gap: 6,
     marginBottom: theme.spacing.medium,
   },
   backButtonText: {
     fontSize: 15,
     color: theme.colors.primary,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: theme.spacing.small,
     color: theme.colors.text,
     fontFamily: theme.fonts.heading,
   },
   subtitle: {
     fontSize: 14,
-    color: '#888',
+    color: "#888",
     marginBottom: 28,
   },
   option: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#e8e8e3',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#e8e8e3",
     borderRadius: theme.borderRadius.medium,
     padding: 18,
     marginBottom: theme.spacing.small,
   },
-  selectedStyle: { backgroundColor: '#d0e8d0' },
+  selectedStyle: { backgroundColor: "#d0e8d0" },
   optionText: { fontSize: 16, color: theme.colors.text },
   button: {
     backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: theme.spacing.large,
-    alignSelf: 'center',
+    alignSelf: "center",
     paddingHorizontal: 32,
   },
-  buttonText: { fontSize: 16, color: '#fff' },
+  buttonText: { fontSize: 16, color: "#fff" },
 });
