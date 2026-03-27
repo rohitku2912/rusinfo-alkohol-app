@@ -1,7 +1,24 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Network from 'expo-network';
 import { Tabs } from 'expo-router';
+import { useEffect } from 'react';
+import { flushPendingDemographics } from '@/lib/firestore/demographics';
 
 export default function TabsLayout() {
+  useEffect(() => {
+    void flushPendingDemographics();
+
+    const subscription = Network.addNetworkStateListener((state) => {
+      if (state.isConnected && state.isInternetReachable !== false) {
+        void flushPendingDemographics();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: '#2E7D32' }}>
       <Tabs.Screen

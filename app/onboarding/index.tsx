@@ -1,21 +1,35 @@
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { clearOnboardingData } from '@/lib/storage/onboarding';
 import { theme } from '../theme/constantStyling';
 
 export default function Welcome() {
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push('/onboarding/info' as any);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [router]);
+    void clearOnboardingData();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>velkommen</Text>
+      <View style={styles.content}>
+        <Text style={styles.eyebrow}>RUSinfo</Text>
+        <Text style={styles.title}>En trygg app for å få oversikt over alkoholbruk</Text>
+        <Text style={styles.body}>
+          Du kan bruke appen anonymt, og de fleste opplysningene lagres bare på telefonen din.
+        </Text>
+        <Text style={styles.body}>
+          Det er frivillig om du vil dele noen få opplysninger anonymt for statistikk.
+        </Text>
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push('/onboarding/info' as any)}
+      >
+        <Text style={styles.buttonText}>Kom i gang</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -23,15 +37,44 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
-    justifyContent: 'center',
+    backgroundColor: theme.colors.background,
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spacing.large,
+    paddingTop: 96,
+    paddingBottom: 48,
+  },
+  content: {
+    gap: theme.spacing.medium,
+  },
+  eyebrow: {
+    color: theme.colors.primary,
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  title: {
+    color: theme.colors.text,
+    fontSize: 32,
+    lineHeight: 38,
+    fontWeight: '600',
+    fontFamily: theme.fonts.heading,
+  },
+  body: {
+    color: '#555',
+    fontSize: 16,
+    lineHeight: 24,
+    fontFamily: theme.fonts.main,
+  },
+  button: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.large,
+    paddingVertical: theme.spacing.medium,
     alignItems: 'center',
   },
-  text: {
+  buttonText: {
     color: '#fff',
-    fontSize: 28,
-    fontWeight: '300',
-    letterSpacing: 4,
-    fontFamily: theme.fonts.main,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

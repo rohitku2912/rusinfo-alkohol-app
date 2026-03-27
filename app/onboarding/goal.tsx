@@ -1,6 +1,9 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { getOnboardingData, mergeOnboardingData } from '@/lib/storage/onboarding';
 import { theme } from '../theme/constantStyling';
 
 const goals = ['Slutte å drikke', 'Drikke mindre', 'Få oversikt over min drikking'];
@@ -9,38 +12,81 @@ export default function Goal() {
   const router = useRouter();
   const [selected, setSelected] = useState('');
 
+  useEffect(() => {
+    const loadDraft = async () => {
+      const draft = await getOnboardingData();
+      setSelected(draft.goal ?? '');
+    };
+
+    loadDraft();
+  }, []);
+
+  const handleContinue = async () => {
+    await mergeOnboardingData({ goal: selected });
+    router.push('/onboarding/inspiration' as any);
+  };
+
+  const handleSelectGoal = async (goal: string) => {
+    setSelected(goal);
+    await mergeOnboardingData({ goal });
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Hva er ditt mål?</Text>
-      <Text style={styles.subtitle}>dette kan endres senere</Text>
-
-      {goals.map(g => (
-        <TouchableOpacity
-          key={g}
-          style={[styles.option, selected === g && styles.selectedStyle]}
-          onPress={() => setSelected(g)}
-        >
-          <Text style={styles.optionText}>{g}</Text>
-          <Text style={{ color: theme.colors.text }}>›</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={18} color={theme.colors.primary} />
+          <Text style={styles.backButtonText}>Tilbake</Text>
         </TouchableOpacity>
-      ))}
 
-      {selected !== '' && (
-        <TouchableOpacity style={styles.button}
-          onPress={() => router.push('/onboarding/inspiration' as any)}>
-          <Text style={styles.buttonText}>videre →</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+        <Text style={styles.title}>Hva er ditt mål?</Text>
+        <Text style={styles.subtitle}>Dette lagres lokalt og kan endres senere.</Text>
+
+        {goals.map(g => (
+          <TouchableOpacity
+            key={g}
+            style={[styles.option, selected === g && styles.selectedStyle]}
+            onPress={() => {
+              void handleSelectGoal(g);
+            }}
+          >
+            <Text style={styles.optionText}>{g}</Text>
+            <Text style={{ color: theme.colors.text }}>›</Text>
+          </TouchableOpacity>
+        ))}
+
+        {selected !== '' && (
+          <TouchableOpacity style={styles.button} onPress={handleContinue}>
+            <Text style={styles.buttonText}>Videre →</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     padding: theme.spacing.large,
-    paddingTop: 60,
+    paddingTop: theme.spacing.medium,
     backgroundColor: theme.colors.background,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 6,
+    marginBottom: theme.spacing.medium,
+  },
+  backButtonText: {
+    fontSize: 15,
+    color: theme.colors.primary,
+    fontWeight: '500',
   },
   title: {
     fontSize: 22,
