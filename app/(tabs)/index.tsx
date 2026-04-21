@@ -3,7 +3,14 @@ import type { OnboardingDraft } from "@/types/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
 import CalorieCalcModal from "../features/calorieCalculator/CalorieCalcModal";
@@ -11,32 +18,14 @@ import { SavedEntry } from "../features/savingsCalculator/config";
 import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
 import theme from "../theme/constantStyling";
 
+import AuditModal from "../features/audit/auditModal";
 import {
   calculateTotalAvoidedCalories,
   calculateTotalSavings,
   formatNumber,
 } from "../features/savingsCalculator/utils";
 
-const FAKE_FUNCTIONS = [
-  {
-    id: "daily-status",
-    title: "DAGENS STATUS",
-    description: "oversikt over dagens mål og varsler",
-    content: "2 oppgaver gjenstår i dag",
-  },
-  {
-    id: "weekly-overview",
-    title: "UKESOVERSIKT",
-    description: "hurtigoversikt over aktivitet denne uken",
-    content: "4 av 7 dager registrert",
-  },
-  {
-    id: "tips",
-    title: "ANBEFALTE TIPS",
-    description: "små grep som kan hjelpe deg videre",
-    content: "Les 3 nye råd denne uken",
-  },
-];
+import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -47,6 +36,8 @@ export default function Dashboard() {
   const [savedEntries, setSavedEntries] = useState<SavedEntry[]>([]);
   const savedTotal = calculateTotalSavings(savedEntries);
   const totalCalories = calculateTotalAvoidedCalories(savedEntries);
+  const [isAuditVisible, setIsAuditVisible] = useState(false);
+  const [isEmergencyVisible, setIsEmergencyVisible] = useState(false);
 
   useEffect(() => {
     const loadDashboardState = async () => {
@@ -102,6 +93,17 @@ export default function Dashboard() {
           </View>
         </FunctionBox>
 
+        <FunctionBox title="AUDIT" description="ta en test">
+          <RegularButton
+            title="open the AUDIT"
+            onPress={() => setIsAuditVisible(true)}
+          ></RegularButton>
+          <AuditModal
+            isVisible={isAuditVisible}
+            setIsVisible={setIsAuditVisible}
+          ></AuditModal>
+        </FunctionBox>
+
         <FunctionBox
           title="KALORIKALKULATOR"
           description="du har unngått så langt"
@@ -116,16 +118,6 @@ export default function Dashboard() {
             </Text>
           </View>
         </FunctionBox>
-
-        {FAKE_FUNCTIONS.map((item) => (
-          <FunctionBox
-            key={item.id}
-            title={item.title}
-            description={item.description}
-          >
-            <Text style={styles.functionText}>{item.content}</Text>
-          </FunctionBox>
-        ))}
 
         <View style={styles.resetButton}>
           <View style={styles.debugCard}>
@@ -163,6 +155,16 @@ export default function Dashboard() {
         </View>
       </ScrollView>
 
+      <View style={styles.EmergencyButton}>
+        <Pressable onPress={() => setIsEmergencyVisible(true)}>
+          <Text>Nødknapp</Text>
+        </Pressable>
+        <EmergencyModal
+          isVisible={isEmergencyVisible}
+          setIsVisible={setIsEmergencyVisible}
+        />
+      </View>
+
       <SavingsCalcModal
         isVisible={isSavingsVisible}
         setIsVisible={setIsSavingsVisible}
@@ -185,6 +187,17 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
+  EmergencyButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    zIndex: 10,
+    backgroundColor: "#a46e6e",
+    padding: 10,
+    borderRadius: 100,
+    borderColor: "#c48c8c",
+    borderWidth: 3,
+  },
   outerContainer: {
     flex: 1,
     backgroundColor: "#e9dfd2",
