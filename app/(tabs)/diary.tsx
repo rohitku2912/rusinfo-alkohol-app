@@ -2,10 +2,8 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DiaryDisplay from "../features/diary/DiaryDisplay";
 import TriggerDisplay from "../features/diary/TriggerDisplay";
-import theme from "../theme/constantStyling";
-import PersonalGoal from "../features/emergencyButton/PersonalGoal";
 import CallAFriend from "../features/emergencyButton/CallAFriend";
-
+import theme from "../theme/constantStyling";
 
 export default function Diary() {
   const [activeTab, setActiveTab] = useState<"diary" | "trigger">("diary");
@@ -14,7 +12,7 @@ export default function Diary() {
 
   return (
     <View style={styles.container}>
-      <CallAFriend/>
+      <CallAFriend />
       <View
         style={[
           styles.folder,
@@ -41,7 +39,6 @@ export default function Diary() {
         {/* innhold */}
         <View style={styles.content}>
           {isDiary ? <DiaryDisplay /> : <TriggerDisplay />}
-          
         </View>
       </View>
     </View>
