@@ -26,6 +26,7 @@ import {
 } from "../features/savingsCalculator/utils";
 
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
+import PartyPlanner from "../features/partyPlanner/partyPlanner";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -78,6 +79,8 @@ export default function Dashboard() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <PartyPlanner />
+
         <FunctionBox
           title="SPAREKALKULATOR"
           description="du har spart så langt"
@@ -154,7 +157,6 @@ export default function Dashboard() {
           />
         </View>
       </ScrollView>
-
       <View style={styles.EmergencyButton}>
         <Pressable onPress={() => setIsEmergencyVisible(true)}>
           <Text>Nødknapp</Text>
@@ -164,7 +166,6 @@ export default function Dashboard() {
           setIsVisible={setIsEmergencyVisible}
         />
       </View>
-
       <SavingsCalcModal
         isVisible={isSavingsVisible}
         setIsVisible={setIsSavingsVisible}
@@ -173,7 +174,6 @@ export default function Dashboard() {
         onDeleteEntry={deleteSavedEntry}
         onUpdateEntry={updateSavedEntry}
       />
-
       <CalorieCalcModal
         isVisible={isCaloriesVisible}
         setIsVisible={setIsCaloriesVisible}
