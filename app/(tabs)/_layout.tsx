@@ -20,7 +20,7 @@ export default function TabsLayout() {
   }, []);
 
   return (
-    <Tabs screenOptions={{tabBarActiveTintColor: "#2E7D32" }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: "#2E7D32" }}>
       <Tabs.Screen
         name="index"
         options={{

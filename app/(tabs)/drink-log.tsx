@@ -1,24 +1,31 @@
-import { StyleSheet, Text, View } from "react-native";
-import theme from "../theme/constantStyling";
+import { DrinkLogEntry, getDrinkLogs } from "@/lib/storage/drinkLogs";
+import { useEffect, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
 export default function DrinkLog() {
+  const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
+
+  async function loadLogs() {
+    const storedLogs = await getDrinkLogs();
+    setLogs(storedLogs);
+  }
+
+  useEffect(() => {
+    loadLogs();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Drikklogg</Text>
-    </View>
+    <ScrollView>
+      <Text>Drikklogg</Text>
+
+      {logs.map((log) => (
+        <View key={log.date}>
+          <Text>{log.date}</Text>
+          <Text>Øl: {log.beerCount}</Text>
+          <Text>Vin: {log.wineCount}</Text>
+          <Text>Drinker: {log.drinksCount}</Text>
+        </View>
+      ))}
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: theme.colors.background,
-  },
-  text: {
-    fontSize: 24,
-    color: theme.colors.text,
-    fontFamily: theme.fonts.heading,
-  },
-});

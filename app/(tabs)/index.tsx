@@ -25,12 +25,15 @@ import {
   formatNumber,
 } from "../features/savingsCalculator/utils";
 
+import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 import PartyPlanner from "../features/partyPlanner/partyPlanner";
 
 export default function Dashboard() {
   const router = useRouter();
   const [onboardingData, setOnboardingData] = useState<OnboardingDraft>({});
+
+  const [isDrinkLoggerVisible, setIsDrinkLoggerVisible] = useState(false);
 
   const [isSavingsVisible, setIsSavingsVisible] = useState(false);
   const [isCaloriesVisible, setIsCaloriesVisible] = useState(false);
@@ -79,6 +82,16 @@ export default function Dashboard() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <FunctionBox
+          title="DRIKKELOGG"
+          description="logg her når du har drukket"
+        >
+          <RegularButton
+            title="regn ut"
+            onPress={() => setIsDrinkLoggerVisible(true)}
+          />
+        </FunctionBox>
+
         <PartyPlanner />
 
         <FunctionBox
@@ -166,6 +179,11 @@ export default function Dashboard() {
           setIsVisible={setIsEmergencyVisible}
         />
       </View>
+      <DrinkLogger
+        isVisible={isDrinkLoggerVisible}
+        setIsVisible={setIsDrinkLoggerVisible}
+      />
+
       <SavingsCalcModal
         isVisible={isSavingsVisible}
         setIsVisible={setIsSavingsVisible}
