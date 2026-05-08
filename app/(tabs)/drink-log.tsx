@@ -1,6 +1,9 @@
 import { DrinkLogEntry, getDrinkLogs } from "@/lib/storage/drinkLogs";
-import { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+import { View } from "react-native";
+import DrinkChart from "../features/overView/DrinkChart";
+import Goals from "../features/overView/Goals";
 
 export default function DrinkLog() {
   const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
@@ -10,22 +13,18 @@ export default function DrinkLog() {
     setLogs(storedLogs);
   }
 
-  useEffect(() => {
-    loadLogs();
-  }, []);
+  //må bruke useFocusEffect og useCallBack for å få oppdatert oversikten når innhold endres.
+  //virker ikke med useEffect med mindre man deler state mellom
+  useFocusEffect(
+    useCallback(() => {
+      loadLogs();
+    }, []),
+  );
 
   return (
-    <ScrollView>
-      <Text>Drikklogg</Text>
-
-      {logs.map((log) => (
-        <View key={log.date}>
-          <Text>{log.date}</Text>
-          <Text>Øl: {log.beerCount}</Text>
-          <Text>Vin: {log.wineCount}</Text>
-          <Text>Drinker: {log.drinksCount}</Text>
-        </View>
-      ))}
-    </ScrollView>
+    <View>
+      <DrinkChart logs={logs} />
+      <Goals logs={logs} />
+    </View>
   );
 }

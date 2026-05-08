@@ -3,8 +3,11 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Network from "expo-network";
 import { Tabs } from "expo-router";
 import { useEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import theme from "../theme/constantStyling";
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     void flushPendingDemographics();
 
@@ -20,7 +23,16 @@ export default function TabsLayout() {
   }, []);
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "#2E7D32" }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#2E7D32",
+        sceneStyle: {
+          paddingTop: insets.top,
+          backgroundColor: theme.colors.background,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

@@ -107,8 +107,18 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
       alert("Du må legge til minst en drink før du kan lagre loggen.");
       return;
     }
-    await saveDrinkLog(date, beerCount, wineCount, drinksCount);
+    await saveDrinkLog(date, beerCount, wineCount, drinksCount, "drakk");
 
+    const logs = await getDrinkLogs();
+    alert(JSON.stringify(logs));
+
+    setBeerCount(0);
+    setWineCount(0);
+    setDrinksCount(0);
+  }
+
+  async function saveWhiteDay() {
+    await saveDrinkLog(date, 0, 0, 0, "hvitDag");
     const logs = await getDrinkLogs();
     alert(JSON.stringify(logs));
 
@@ -187,6 +197,9 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
         <Pressable onPress={saveLog}>
           <Text>Lagre i din Logg</Text>
         </Pressable>
+        <Pressable onPress={saveWhiteDay}>
+          <Text>Logg hvit dag</Text>
+        </Pressable>
       </View>
     </Modal>
   );
@@ -197,7 +210,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: theme.spacing.large,
     paddingTop: 56,
-    backgroundColor: "#e9dfd2",
+    backgroundColor: "theme.colors.background",
   },
   title: {
     marginTop: theme.spacing.large,
@@ -212,7 +225,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     width: 120,
-    backgroundColor: "#fff",
+    backgroundColor: "theme.colors.background",
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.small,
     marginTop: theme.spacing.medium,

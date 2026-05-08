@@ -1,0 +1,233 @@
+import AppModal from "@/app/components/ui/modal";
+import theme from "@/app/theme/constantStyling";
+import {
+    DrinkLogEntry,
+    getLogsForThisWeek,
+    getTotalDrinks,
+    getWhiteDayCount
+} from "@/lib/storage/drinkLogs";
+import { collectGoals, saveGoals } from "@/lib/storage/goals";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import Feather from "@expo/vector-icons/Feather";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+
+type Props = {
+  logs: DrinkLogEntry[];
+};
+
+export default function Goals(props: Props) {
+  const [showModal, setShowModal] = useState(false);
+  const [maxDrinkUnitsGoal, setMaxDrinkUnitsGoal] = useState(10);
+  const [whiteDaysGoal, setWhiteDaysGoal] = useState(5);
+
+  useEffect(() => {
+    async function loadGoals() {
+      const storedGoals = await collectGoals();
+
+      setMaxDrinkUnitsGoal(storedGoals.maxDrinksGoal);
+
+      setWhiteDaysGoal(storedGoals.whiteDaysGoal);
+    }
+    loadGoals();
+  }, []);
+
+  const thisWeekLogs = getLogsForThisWeek(props.logs);
+
+  let maxDrinkUnitsCurrent = 0;
+
+  for (const log of thisWeekLogs) {
+    maxDrinkUnitsCurrent = maxDrinkUnitsCurrent + getTotalDrinks(log);
+  }
+
+  const whiteDaysCurrent = getWhiteDayCount(thisWeekLogs);
+
+  type progressBarProps = {
+    title: string;
+    current: number;
+    goal: number;
+  };
+
+  async function decreaseWhiteDaysGoal() {
+    if (whiteDaysGoal > 0) {
+      const newWhiteDaysGoal = whiteDaysGoal - 1;
+      setWhiteDaysGoal(newWhiteDaysGoal);
+      await saveGoals({
+        maxDrinksGoal: maxDrinkUnitsGoal,
+        whiteDaysGoal: newWhiteDaysGoal,
+      });
+    }
+  }
+
+  async function increaseWhiteDaysGoal() {
+    if (whiteDaysGoal < 7) {
+      const newWhiteDaysGoal = whiteDaysGoal + 1;
+      setWhiteDaysGoal(newWhiteDaysGoal);
+      await saveGoals({
+        maxDrinksGoal: maxDrinkUnitsGoal,
+        whiteDaysGoal: newWhiteDaysGoal,
+      });
+    }
+  }
+
+  async function decreaseDrinkUnitsGoal() {
+    if (maxDrinkUnitsGoal > 0) {
+      const newMaxDrinkUnitsGoal = maxDrinkUnitsGoal - 1;
+      setMaxDrinkUnitsGoal(newMaxDrinkUnitsGoal);
+      await saveGoals({
+        maxDrinksGoal: newMaxDrinkUnitsGoal,
+        whiteDaysGoal: whiteDaysGoal,
+      });
+    }
+  }
+
+  async function increaseDrinkUnitsGoal() {
+    const newMaxDrinkUnitsGoal = maxDrinkUnitsGoal + 1;
+
+    setMaxDrinkUnitsGoal(newMaxDrinkUnitsGoal);
+
+    await saveGoals({
+      maxDrinksGoal: newMaxDrinkUnitsGoal,
+      whiteDaysGoal: whiteDaysGoal,
+    });
+  }
+
+  function ProgressBar(props: progressBarProps) {
+    const progress = props.current / props.goal;
+
+    return (
+      <View style={styles.goalCard}>
+        <Text style={styles.goalTitle}>
+          {props.title}: {props.current} / {props.goal}
+        </Text>
+        <View style={styles.fullBar}>
+          <View
+            style={[styles.progress, { width: `${progress * 100}%` }]}
+          ></View>
+        </View>
+      </View>
+    );
+  }
+  return (
+    <View>
+      <View style={styles.goalHeaderLine}>
+        <Text style={styles.weeklyTitle}>Ukentlige mål</Text>
+        <Feather
+          name="edit"
+          size={24}
+          color="black"
+          style={styles.editGoalsButton}
+          onPress={() => setShowModal(true)}
+        />
+      </View>
+      <ProgressBar
+        title="Hvite dager"
+        current={whiteDaysCurrent}
+        goal={whiteDaysGoal}
+      />
+
+      <ProgressBar
+        title="Drikkegrense"
+        current={maxDrinkUnitsCurrent}
+        goal={maxDrinkUnitsGoal}
+      />
+      <AppModal
+        visible={showModal}
+        title="Endre mål"
+        onClose={() => setShowModal(false)}
+      >
+        <View style={styles.editOuterView}>
+          <Text>Ukentlig maxgrense</Text>
+          <View style={styles.editInnerView}>
+            <Pressable onPress={() => decreaseDrinkUnitsGoal()}>
+              <Text>
+                <EvilIcons name="minus" size={24} color="black" />{" "}
+              </Text>
+            </Pressable>
+            <Text>{maxDrinkUnitsGoal} Enheter</Text>
+            <Pressable onPress={() => increaseDrinkUnitsGoal()}>
+              <Text>
+                <EvilIcons name="plus" size={24} color="black" />{" "}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.editOuterView}>
+          <Text>Hvite dager</Text>
+          <View style={styles.editInnerView}>
+            <Pressable onPress={() => decreaseWhiteDaysGoal()}>
+              <Text>
+                <EvilIcons name="minus" size={24} color="black" />{" "}
+              </Text>
+            </Pressable>
+            <Text>{whiteDaysGoal} dager</Text>
+            <Pressable onPress={() => increaseWhiteDaysGoal()}>
+              <Text>
+                <EvilIcons name="plus" size={24} color="black" />{" "}
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </AppModal>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  fullBar: {
+    marginLeft: 10,
+    height: 20,
+    width: "100%",
+    backgroundColor: "lightgray",
+    borderRadius: 10,
+  },
+  progress: {
+    height: 20,
+    backgroundColor: theme.colors.primary,
+    borderRadius: 10,
+  },
+  whiteDaysComponent: {
+    backgroundColor: "#ffffff",
+    borderRadius: theme.borderRadius.medium,
+    padding: theme.spacing.medium,
+    margin: theme.spacing.medium,
+    flexDirection: "row",
+  },
+  goalCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: theme.borderRadius.medium,
+    padding: theme.spacing.medium,
+    marginHorizontal: theme.spacing.medium,
+    marginBottom: theme.spacing.small,
+    gap: 8,
+  },
+  goalTitle: {
+    fontSize: 14,
+    color: theme.colors.text,
+  },
+  weeklyTitle: {
+    fontSize: 19,
+    color: theme.colors.text,
+  },
+  goalHeaderLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: theme.spacing.medium,
+    marginTop: theme.spacing.medium,
+  },
+  editGoalsButton: {
+    color: theme.colors.text,
+    marginLeft: "auto",
+    padding: theme.spacing.medium,
+  },
+  editInnerView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  editOuterView: {
+    gap: 10,
+    marginBottom: theme.spacing.large,
+  },
+});

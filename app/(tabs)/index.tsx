@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   outerContainer: {
     flex: 1,
-    backgroundColor: "#e9dfd2",
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     paddingVertical: 24,
