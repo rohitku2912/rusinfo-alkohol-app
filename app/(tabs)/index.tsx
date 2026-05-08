@@ -3,7 +3,14 @@ import type { OnboardingDraft } from "@/types/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
 import ProgramTimer from "../features/programTimer/ProgramTimer";
@@ -12,42 +19,30 @@ import { SavedEntry } from "../features/savingsCalculator/config";
 import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
 import theme from "../theme/constantStyling";
 
+import AuditModal from "../features/audit/auditModal";
 import {
   calculateTotalAvoidedCalories,
   calculateTotalSavings,
   formatNumber,
 } from "../features/savingsCalculator/utils";
 
-const FAKE_FUNCTIONS = [
-  {
-    id: "daily-status",
-    title: "DAGENS STATUS",
-    description: "oversikt over dagens mål og varsler",
-    content: "2 oppgaver gjenstår i dag",
-  },
-  {
-    id: "weekly-overview",
-    title: "UKESOVERSIKT",
-    description: "hurtigoversikt over aktivitet denne uken",
-    content: "4 av 7 dager registrert",
-  },
-  {
-    id: "tips",
-    title: "ANBEFALTE TIPS",
-    description: "små grep som kan hjelpe deg videre",
-    content: "Les 3 nye råd denne uken",
-  },
-];
+import DrinkLogger from "../features/drinkLogger/drinkLogger";
+import EmergencyModal from "../features/emergencyButton/EmergencyModal";
+import PartyPlanner from "../features/partyPlanner/partyPlanner";
 
 export default function Dashboard() {
   const router = useRouter();
   const [onboardingData, setOnboardingData] = useState<OnboardingDraft>({});
+
+  const [isDrinkLoggerVisible, setIsDrinkLoggerVisible] = useState(false);
 
   const [isSavingsVisible, setIsSavingsVisible] = useState(false);
   const [isCaloriesVisible, setIsCaloriesVisible] = useState(false);
   const [savedEntries, setSavedEntries] = useState<SavedEntry[]>([]);
   const savedTotal = calculateTotalSavings(savedEntries);
   const totalCalories = calculateTotalAvoidedCalories(savedEntries);
+  const [isAuditVisible, setIsAuditVisible] = useState(false);
+  const [isEmergencyVisible, setIsEmergencyVisible] = useState(false);
 
   useEffect(() => {
     const loadDashboardState = async () => {
@@ -91,6 +86,18 @@ export default function Dashboard() {
         <ProgramTimer />
 
         <FunctionBox
+          title="DRIKKELOGG"
+          description="logg her når du har drukket"
+        >
+          <RegularButton
+            title="regn ut"
+            onPress={() => setIsDrinkLoggerVisible(true)}
+          />
+        </FunctionBox>
+
+        <PartyPlanner />
+
+        <FunctionBox
           title="SPAREKALKULATOR"
           description="du har spart så langt"
         >
@@ -103,6 +110,17 @@ export default function Dashboard() {
               {formatNumber(savedTotal)} kr spart
             </Text>
           </View>
+        </FunctionBox>
+
+        <FunctionBox title="AUDIT" description="ta en test">
+          <RegularButton
+            title="open the AUDIT"
+            onPress={() => setIsAuditVisible(true)}
+          ></RegularButton>
+          <AuditModal
+            isVisible={isAuditVisible}
+            setIsVisible={setIsAuditVisible}
+          ></AuditModal>
         </FunctionBox>
 
         <FunctionBox
@@ -119,16 +137,6 @@ export default function Dashboard() {
             </Text>
           </View>
         </FunctionBox>
-
-        {FAKE_FUNCTIONS.map((item) => (
-          <FunctionBox
-            key={item.id}
-            title={item.title}
-            description={item.description}
-          >
-            <Text style={styles.functionText}>{item.content}</Text>
-          </FunctionBox>
-        ))}
 
         <View style={styles.resetButton}>
           <View style={styles.debugCard}>
@@ -165,6 +173,19 @@ export default function Dashboard() {
           />
         </View>
       </ScrollView>
+      <View style={styles.EmergencyButton}>
+        <Pressable onPress={() => setIsEmergencyVisible(true)}>
+          <Text>Nødknapp</Text>
+        </Pressable>
+        <EmergencyModal
+          isVisible={isEmergencyVisible}
+          setIsVisible={setIsEmergencyVisible}
+        />
+      </View>
+      <DrinkLogger
+        isVisible={isDrinkLoggerVisible}
+        setIsVisible={setIsDrinkLoggerVisible}
+      />
 
       <SavingsCalcModal
         isVisible={isSavingsVisible}
@@ -174,7 +195,6 @@ export default function Dashboard() {
         onDeleteEntry={deleteSavedEntry}
         onUpdateEntry={updateSavedEntry}
       />
-
       <CalorieCalcModal
         isVisible={isCaloriesVisible}
         setIsVisible={setIsCaloriesVisible}
@@ -188,9 +208,20 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
+  EmergencyButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    zIndex: 10,
+    backgroundColor: "#a46e6e",
+    padding: 10,
+    borderRadius: 100,
+    borderColor: "#c48c8c",
+    borderWidth: 3,
+  },
   outerContainer: {
     flex: 1,
-    backgroundColor: "#e9dfd2",
+    backgroundColor: theme.colors.background,
   },
   scrollContent: {
     paddingVertical: 24,

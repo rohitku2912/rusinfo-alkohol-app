@@ -2,7 +2,7 @@ import { clearOnboardingData } from "@/lib/storage/onboarding";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import theme from "@/theme/constantStyling";
+import theme from "../theme/constantStyling";
 
 export default function Welcome() {
   const router = useRouter();

@@ -1,10 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
-import * as Network from 'expo-network';
-import { Tabs } from 'expo-router';
-import { useEffect } from 'react';
-import { flushPendingDemographics } from '@/lib/firestore/demographics';
+import { flushPendingDemographics } from "@/lib/firestore/demographics";
+import { Ionicons } from "@expo/vector-icons";
+import * as Network from "expo-network";
+import { Tabs } from "expo-router";
+import { useEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import theme from "../theme/constantStyling";
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     void flushPendingDemographics();
 
@@ -20,11 +23,20 @@ export default function TabsLayout() {
   }, []);
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: '#2E7D32' }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#2E7D32",
+        sceneStyle: {
+          paddingTop: insets.top,
+          backgroundColor: theme.colors.background,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Hjem',
+          title: "Hjem",
           tabBarIcon: ({ color }) => (
             <Ionicons name="home" size={24} color={color} />
           ),
@@ -33,7 +45,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="drink-log"
         options={{
-          title: 'Drikklogg',
+          title: "Drikklogg",
           tabBarIcon: ({ color }) => (
             <Ionicons name="beer" size={24} color={color} />
           ),
@@ -42,7 +54,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="diary"
         options={{
-          title: 'Dagbok',
+          title: "Dagbok",
           tabBarIcon: ({ color }) => (
             <Ionicons name="book" size={24} color={color} />
           ),
@@ -51,7 +63,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="achievements"
         options={{
-          title: 'Prestasjoner',
+          title: "Prestasjoner",
           tabBarIcon: ({ color }) => (
             <Ionicons name="trophy" size={24} color={color} />
           ),
@@ -60,7 +72,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="info"
         options={{
-          title: 'Info',
+          title: "Info",
           tabBarIcon: ({ color }) => (
             <Ionicons name="information-circle" size={24} color={color} />
           ),

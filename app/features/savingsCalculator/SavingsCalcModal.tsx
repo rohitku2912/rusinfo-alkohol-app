@@ -8,8 +8,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import DrinkFormScreen from "./DrinkFormScreen";
-import MenuScreen from "./menuScreen";
 import {
   createDefaultEntry,
   DRINK_PRESETS,
@@ -17,6 +15,8 @@ import {
   Entry,
   SavedEntry,
 } from "./config";
+import DrinkFormScreen from "./DrinkFormScreen";
+import MenuScreen from "./menuScreen";
 import { calculateTotalSavings, createSavedEntry } from "./utils";
 
 type Screen = "menu" | "form";
@@ -41,8 +41,7 @@ export default function SavingsCalcModal({
   const [screen, setScreen] = useState<Screen>("menu");
   const [currentEntry, setCurrentEntry] = useState<Entry>(createDefaultEntry());
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
-  const keyboardDismissMode =
-    Platform.OS === "ios" ? "interactive" : "on-drag";
+  const keyboardDismissMode = Platform.OS === "ios" ? "interactive" : "on-drag";
   const savedTotal = calculateTotalSavings(savedEntries);
 
   function updateEntry(changes: Partial<Entry>) {
@@ -122,7 +121,10 @@ export default function SavingsCalcModal({
       onRequestClose={handleClose}
     >
       <View style={styles.backdrop}>
-        <Pressable style={styles.backdropDismissArea} onPress={Keyboard.dismiss} />
+        <Pressable
+          style={styles.backdropDismissArea}
+          onPress={Keyboard.dismiss}
+        />
         <View style={styles.modalBox}>
           <View style={styles.handle} />
 

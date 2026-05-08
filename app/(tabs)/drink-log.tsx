@@ -1,24 +1,30 @@
-import { StyleSheet, Text, View } from "react-native";
-import theme from "../theme/constantStyling";
+import { DrinkLogEntry, getDrinkLogs } from "@/lib/storage/drinkLogs";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+import { View } from "react-native";
+import DrinkChart from "../features/overView/DrinkChart";
+import Goals from "../features/overView/Goals";
 
 export default function DrinkLog() {
+  const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
+
+  async function loadLogs() {
+    const storedLogs = await getDrinkLogs();
+    setLogs(storedLogs);
+  }
+
+  //må bruke useFocusEffect og useCallBack for å få oppdatert oversikten når innhold endres.
+  //virker ikke med useEffect med mindre man deler state mellom
+  useFocusEffect(
+    useCallback(() => {
+      loadLogs();
+    }, []),
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Drikklogg</Text>
+    <View>
+      <DrinkChart logs={logs} />
+      <Goals logs={logs} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: theme.colors.background,
-  },
-  text: {
-    fontSize: 24,
-    color: theme.colors.text,
-    fontFamily: theme.fonts.heading,
-  },
-});

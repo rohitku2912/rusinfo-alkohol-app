@@ -3,7 +3,6 @@
 
 import { fetchArticles, type Article } from "@/lib/firestore/articles";
 import { submitFeedback } from "@/lib/firestore/feedback";
-import theme from "@/theme/constantStyling";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
@@ -21,8 +20,10 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import theme from "../theme/constantStyling";
 
-const PREVIOUS_QUESTIONS_URL = "https://rusinfo.no/se-tidligere-stilte-sporsmal/";
+const PREVIOUS_QUESTIONS_URL =
+  "https://rusinfo.no/se-tidligere-stilte-sporsmal/";
 const RUSINFO_PHONE_URL = "tel:+4791508588";
 
 export default function Info() {
@@ -212,8 +213,8 @@ export default function Info() {
             <View style={styles.qaSection}>
               <Text style={styles.sectionTitle}>Spørsmål og svar</Text>
               <Text style={styles.sectionBody}>
-                Snakk anonymt med RUSinfo, eller les svar på spørsmål andre
-                har stilt før.
+                Snakk anonymt med RUSinfo, eller les svar på spørsmål andre har
+                stilt før.
               </Text>
 
               <TouchableOpacity
@@ -257,7 +258,11 @@ export default function Info() {
               activeOpacity={0.7}
               onPress={() => setFeedbackVisible(true)}
             >
-              <Ionicons name="chatbox-outline" size={20} color={theme.colors.primary} />
+              <Ionicons
+                name="chatbox-outline"
+                size={20}
+                color={theme.colors.primary}
+              />
               <View style={styles.qaTextBlock}>
                 <Text style={styles.qaTitle}>Gi tilbakemelding</Text>
                 <Text style={styles.qaSubtitle}>Forslag til forbedringer</Text>
@@ -289,7 +294,8 @@ export default function Info() {
           <View style={styles.feedbackContent}>
             <Text style={styles.feedbackTitle}>Hva tenker du?</Text>
             <Text style={styles.feedbackSubtitle}>
-              Har du forslag til forbedringer eller nytt innhold? Vi setter pris på alle innspill.
+              Har du forslag til forbedringer eller nytt innhold? Vi setter pris
+              på alle innspill.
             </Text>
             <TextInput
               style={styles.feedbackInput}
@@ -301,10 +307,16 @@ export default function Info() {
               onChangeText={setFeedbackText}
               textAlignVertical="top"
             />
-            <Text style={styles.feedbackCount}>{feedbackText.trim().length}/500</Text>
+            <Text style={styles.feedbackCount}>
+              {feedbackText.trim().length}/500
+            </Text>
             {/* Send-knapp er deaktivert til brukeren har skrevet noe */}
             <TouchableOpacity
-              style={[styles.feedbackSendButton, (!feedbackText.trim() || feedbackSending) && styles.feedbackSendButtonDisabled]}
+              style={[
+                styles.feedbackSendButton,
+                (!feedbackText.trim() || feedbackSending) &&
+                  styles.feedbackSendButtonDisabled,
+              ]}
               disabled={!feedbackText.trim() || feedbackSending}
               onPress={handleSendFeedback}
             >
@@ -330,11 +342,7 @@ export default function Info() {
                 onPress={() => setSelectedArticle(null)}
                 hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               >
-                <Ionicons
-                  name="close"
-                  size={24}
-                  color={theme.colors.text}
-                />
+                <Ionicons name="close" size={24} color={theme.colors.text} />
               </TouchableOpacity>
               <Text style={styles.modalKategori}>
                 {selectedArticle.kategori}
