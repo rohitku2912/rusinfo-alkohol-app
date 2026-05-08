@@ -1,7 +1,14 @@
 import {
+  clearPendingDemographics,
+  flushPendingDemographics,
+  queueDemographicsSync,
+} from "@/lib/firestore/demographics";
+import {
+  completeOnboarding,
   getOnboardingData,
   mergeOnboardingData,
 } from "@/lib/storage/onboarding";
+import type { OnboardingData } from "@/types/onboarding";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -13,22 +20,26 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "@/theme/constantStyling";
 
 const ageGroups = ["Under 18", "18-20", "21-25", "26-30", "31-40", "41+"];
 const genders = ["Mann", "Kvinne", "Ikke-binær", "Vil ikke oppgi"];
 const counties = [
+  "Akershus",
   "Oslo",
-  "Viken",
-  "Innlandet",
-  "Vestfold og Telemark",
-  "Agder",
-  "Rogaland",
   "Vestland",
-  "Møre og Romsdal",
+  "Rogaland",
   "Trøndelag",
+  "Innlandet",
+  "Agder",
+  "Østfold",
+  "Møre og Romsdal",
+  "Buskerud",
+  "Vestfold",
   "Nordland",
-  "Troms og Finnmark",
+  "Telemark",
+  "Troms",
+  "Finnmark",
 ];
 
 export default function Info() {
@@ -58,13 +69,24 @@ export default function Info() {
   const canContinue = age !== "" && gender !== "" && county !== "";
 
   const handleContinue = async () => {
-    await mergeOnboardingData({
+    const draft = await mergeOnboardingData({
       shareAnonymousStats: true,
       age,
       gender,
       county,
     });
-    router.push("/onboarding/goal" as any);
+    const onboardingData: OnboardingData = {
+      shareAnonymousStats: true,
+      age: draft.age ?? "",
+      gender: draft.gender ?? "",
+      county: draft.county ?? "",
+      goal: draft.goal ?? "",
+      inspiration: draft.inspiration ?? [],
+    };
+    await completeOnboarding(onboardingData);
+    await queueDemographicsSync();
+    router.replace("/(tabs)" as any);
+    void flushPendingDemographics();
   };
 
   const handleSkip = async () => {
@@ -76,13 +98,23 @@ export default function Info() {
     setShowGender(false);
     setShowCounty(false);
 
-    await mergeOnboardingData({
+    const draft = await mergeOnboardingData({
       shareAnonymousStats: false,
       age: "",
       gender: "",
       county: "",
     });
-    router.push("/onboarding/goal" as any);
+    const onboardingData: OnboardingData = {
+      shareAnonymousStats: false,
+      age: "",
+      gender: "",
+      county: "",
+      goal: draft.goal ?? "",
+      inspiration: draft.inspiration ?? [],
+    };
+    await completeOnboarding(onboardingData);
+    await clearPendingDemographics();
+    router.replace("/(tabs)" as any);
   };
 
   return (

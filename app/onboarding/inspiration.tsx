@@ -1,15 +1,7 @@
 import {
-  clearPendingDemographics,
-  flushPendingDemographics,
-  queueDemographicsSync,
-} from "@/lib/firestore/demographics";
-import {
-  completeOnboarding,
   getOnboardingData,
   mergeOnboardingData,
-  saveOnboardingData,
 } from "@/lib/storage/onboarding";
-import type { OnboardingData } from "@/types/onboarding";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -24,7 +16,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "@/theme/constantStyling";
 
 const options = [
   "Helsen min",
@@ -127,33 +119,8 @@ export default function Inspiration() {
       ...selectedOptions,
       ...(otherSelected && otherText.trim() ? [otherText.trim()] : []),
     ];
-    const draft = await getOnboardingData();
-    const onboardingData: OnboardingData = {
-      shareAnonymousStats: draft.shareAnonymousStats ?? false,
-      age: draft.age ?? "",
-      gender: draft.gender ?? "",
-      county: draft.county ?? "",
-      goal: draft.goal ?? "",
-      inspiration,
-    };
-
-    await saveOnboardingData(onboardingData);
-    await completeOnboarding(onboardingData);
-
-    if (
-      onboardingData.shareAnonymousStats &&
-      onboardingData.age &&
-      onboardingData.gender &&
-      onboardingData.county &&
-      onboardingData.goal
-    ) {
-      await queueDemographicsSync();
-    } else {
-      await clearPendingDemographics();
-    }
-
-    router.replace("/(tabs)" as any);
-    void flushPendingDemographics();
+    await mergeOnboardingData({ inspiration });
+    router.push("/onboarding/info" as any);
   };
 
   return (
