@@ -31,8 +31,18 @@ export async function mergeOnboardingData(data: OnboardingDraft) {
 }
 
 export async function completeOnboarding(data: OnboardingData) {
+  const existing = await AsyncStorage.getItem(STORAGE_KEYS.programStartDate);
+  const startDate = existing ?? String(Date.now());
   await AsyncStorage.multiSet([
     [STORAGE_KEYS.onboardingData, JSON.stringify(data)],
     [STORAGE_KEYS.onboardingCompleted, 'true'],
+    [STORAGE_KEYS.programStartDate, startDate],
   ]);
+}
+
+export async function getProgramStartDate(): Promise<Date | null> {
+  const raw = await AsyncStorage.getItem(STORAGE_KEYS.programStartDate);
+  if (!raw) return null;
+  const ts = Number(raw);
+  return Number.isNaN(ts) ? null : new Date(ts);
 }

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
+import ProgramTimer from "../features/programTimer/ProgramTimer";
 import CalorieCalcModal from "../features/calorieCalculator/CalorieCalcModal";
 import { SavedEntry } from "../features/savingsCalculator/config";
 import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
@@ -87,6 +88,8 @@ export default function Dashboard() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <ProgramTimer />
+
         <FunctionBox
           title="SPAREKALKULATOR"
           description="du har spart så langt"

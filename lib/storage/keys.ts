@@ -3,4 +3,5 @@ export const STORAGE_KEYS = {
   onboardingCompleted: 'onboardingCompleted',
   onboardingData: 'onboardingData',
   pendingDemographics: 'pendingDemographics',
+  programStartDate: 'programStartDate',
 } as const;
