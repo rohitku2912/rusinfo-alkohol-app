@@ -25,6 +25,7 @@ const theme = {
   children: {
     colors: "red",
   },
+  
 };
 
 export default theme;
