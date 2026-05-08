@@ -20,7 +20,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "@/theme/constantStyling";
+import theme from "../theme/constantStyling";
 
 const ageGroups = ["Under 18", "18-20", "21-25", "26-30", "31-40", "41+"];
 const genders = ["Mann", "Kvinne", "Ikke-binær", "Vil ikke oppgi"];
