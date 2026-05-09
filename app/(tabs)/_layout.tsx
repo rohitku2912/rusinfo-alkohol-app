@@ -27,6 +27,21 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#2E7D32",
+        tabBarStyle: {
+          position: "absolute",
+          width: "90%",
+          marginLeft: "5%",
+          height: 64,
+          backgroundColor: "#fffaf3",
+          borderRadius: 24,
+          bottom: Math.max(insets.bottom, 12),
+          borderTopWidth: 0,
+          borderWidth: 1,
+          borderColor: "rgba(0, 0, 0, 0.08)",
+          paddingTop: 6,
+          paddingBottom: 8,
+        },
+
         sceneStyle: {
           paddingTop: insets.top,
           backgroundColor: theme.colors.background,

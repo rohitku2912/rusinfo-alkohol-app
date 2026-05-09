@@ -1,10 +1,10 @@
 import AppModal from "@/app/components/ui/modal";
 import theme from "@/app/theme/constantStyling";
 import {
-    DrinkLogEntry,
-    getLogsForThisWeek,
-    getTotalDrinks,
-    getWhiteDayCount
+  DrinkLogEntry,
+  getLogsForThisWeek,
+  getTotalDrinks,
+  getWhiteDayCount,
 } from "@/lib/storage/drinkLogs";
 import { collectGoals, saveGoals } from "@/lib/storage/goals";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
@@ -93,7 +93,11 @@ export default function Goals(props: Props) {
   }
 
   function ProgressBar(props: progressBarProps) {
-    const progress = props.current / props.goal;
+    const current = Math.min(props.current, props.goal);
+    let progress = 0;
+    if (props.goal !== 0) {
+      progress = current / props.goal;
+    }
 
     return (
       <View style={styles.goalCard}>

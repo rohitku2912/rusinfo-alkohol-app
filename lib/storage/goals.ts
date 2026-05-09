@@ -107,13 +107,10 @@ export async function isWeeklyGoalResultSaved(week: string) {
 //
 export async function saveWeeklyGoalsResult(result: WeeklyGoalsResult) {
   const oldResults = await collectWeeklyGoalsResults();
-  let alreadySaved = false;
-  for (const oldResult of oldResults) {
-    if (oldResult.week === result.week) {
-      alreadySaved = true;
-    }
-  }
-  const newResults = [...oldResults, result];
+  const resultsWithoutCurrentWeek = oldResults.filter(
+    (oldResult) => oldResult.week !== result.week,
+  );
+  const newResults = [...resultsWithoutCurrentWeek, result];
 
   await AsyncStorage.setItem(
     WEEKLY_GOAL_RESULTS_KEY,

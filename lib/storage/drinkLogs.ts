@@ -56,7 +56,6 @@ export function getLogsForThisWeek(logs: DrinkLogEntry[]) {
 export function getWhiteDayCount(logs: DrinkLogEntry[]) {
   return logs.filter(isWhiteDay).length;
 }
-
 export function getDrinkingDayCount(logs: DrinkLogEntry[]) {
   return logs.filter(isDrinkDay).length;
 }
