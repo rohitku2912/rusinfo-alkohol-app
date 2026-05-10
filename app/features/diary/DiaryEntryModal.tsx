@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Pressable,
 } from "react-native";
 import InputBox from "../../components/ui/inputBox";
 import RegularButton from "../../components/ui/button";
 import theme from "../../theme/constantStyling";
+import EditButton from "@/app/components/ui/editButton";
 
 interface DiaryEntryModalProps {
   visible: boolean;
@@ -44,9 +46,13 @@ export default function DiaryEntryModal({
   onClose,
 }: DiaryEntryModalProps) {
   return (
-    <Modal visible={visible} animationType="slide">
+    <Modal visible={visible} animationType="slide" transparent>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.modalCard}>
+        <View style={styles.overlay}>
+  <View style={styles.modalCard}>
+          <Pressable onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeText}>✕</Text>
+          </Pressable>
           <Text style={styles.title}>Nytt dagbokinnlegg</Text>
 
           <InputBox
@@ -106,35 +112,39 @@ export default function DiaryEntryModal({
             />
           </View>
           <View style={styles.modalButtons}>
-            <RegularButton
-              style={styles.button}
-              title="Lagre"
+            <EditButton
+              isEditing={true}
               onPress={() => {
                 onAddEntry();
                 onClose();
               }}
             />
-
-            <RegularButton
-              style={styles.cancel}
-              title="Avbryt"
-              onPress={onClose}
-            />
           </View>
         </View>
+        </View>
       </TouchableWithoutFeedback>
+      
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  modalCard: {
-    flex: 1,
-    backgroundColor: "rgba(165, 205, 160, 0.4)",
-    justifyContent: "center",
-    padding: 20,
-    borderRadius: 20,
-  },
+  overlay: {
+  flex: 1,
+  backgroundColor: "rgba(0,0,0,0.2)",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: 20,
+},
+
+modalCard: {
+  width: "100%",
+  maxWidth: 420,
+  backgroundColor: "#f4f7f3",
+  borderRadius: 20,
+  padding: 20,
+  position: "relative",
+},
   title: {
     fontSize: 22,
     fontWeight: "700",
@@ -174,11 +184,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
     gap: 10,
   },
-  button: {
-    marginTop: 0,
-    backgroundColor: "#5daf5d",
+  closeButton: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    zIndex: 10,
+    padding: 8,
   },
-  cancel: {
-    backgroundColor: "#f86f6f",
+
+  closeText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#111827",
+    
   },
 });

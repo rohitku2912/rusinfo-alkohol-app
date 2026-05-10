@@ -21,6 +21,7 @@ import {
   calculateTotalAvoidedCalories,
   createSavedEntry,
 } from "../savingsCalculator/utils";
+import HelpButton from "../help/HelpButton";
 
 type Screen = "menu" | "form";
 
@@ -137,6 +138,7 @@ export default function CalorieCalcModal({
               showsVerticalScrollIndicator={false}
               bounces={false}
             >
+              <HelpButton helpKey="caloriecalculator"/>
               <MenuScreen
                 totalCalories={totalCalories}
                 savedEntries={savedEntries}

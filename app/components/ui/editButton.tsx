@@ -1,5 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import { TouchableOpacity, ViewStyle } from "react-native";
+import { Text, TouchableOpacity, ViewStyle } from "react-native";
 
 type EditButtonProps = {
   isEditing: boolean;
@@ -32,11 +31,15 @@ export default function EditButton({
         style,
       ]}
     >
-      <MaterialIcons
-        name={isEditing ? "check" : "edit"}
-        size={18}
-        color="#007AFF"
-      />
+      <Text
+        style={{
+          color: "white",
+          fontWeight: "600",
+          fontSize: 14,
+        }}
+      >
+        {isEditing ? "Ferdig" : "Rediger"}
+      </Text>
     </TouchableOpacity>
   );
 }

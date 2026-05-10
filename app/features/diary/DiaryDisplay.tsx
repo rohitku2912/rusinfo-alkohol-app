@@ -12,6 +12,7 @@ import {
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
 import theme from "../../theme/constantStyling";
+import HelpButton from "../help/HelpButton";
 import DiaryEntryModal from "./DiaryEntryModal";
 
 type DiaryEntry = {
@@ -133,6 +134,7 @@ export default function DiaryDisplay() {
 
   return (
     <View style={styles.container}>
+      <HelpButton helpKey="diary" />
       {/* søk + knapp */}
       <View style={styles.searchRow}>
         <View style={styles.searchInputWrapper}>
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     backgroundColor: "#f8d7da",
+    position: "relative",
   },
 
   searchRow: {

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DiaryDisplay from "../features/diary/DiaryDisplay";
 import TriggerDisplay from "../features/diary/TriggerDisplay";
-import CallAFriend from "../features/emergencyButton/CallAFriend";
 import theme from "../theme/constantStyling";
 
 export default function Diary() {
@@ -12,7 +11,6 @@ export default function Diary() {
 
   return (
     <View style={styles.container}>
-      <CallAFriend />
       <View
         style={[
           styles.folder,

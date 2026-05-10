@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import HelpButton from "../help/HelpButton";
 
 type Props = {
   isVisible: boolean;
@@ -134,11 +135,15 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
       onRequestClose={closeModal}
     >
       <View style={styles.modalContainer}>
+  
         <RegularButton title="lukk" onPress={closeModal} />
+        <HelpButton helpKey="drinklog"/>
         <Text style={styles.title}>Drikkelogg</Text>
+       
         <Text style={styles.description}>
           Her kan du logge når du har drukket.
         </Text>
+        
         <Dropdown
           style={styles.dropdown}
           data={dateOptions}

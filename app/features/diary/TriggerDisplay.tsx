@@ -12,6 +12,7 @@ import {
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
 import theme from "../../theme/constantStyling";
+import HelpButton from "../help/HelpButton";
 import ProtectionFactorList from "./ProtectionFactorDisplay";
 import RegisterTriggerModal from "./RegisterTriggerModal";
 import TriggerStats from "./TriggerStats";
@@ -93,7 +94,7 @@ export default function TriggerDisplay() {
     setSelectedTrigger(trigger);
     setProtectionText("");
   };
-  
+
   const deleteTrigger = (trigger: string) => {
     Alert.alert("Slett trigger", "Vil du slette denne triggeren?", [
       { text: "Avbryt", style: "cancel" },
@@ -223,6 +224,7 @@ export default function TriggerDisplay() {
 
   return (
     <View style={styles.container}>
+      <HelpButton helpKey="trigger"/>
       <TouchableOpacity
         onPress={async () => {
           await AsyncStorage.removeItem(TRIGGERS_STORAGE_KEY);
@@ -241,9 +243,8 @@ export default function TriggerDisplay() {
           setTriggerEntries([]);
         }}
         style={{ marginBottom: 10 }}
-      >
-        <Text style={{ color: "red", fontWeight: "600" }}>RESET (test)</Text>
-      </TouchableOpacity>
+      ></TouchableOpacity>
+      
       {/* filter */}
       <View style={styles.filterRow}>
         <TouchableOpacity
@@ -311,6 +312,7 @@ export default function TriggerDisplay() {
               onChangeText={setSearchText}
             />
           </View>
+          
 
           <View style={styles.addButtonWrapper}>
             <RegularButton
@@ -333,6 +335,7 @@ export default function TriggerDisplay() {
           contentContainerStyle={{ gap: 10, marginTop: 10 }}
           showsVerticalScrollIndicator={false}
         />
+        
       )}
 
       {selectedFilter === "beskyttelsesfaktorer" && (
@@ -370,6 +373,7 @@ export default function TriggerDisplay() {
         onBack={handleBackFromProtectionFactors}
       />
     </View>
+    
   );
 }
 
@@ -377,6 +381,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
+    position: "relative"
   },
 
   title: {

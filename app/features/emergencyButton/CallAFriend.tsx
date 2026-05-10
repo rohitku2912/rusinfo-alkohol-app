@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
   Linking,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -13,7 +14,11 @@ import {
 
 const EMERGENCY_PHONE_KEY = "emergency_phone";
 
-export default function CallAFriend() {
+type Props = {
+  onEditingChange?: (editing: boolean) => void;
+};
+
+export default function CallAFriend({ onEditingChange }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [savedPhone, setSavedPhone] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -33,6 +38,10 @@ export default function CallAFriend() {
       setPhoneInput(savedPhone);
     }
   }, [savedPhone]);
+
+  useEffect(() => {
+    onEditingChange?.(isEditing);
+  }, [isEditing]);
 
   const isValidPhone = (value: string) => {
     const cleaned = value.replace(/\s/g, "");
@@ -65,18 +74,42 @@ export default function CallAFriend() {
     return true;
   };
 
-  const callNumber = () => {
+  const callNumber = async () => {
     if (!savedPhone) return;
-    Linking.openURL(`tel:${savedPhone}`);
+
+    const url = `tel:${savedPhone}`;
+
+    try {
+      const supported = await Linking.canOpenURL(url);
+
+      if (!supported) {
+        setError("Kunne ikke åpne telefonappen.");
+        return;
+      }
+
+      setError(null);
+      await Linking.openURL(url);
+    } catch {
+      setError("Noe gikk galt ved oppringing.");
+    }
   };
 
-  const displayValue = savedPhone ? `📞 ${savedPhone}` : "Legg til nummer";
+  const displayValue = savedPhone ? `📞 ${savedPhone}` : "Trykk rediger for å legge til nummer...";
+
+  const resetPhone = async () => {
+    await AsyncStorage.removeItem(EMERGENCY_PHONE_KEY);
+    setSavedPhone(null);
+    setPhoneInput("");
+    setError(null);
+    setIsEditing(false);
+  };
 
   return (
     <FunctionBox
       title="Ring en venn"
       description="Denne personen kan du ringe når du har det vanskelig. Det kan være en god venn, et familiemedlem eller noen andre du stoler på."
     >
+      
       <View style={styles.row}>
         <TouchableOpacity onPress={callNumber} style={{ flex: 1 }}>
           {isEditing ? (
@@ -90,13 +123,26 @@ export default function CallAFriend() {
                 keyboardType="phone-pad"
                 style={styles.inputInline}
               />
-              {error && isEditing && <Text style={styles.error}>{error}</Text>}
+              {error && <Text style={styles.error}>{error}</Text>}
             </View>
           ) : (
-            <Text style={styles.numberText}>{displayValue}</Text>
+            <View>
+  {savedPhone ? (
+    <Text style={[styles.numberText, styles.numberLink]} onPress={callNumber}>
+      📞 {savedPhone}
+    </Text>
+  ) : (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyText}>Ingen nummer lagt til</Text>
+      <Text style={styles.emptyHint}>Trykk «Rediger» for å legge til</Text>
+    </View>
+  )}
+</View>
           )}
         </TouchableOpacity>
+      </View>
 
+      <View style={{ marginTop: 10 }}>
         <EditButton
           isEditing={isEditing}
           onPress={async () => {
@@ -114,6 +160,21 @@ export default function CallAFriend() {
 }
 
 const styles = StyleSheet.create({
+  resetButton: {
+    alignSelf: "flex-start",
+    marginBottom: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    backgroundColor: "#fee2e2",
+    borderRadius: 8,
+  },
+
+  resetText: {
+    color: "#b91c1c",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -123,6 +184,21 @@ const styles = StyleSheet.create({
   numberText: {
     fontSize: 16,
     color: "#1f2937",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginTop: 6,
+    backgroundColor: "#739bec",
+  },
+
+  numberLink: {
+    color: "#4338ca",
+    fontWeight: "600",
+  },
+
+  placeholderText: {
+    color: "#9ca3af",
+    fontStyle: "italic",
   },
 
   inputInline: {
@@ -132,9 +208,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#a1aaf7",
   },
+
   error: {
     color: "red",
     marginTop: 4,
     fontSize: 12,
+  },
+
+  emptyState: {
+    
+    padding: 12,
+    borderRadius: 10,
+  },
+
+  emptyText: {
+    fontSize: 16,
+    color: "#374151",
+    fontWeight: "500",
+  },
+
+  emptyHint: {
+    marginTop: 4,
+    fontSize: 13,
+    color: "#9ca3af",
+    fontStyle: "italic",
   },
 });

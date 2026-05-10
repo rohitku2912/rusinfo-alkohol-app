@@ -21,6 +21,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import theme from "../theme/constantStyling";
+import HelpButton from "../features/help/HelpButton";
 
 const PREVIOUS_QUESTIONS_URL =
   "https://rusinfo.no/se-tidligere-stilte-sporsmal/";
@@ -108,6 +109,7 @@ export default function Info() {
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <View style={styles.container}>
+      <HelpButton helpKey="info"/>
         <Text style={styles.title}>Informasjon</Text>
 
         {/* Søkefelt — filtrerer på tvers av alle artikler */}

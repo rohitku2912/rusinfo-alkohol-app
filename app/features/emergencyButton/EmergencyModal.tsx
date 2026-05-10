@@ -1,5 +1,16 @@
-import RegularButton from "@/app/components/ui/button";
-import { Modal, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import HelpButton from "../help/HelpButton";
+import CallAFriend from "./CallAFriend";
+import EmergencyPlan from "./EmergencyPlan";
+import PersonalGoal from "./PersonalGoal";
 
 type Props = {
   isVisible: boolean;
@@ -11,34 +22,42 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
     setIsVisible(false);
   }
 
+  const [isEditingNumber, setIsEditingNumber] = useState(false);
+  const [isEditingPlan, setIsEditingPlan] = useState(false);
+
   return (
     <Modal
       visible={isVisible}
       animationType="slide"
-      onRequestClose={closeModal}
+      onRequestClose={closeModal} transparent
     >
       <View style={styles.modalContainer}>
-        <RegularButton title="close modal" onPress={closeModal} />
-        <Text style={styles.header}>
-          Dette er grunner du har gitt for å slutte:
-        </Text>
-        <Text style={styles.subHeader}>
-          Grunner...Grunner...Grunner...Grunner...Grunner
-        </Text>
-        <Text style={styles.header}>Kriseplan</Text>
-        <Text style={styles.subHeader}>plan... plan...plan...plan...</Text>
-        <Text style={styles.header}>
-          Du har en avtale med ... om å kunne ringes når du trenger det.
-        </Text>
-        <Text style={styles.button}>trykk her for å ring til 999-99-999</Text>
-        <Text style={styles.header}>
-          Trenger du en unnskyldning for å ikke drikke?
-        </Text>
-        <Text style={styles.subHeader}>1. det er lov å bare si nei</Text>
-        <Text style={styles.subHeader}>2. Jeg kjører i kveld</Text>
-        <Text style={styles.subHeader}>3. Jeg må tidlig opp i morgen </Text>
-        <Text style={styles.subHeader}>4. jeg har planer senere i kveld</Text>
-        <Text style={styles.edit}> ⚙️rediger din emergency-side</Text>
+        <Pressable onPress={closeModal} style={styles.closeButton}>
+          <Text style={styles.closeText}>✕</Text>
+        </Pressable>
+
+        
+          <Text style={styles.header}>Kriseplan</Text>
+          <View style={{ position: "absolute", top: 0, right: 0 }}>
+
+  <View style={{ right: 50 }}>
+
+    <HelpButton helpKey="emergencybutton" />
+
+  </View>
+
+</View>
+<ScrollView contentContainerStyle={styles.scrollContent}>
+          {!isEditingNumber && !isEditingPlan && <PersonalGoal />}
+
+          {!isEditingNumber && (
+            <EmergencyPlan onEditingChange={setIsEditingPlan} />
+          )}
+
+          {!isEditingPlan && (
+            <CallAFriend onEditingChange={setIsEditingNumber} />
+          )}
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -46,7 +65,8 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
 const styles = StyleSheet.create({
   modalContainer: {
     marginTop: 50,
-    padding: 20,
+  backgroundColor: "#f8d7da",
+    position: "relative",
   },
   header: {
     fontSize: 25,
@@ -72,5 +92,21 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgray",
     padding: 10,
     borderRadius: 5,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 8,
+    zIndex: 10,
+  },
+
+  closeText: {
+    fontSize: 22,
+    fontWeight: "600",
+    color: "#111827",
+  },
+  scrollContent: {
+    paddingBottom: 40,
   },
 });

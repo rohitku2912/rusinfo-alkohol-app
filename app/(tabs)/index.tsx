@@ -210,7 +210,7 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   EmergencyButton: {
     position: "absolute",
-    bottom: 20,
+    bottom: 100,
     right: 20,
     zIndex: 10,
     backgroundColor: "#a46e6e",

@@ -8,14 +8,15 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import HelpButton from "../help/HelpButton";
+import DrinkFormScreen from "./DrinkFormScreen";
 import {
-  createDefaultEntry,
   DRINK_PRESETS,
   DrinkType,
   Entry,
   SavedEntry,
+  createDefaultEntry,
 } from "./config";
-import DrinkFormScreen from "./DrinkFormScreen";
 import MenuScreen from "./menuScreen";
 import { calculateTotalSavings, createSavedEntry } from "./utils";
 
@@ -120,6 +121,7 @@ export default function SavingsCalcModal({
       animationType="slide"
       onRequestClose={handleClose}
     >
+      
       <View style={styles.backdrop}>
         <Pressable
           style={styles.backdropDismissArea}
@@ -129,6 +131,7 @@ export default function SavingsCalcModal({
           <View style={styles.handle} />
 
           {screen === "menu" && (
+            
             <ScrollView
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode={keyboardDismissMode}
@@ -136,6 +139,7 @@ export default function SavingsCalcModal({
               showsVerticalScrollIndicator={false}
               bounces={false}
             >
+            <HelpButton helpKey="savingcalculator"/>
               <MenuScreen
                 savedTotal={savedTotal}
                 savedEntries={savedEntries}

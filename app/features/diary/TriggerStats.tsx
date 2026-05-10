@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 
+
 type TriggerEntry = {
   trigger: string;
   protectionFactors: string[];
@@ -121,9 +122,7 @@ const styles = StyleSheet.create({
     padding: 22,
     borderRadius: 20,
     marginBottom: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
+  
     elevation: 3,
     width: "100%",
   },

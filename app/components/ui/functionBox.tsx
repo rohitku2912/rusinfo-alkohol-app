@@ -31,7 +31,7 @@ export default function FunctionBox({
 const styles = StyleSheet.create({
   container: {
     width: "95%",
-    backgroundColor: "#392e2e",
+    backgroundColor: "#d5c2da",
     padding: 20,
     margin: 10,
     borderRadius: theme.borderRadius.large,

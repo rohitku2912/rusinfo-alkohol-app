@@ -1,6 +1,7 @@
 import RegularButton from "@/app/components/ui/button";
 import { useState } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
+import HelpButton from "../help/HelpButton";
 
 type Props = {
   isVisible: boolean;
@@ -202,6 +203,7 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
   function startScreen() {
     return (
       <View>
+        <HelpButton helpKey="audit"/>
         <Text>Velkommen til AUDIT-testen</Text>
         <Text>
           Dette er en test som kan hjelpe deg å forstå ditt eget alkoholforbruk

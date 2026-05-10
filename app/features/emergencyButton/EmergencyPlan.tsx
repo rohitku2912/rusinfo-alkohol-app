@@ -16,7 +16,11 @@ type TriggerEntry = {
   protectionFactors: string[];
 };
 
-export default function EmergencyPlan() {
+type Props = {
+  onEditingChange?: (editing: boolean) => void;
+};
+
+export default function EmergencyPlan({ onEditingChange }: Props) {
   const defaultPlan =
     "- Gå tur\n- Drikk vann\n- Ring en venn eller et familiemedlem";
 
@@ -34,6 +38,10 @@ export default function EmergencyPlan() {
       loadTriggers();
     }, []),
   );
+
+  useEffect(() => {
+    onEditingChange?.(isEditing);
+  }, [isEditing, onEditingChange]);
 
   const loadPlan = async () => {
     const savedPlan = await AsyncStorage.getItem("emergencyPlan");
@@ -68,25 +76,11 @@ export default function EmergencyPlan() {
   return (
     <FunctionBox
       title="Kriseplan"
-      description="Dette kan du gjøre om du føler på en trang til å drikke"
+      description="Dette kan du gjøre om du føler på en trang til å drikke."
     >
-      <TouchableOpacity onPress={resetPlan}>
-        <Text style={{ color: "red" }}>Reset</Text>
-      </TouchableOpacity>
+     
 
       <View style={styles.container}>
-        <View style={{ alignItems: "flex-end", marginBottom: 8 }}>
-          <EditButton
-            isEditing={isEditing}
-            onPress={() => {
-              if (isEditing) {
-                savePlan(plan);
-              }
-              setIsEditing(!isEditing);
-            }}
-          />
-        </View>
-
         {isEditing ? (
           <View style={styles.inputWrapper}>
             <TextInput
@@ -106,6 +100,18 @@ export default function EmergencyPlan() {
             ))}
           </View>
         )}
+
+        <View style={styles.editButtonContainer}>
+          <EditButton
+            isEditing={isEditing}
+            onPress={() => {
+              if (isEditing) {
+                savePlan(plan);
+              }
+              setIsEditing(!isEditing);
+            }}
+          />
+        </View>
       </View>
 
       <Text style={{ marginTop: 20, fontWeight: "600" }}>Hva trigget deg?</Text>
@@ -167,10 +173,9 @@ const styles = StyleSheet.create({
   },
 
   box: {
-    backgroundColor: "#f6f6f6",
-    padding: 14,
+    padding: 12,
     borderRadius: 12,
-    minHeight: 140,
+    minHeight: 120,
   },
 
   inputWrapper: {
@@ -179,11 +184,15 @@ const styles = StyleSheet.create({
 
   input: {
     backgroundColor: "#f6f6f6",
-    padding: 14,
+    padding: 12,
     borderRadius: 12,
-    minHeight: 140,
+    minHeight: 120,
     fontSize: 16,
     textAlignVertical: "top",
+  },
+
+  editButtonContainer: {
+    marginTop: 10,
   },
 
   editButton: {
