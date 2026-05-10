@@ -12,6 +12,7 @@ import {
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
 import theme from "../../theme/constantStyling";
+import { useAchievements } from "../achievements/AchievementProvider";
 import HelpButton from "../help/HelpButton";
 import DiaryEntryModal from "./DiaryEntryModal";
 
@@ -26,6 +27,7 @@ const STORAGE_KEY = "diary_entries";
 const TAGS_KEY = "diary_tags";
 
 export default function DiaryDisplay() {
+  const { checkAchievements } = useAchievements();
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -58,7 +60,7 @@ export default function DiaryDisplay() {
     await AsyncStorage.setItem(TAGS_KEY, JSON.stringify(data));
   };
 
-  const addEntry = () => {
+  const addEntry = async () => {
     if (!inputText.trim()) return;
 
     const newEntry: DiaryEntry = {
@@ -70,11 +72,12 @@ export default function DiaryDisplay() {
 
     const updated = [newEntry, ...entries];
     setEntries(updated);
-    saveEntries(updated);
+    await saveEntries(updated);
 
     setInputText("");
     setSelectedTags([]);
     setModalVisible(false);
+    await checkAchievements();
   };
 
   const addTag = () => {

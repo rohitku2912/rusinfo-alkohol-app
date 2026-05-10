@@ -1,10 +1,6 @@
 import RegularButton from "@/app/components/ui/button";
 import theme from "@/app/theme/constantStyling";
-import {
-  clearDrinkLogs,
-  getDrinkLogs,
-  saveDrinkLog,
-} from "@/lib/storage/drinkLogs";
+import { clearDrinkLogs, saveDrinkLog } from "@/lib/storage/drinkLogs";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import {
@@ -16,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { useAchievements } from "../achievements/AchievementProvider";
 import HelpButton from "../help/HelpButton";
 
 type Props = {
@@ -24,6 +21,8 @@ type Props = {
 };
 
 export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
+  const { checkAchievements } = useAchievements();
+
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateChoice, setDateChoice] = useState("today");
@@ -110,22 +109,22 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
     }
     await saveDrinkLog(date, beerCount, wineCount, drinksCount, "drakk");
 
-    const logs = await getDrinkLogs();
-    alert(JSON.stringify(logs));
-
     setBeerCount(0);
     setWineCount(0);
     setDrinksCount(0);
+    setIsVisible(false);
+    checkAchievements();
   }
 
   async function saveWhiteDay() {
     await saveDrinkLog(date, 0, 0, 0, "hvitDag");
-    const logs = await getDrinkLogs();
-    alert(JSON.stringify(logs));
+    await checkAchievements();
 
     setBeerCount(0);
     setWineCount(0);
     setDrinksCount(0);
+    setIsVisible(false);
+    checkAchievements();
   }
 
   return (
@@ -135,15 +134,14 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
       onRequestClose={closeModal}
     >
       <View style={styles.modalContainer}>
-  
         <RegularButton title="lukk" onPress={closeModal} />
-        <HelpButton helpKey="drinklog"/>
+        <HelpButton helpKey="drinklog" />
         <Text style={styles.title}>Drikkelogg</Text>
-       
+
         <Text style={styles.description}>
           Her kan du logge når du har drukket.
         </Text>
-        
+
         <Dropdown
           style={styles.dropdown}
           data={dateOptions}

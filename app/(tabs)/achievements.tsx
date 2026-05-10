@@ -1,24 +1,27 @@
-import { StyleSheet, Text, View } from "react-native";
-import theme from "../theme/constantStyling";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from "@react-navigation/elements";
+import { View } from "react-native";
+import ShowAchievements from "../features/achievements/ShowAchievements";
 
 export default function Achievements() {
+  async function resetAchievements() {
+    await AsyncStorage.removeItem("unlockedAchievements");
+  }
+
+  async function resetAchievementTestData() {
+    await AsyncStorage.multiRemove([
+      "unlockedAchievements",
+      "drinkLogs",
+      "diary_entries",
+      "diary_tags",
+    ]);
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Prestasjoner</Text>
+    <View>
+      <Button title="reset achievement" onPress={resetAchievements} />
+      <Button title="reset logs and diary" onPress={resetAchievementTestData} />
+      <ShowAchievements />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: theme.colors.background,
-  },
-  text: {
-    fontSize: 24,
-    color: theme.colors.text,
-    fontFamily: theme.fonts.heading,
-  },
-});
