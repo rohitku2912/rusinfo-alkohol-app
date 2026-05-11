@@ -7,16 +7,8 @@ export default function Achievements() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text style={styles.title}>Prestasjoner</Text>
-          <HelpButton helpKey="overview" />
-        </View>
+        <Text style={styles.title}>Prestasjoner</Text>
+        <HelpButton helpKey="achievements" />
       </View>
       <ShowAchievements />
     </View>
@@ -28,15 +20,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  header: {
-    marginHorizontal: theme.spacing.medium,
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.small,
-  },
   title: {
     fontSize: 24,
     fontWeight: "800",
-    color: theme.colors.text,
+    color: "#1F2A24",
+  },
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: theme.spacing.medium,
+    marginTop: theme.spacing.small,
+    marginBottom: theme.spacing.small,
   },
   subtitle: {
     fontSize: 14,

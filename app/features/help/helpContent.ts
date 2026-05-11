@@ -1,4 +1,9 @@
 export const helpContent: Record<string, { title: string; description: string }> = {
+  home: {
+    title: "Hjem",
+    description:
+      "Her finner du de viktigste verktøyene samlet på ett sted. Du kan registrere drikke, planlegge en fest, bruke spare- og kalorikalkulatoren, ta AUDIT-testen og åpne nødknappen når du trenger en rask plan.",
+  },
   diary: {
     title: "Dagbok",
     description:

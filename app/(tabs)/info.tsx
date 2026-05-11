@@ -108,10 +108,10 @@ export default function Info() {
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <View style={styles.container}>
-      <View style={styles.headerRow}>
-  <Text style={styles.title}>Informasjon</Text>
-  <HelpButton helpKey="info" />
-</View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Informasjon</Text>
+          <HelpButton helpKey="info" />
+        </View>
 
         {/* Søkefelt — filtrerer på tvers av alle artikler */}
         <View style={styles.searchRow}>
@@ -345,7 +345,11 @@ export default function Info() {
                 onPress={() => setSelectedArticle(null)}
                 hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               >
-                <Ionicons name="close" size={24} color={theme.colors.lightText} />
+                <Ionicons
+                  name="close"
+                  size={24}
+                  color={theme.colors.lightText}
+                />
               </TouchableOpacity>
               <Text style={styles.modalKategori}>
                 {selectedArticle.kategori}
@@ -389,20 +393,19 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: theme.spacing.large,
-    paddingTop: 16,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
+    paddingHorizontal: theme.spacing.medium,
+    paddingTop: theme.spacing.small,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: theme.colors.text,
-    marginBottom: theme.spacing.medium,
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#1F2A24",
+  },
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: theme.spacing.small,
   },
   searchRow: {
     position: "relative",

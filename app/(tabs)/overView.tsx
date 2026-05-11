@@ -130,17 +130,17 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   header: {
-    alignItems: "flex-start",
+    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: theme.spacing.medium,
-    marginBottom: 4,
+    marginTop: theme.spacing.small,
+    marginBottom: theme.spacing.small,
   },
   pageTitle: {
-    color: theme.colors.text,
-    fontFamily: theme.fonts.heading,
-    fontSize: 28,
-    fontWeight: "700",
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#1F2A24",
   },
   lastWeekCard: {
     backgroundColor: "#ffffff",

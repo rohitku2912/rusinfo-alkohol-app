@@ -85,6 +85,11 @@ export default function Dashboard() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.header}>
+          <Text style={styles.title}>Hjem</Text>
+          <HelpButton helpKey="home" />
+        </View>
+
         <ProgramTimer />
 
         <FunctionBox
@@ -186,7 +191,10 @@ export default function Dashboard() {
         </View>
       </ScrollView>
       <View style={styles.EmergencyButton}>
-        <Pressable onPress={() => setIsEmergencyVisible(true)}>
+        <Pressable
+          onPress={() => setIsEmergencyVisible(true)}
+          style={styles.emergencyPressable}
+        >
           <Ionicons name="warning" size={24} color={theme.colors.text} />
         </Pressable>
         <EmergencyModal
@@ -225,11 +233,19 @@ const styles = StyleSheet.create({
     bottom: 100,
     right: 20,
     zIndex: 10,
+    alignItems: "center",
     backgroundColor: theme.colors.emergency,
-    padding: 10,
     borderRadius: 100,
     borderColor: "red",
-    borderWidth: 3,
+    height: 45,
+    justifyContent: "center",
+    width: 45,
+  },
+  emergencyPressable: {
+    alignItems: "center",
+    height: "100%",
+    justifyContent: "center",
+    width: "100%",
   },
   emergencyText: {
     color: "#fff",
@@ -242,9 +258,22 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   scrollContent: {
-    paddingVertical: 24,
+    paddingTop: theme.spacing.small,
     paddingBottom: 40,
     alignItems: "center",
+  },
+  header: {
+    alignItems: "center",
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: theme.spacing.medium,
+    marginBottom: theme.spacing.small,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: theme.colors.text,
   },
   functionContent: {
     marginTop: 5,
