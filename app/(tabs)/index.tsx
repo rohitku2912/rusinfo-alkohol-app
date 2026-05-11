@@ -29,6 +29,7 @@ import {
 import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 import PartyPlanner from "../features/partyPlanner/partyPlanner";
+import HelpButton from "../features/help/HelpButton";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -88,6 +89,7 @@ export default function Dashboard() {
         <FunctionBox
           title="DRIKKELOGG"
           description="logg her når du har drukket"
+          helpBtn={<HelpButton helpKey="drinklog"/>}
         >
           <RegularButton
             title="regn ut"
@@ -100,6 +102,7 @@ export default function Dashboard() {
         <FunctionBox
           title="SPAREKALKULATOR"
           description="du har spart så langt"
+          helpBtn={<HelpButton helpKey="savingcalculator"/>}
         >
           <View style={styles.functionContent}>
             <RegularButton
@@ -112,7 +115,8 @@ export default function Dashboard() {
           </View>
         </FunctionBox>
 
-        <FunctionBox title="AUDIT" description="ta en test">
+        <FunctionBox title="AUDIT" description="ta en test"
+        helpBtn={<HelpButton helpKey="audit"/>}>
           <RegularButton
             title="open the AUDIT"
             onPress={() => setIsAuditVisible(true)}
@@ -126,6 +130,7 @@ export default function Dashboard() {
         <FunctionBox
           title="KALORIKALKULATOR"
           description="du har unngått så langt"
+          helpBtn={<HelpButton helpKey="caloriecalculator"/>}
         >
           <View style={styles.functionContent}>
             <RegularButton

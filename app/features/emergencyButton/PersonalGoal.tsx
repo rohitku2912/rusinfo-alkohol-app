@@ -3,18 +3,28 @@ import { getOnboardingData } from "@/lib/storage/onboarding";
 import { useEffect, useState } from "react";
 
 export default function PersonalGoal() {
-  const [goal, setGoal] = useState<string>("");
+  const [inspiration, setInspiration] = useState<string>("");
 
   useEffect(() => {
-    const loadGoal = async () => {
+    const loadInspiration = async () => {
       const data = await getOnboardingData();
-      setGoal(data.goal ?? "");
+
+      const inspirationText = Array.isArray(data.inspiration)
+        ? data.inspiration.join(", ")
+        : data.inspiration ?? "";
+
+      setInspiration(inspirationText);
     };
 
-    loadGoal();
+    loadInspiration();
   }, []);
 
-  return <FunctionBox title="Målet ditt" 
-    description={goal || "Du har ikke satt et mål."}
-   />;
+  return (
+    <FunctionBox
+      title="Grunner til å slutte"
+      description={
+        inspiration || "Du har ikke valgt inspirasjon enda."
+      }
+    />
+  );
 }

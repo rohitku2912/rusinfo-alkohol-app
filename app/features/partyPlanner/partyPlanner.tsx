@@ -2,6 +2,7 @@ import RegularButton from "@/app/components/ui/button";
 import FunctionBox from "@/app/components/ui/functionBox";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import HelpButton from "../help/HelpButton";
 import PartyPlannerModal from "./PartyPlannerModal";
 
 /* typer*/
@@ -92,6 +93,7 @@ export default function PartyPlanner() {
     wine: number;
     drinks: number;
   }) {
+    setFeedback("");
     setParty({
       status: "scheduled",
       startTime: data.start,
@@ -127,12 +129,26 @@ export default function PartyPlanner() {
 
   const { hours, minutes, seconds } = format(timeLeft);
 
+  /* tilbakemelding */
+  const [feedback, setFeedback] = useState("");
+  function answerNo(){
+setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen omstendigheter som bidro til at du ikke nådde målet? Gjerne registrer i Triggerdagboken.")
+
+
+  }
+
+  function answerYes(){
+   setFeedback("Godt jobbet! Dette var et steg i riktig retning.")
+
+  }
+
   /* UI*/
 
   return (
     <>
-      <FunctionBox title="PLANLEGG FESTEN" description="">
+      <FunctionBox title="PLANLEGG FESTEN" description="" helpBtn={<HelpButton helpKey="partyplanner"/>}>
         <View style={{ alignItems: "center", marginTop: 16}}>
+        
 
           {/* før partystart */}
           {party.status === "scheduled" && (
@@ -160,16 +176,42 @@ export default function PartyPlanner() {
 
           {/* ferdig (timer går ut eller bruker trykker stopp)*/}
           {party.status === "finished" && (
-            <View style={{ marginTop: 12, alignItems: "center" }}>
-              <Text>Festen er over</Text>
-              <Text>klarte du målet?</Text>
+            <View style={styles.finishedContainer}>
 
-              <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
-                <RegularButton title="ja" onPress={resetParty} />
-                <RegularButton title="nei" onPress={resetParty} />
+            <Text style={styles.finishedTitle}>Festen er over!</Text>
+        
+            <Text style={styles.finishedSubtitle}>
+        
+              Nådde du målet du satte deg?
+        
+            </Text>
+        
+            <View style={styles.goalBox}>
+        
+              <Text style={styles.goalLabel}>Du planla å drikke maks:</Text>
+              <View style={styles.drinkRow}>
+                <Text style={styles.drinkItem}>🍺 {party.beer}</Text>
+                <Text style={styles.drinkItem}>🍷 {party.wine}</Text>
+                <Text style={styles.drinkItem}>🍸 {party.drinks}</Text>
               </View>
-            </View>
-          )}
+
+              {!feedback ? (
+  <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
+    <RegularButton title="ja" onPress={answerYes} />
+    <RegularButton title="nei" onPress={answerNo} />
+  </View>
+) : (
+  <Text style={styles.feedbackText}>
+  {feedback}
+</Text>
+)}
+             
+             </View>
+
+</View>
+
+)}
+        
 
           {/* knapp */}
           <View style={{ marginTop: 16 }}>
@@ -206,4 +248,68 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#f6ede4",
   },
+  finishedContainer: {
+    alignItems: "center",
+    width: "100%",
+  },
+  
+  finishedTitle: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#fff",
+    marginBottom: 8,
+  },
+  
+  finishedSubtitle: {
+    fontSize: 16,
+    color: "#f0f0f0",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  
+  goalBox: {
+    width: "100%",
+    borderRadius: 18,
+    alignItems: "center",
+  },
+  
+  goalLabel: {
+    color: "#f0f0f0",
+    fontSize: 14,
+    marginBottom: 14,
+  },
+  
+  drinkBadge: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.08)",
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 18,
+    minWidth: 72,
+  },
+  
+  drinkEmoji: {
+    fontSize: 24,
+    marginBottom: 6,
+  },
+  
+  drinkValue: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  feedbackText: {
+    marginTop: 18,
+    color: "#f5f5f5",
+    fontSize: 15,
+    lineHeight: 24,
+    textAlign: "center",
+    backgroundColor: "rgba(255,255,255,0.08)",
+    padding: 16,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  
+ 
 });

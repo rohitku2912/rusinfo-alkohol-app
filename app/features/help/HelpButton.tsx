@@ -33,8 +33,7 @@ export default function HelpButton({ helpKey }: Props) {
 const styles = StyleSheet.create({
   button: {
     position: "absolute",
-    top: 2,
-    right: 15,
+  
     zIndex: 999,
   elevation: 10,
   },

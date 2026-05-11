@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import HelpButton from "../help/HelpButton";
 
+/*typer*/
 type Props = {
   visible: boolean;
   onClose: () => void;
@@ -34,8 +35,11 @@ export default function PartyPlannerModal({
 
   useEffect(() => {
     if (visible) {
-      setStart(new Date());
-      setEnd(new Date());
+      const now = new Date();
+  
+      setStart(now);
+      setEnd(new Date(now.getTime() + 8 * 60 * 60 * 1000));
+  
       setBeer(0);
       setWine(0);
       setDrinks(0);
@@ -63,34 +67,35 @@ export default function PartyPlannerModal({
 
           <View style={styles.row}>
             <Text>Øl</Text>
-            <Pressable onPress={() => setBeer(beer + 1)}>
-              <Text style={styles.btn}>+</Text>
-            </Pressable>
-            <Text>{beer}</Text>
             <Pressable onPress={() => setBeer(Math.max(0, beer - 1))}>
               <Text style={styles.btn}>-</Text>
+            </Pressable>
+            <Text>{beer}</Text>
+            <Pressable onPress={() => setBeer(beer + 1)}>
+              <Text style={styles.btn}>+</Text>
             </Pressable>
           </View>
 
           <View style={styles.row}>
             <Text>Vin</Text>
-            <Pressable onPress={() => setWine(wine + 1)}>
-              <Text style={styles.btn}>+</Text>
-            </Pressable>
-            <Text>{wine}</Text>
             <Pressable onPress={() => setWine(Math.max(0, wine - 1))}>
               <Text style={styles.btn}>-</Text>
             </Pressable>
+            <Text>{wine}</Text>
+            <Pressable onPress={() => setWine(wine + 1)}>
+              <Text style={styles.btn}>+</Text>
+            </Pressable>
+            
           </View>
 
           <View style={styles.row}>
             <Text>Drinker</Text>
-            <Pressable onPress={() => setDrinks(drinks + 1)}>
-              <Text style={styles.btn}>+</Text>
-            </Pressable>
-            <Text>{drinks}</Text>
             <Pressable onPress={() => setDrinks(Math.max(0, drinks - 1))}>
               <Text style={styles.btn}>-</Text>
+            </Pressable>
+            <Text>{drinks}</Text>
+            <Pressable onPress={() => setDrinks(drinks + 1)}>
+              <Text style={styles.btn}>+</Text>
             </Pressable>
           </View>
 
@@ -180,12 +185,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        width: "100%",
       },
-  
-    title: {
-      fontSize: 22,
-      fontWeight: "bold",
-    },
+      
+      title: {
+        fontSize: 22,
+        fontWeight: "bold",
+        flex: 1,
+        textAlign: "center",
+      },
   
     close: {
       fontSize: 20,
