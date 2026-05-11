@@ -175,7 +175,7 @@ export default function Info() {
                             : "arrow-forward-circle"
                         }
                         size={26}
-                        color={theme.colors.text}
+                        color={theme.colors.lightText}
                       />
                     </View>
                   </TouchableOpacity>
@@ -288,7 +288,7 @@ export default function Info() {
               onPress={() => setFeedbackVisible(false)}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             >
-              <Ionicons name="close" size={24} color={theme.colors.text} />
+              <Ionicons name="close" size={24} color={theme.colors.lightText} />
             </TouchableOpacity>
             <Text style={styles.modalKategori}>Tilbakemelding</Text>
           </View>
@@ -344,7 +344,7 @@ export default function Info() {
                 onPress={() => setSelectedArticle(null)}
                 hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               >
-                <Ionicons name="close" size={24} color={theme.colors.text} />
+                <Ionicons name="close" size={24} color={theme.colors.lightText} />
               </TouchableOpacity>
               <Text style={styles.modalKategori}>
                 {selectedArticle.kategori}
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     marginBottom: theme.spacing.medium,
   },
   searchRow: {
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingRight: 40,
     fontSize: 15,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     borderWidth: 1,
     borderColor: "#e0e0e0",
   },
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   categoriesTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     fontFamily: theme.fonts.heading,
     marginBottom: theme.spacing.small,
   },
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     fontWeight: "500",
     flex: 1,
   },
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   },
   articleText: {
     fontSize: 15,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     flex: 1,
   },
   divider: {
@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     fontFamily: theme.fonts.heading,
   },
   sectionBody: {
@@ -506,7 +506,7 @@ const styles = StyleSheet.create({
   qaTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
   qaSubtitle: {
     fontSize: 13,
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     marginBottom: theme.spacing.medium,
     fontFamily: theme.fonts.heading,
   },
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
   feedbackTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     marginBottom: theme.spacing.small,
     fontFamily: theme.fonts.heading,
   },
@@ -598,7 +598,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     fontSize: 15,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     height: 160,
     borderWidth: 1,
     borderColor: "#e0e0e0",
