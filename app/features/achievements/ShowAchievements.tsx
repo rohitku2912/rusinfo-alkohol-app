@@ -27,11 +27,11 @@ export default function ShowAchievements() {
     }, []),
   );
 
-  const achievemt = getAllAchievements(logs, diaryEntries);
+  const achievements = getAllAchievements(logs, diaryEntries);
 
   return (
-    <ScrollView>
-      {achievemt.map((achievement) => (
+    <ScrollView contentContainerStyle={{ paddingBottom: 170 }}>
+      {achievements.map((achievement) => (
         <AchievementCard key={achievement.id} achievement={achievement} />
       ))}
     </ScrollView>

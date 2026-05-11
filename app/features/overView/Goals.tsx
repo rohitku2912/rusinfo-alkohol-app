@@ -203,7 +203,8 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   weeklyTitle: {
-    fontSize: 19,
+    fontSize: 16,
+    fontWeight: "700",
     color: theme.colors.text,
   },
   goalHeaderLine: {
