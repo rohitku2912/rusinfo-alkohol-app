@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     backgroundColor: "#ffffff",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     fontSize: 15,
   },
 
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
 
   tagText: {
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     fontSize: 14,
     fontWeight: "500",
   },
