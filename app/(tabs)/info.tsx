@@ -23,8 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import theme from "../theme/constantStyling";
 import HelpButton from "../features/help/HelpButton";
 
-const PREVIOUS_QUESTIONS_URL =
-  "https://rusinfo.no/se-tidligere-stilte-sporsmal/";
+const PREVIOUS_QUESTIONS_URL = "https://rusinfo.no/2018/12/chat-apningstid/";
 const RUSINFO_PHONE_URL = "tel:+4791508588";
 
 export default function Info() {
@@ -247,7 +246,7 @@ export default function Info() {
                   color={theme.colors.primary}
                 />
                 <View style={styles.qaTextBlock}>
-                  <Text style={styles.qaTitle}>Tidligere stilte spørsmål</Text>
+                  <Text style={styles.qaTitle}>Chat med oss</Text>
                   <Text style={styles.qaSubtitle}>rusinfo.no</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={18} color="#888" />

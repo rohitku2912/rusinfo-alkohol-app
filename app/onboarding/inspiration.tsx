@@ -120,7 +120,7 @@ export default function Inspiration() {
       ...(otherSelected && otherText.trim() ? [otherText.trim()] : []),
     ];
     await mergeOnboardingData({ inspiration });
-    router.push("/onboarding/info" as any);
+    router.push("/onboarding/contact" as any);
   };
 
   return (
