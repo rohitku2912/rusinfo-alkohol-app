@@ -1,3 +1,4 @@
+import theme from "@/app/theme/constantStyling";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 import {
@@ -11,14 +12,9 @@ import {
   View,
 } from "react-native";
 import RegularButton from "../../components/ui/button";
-import {
-  DRINK_PRESETS,
-  DrinkPreset,
-  Entry,
-  FREQUENCIES,
-} from "./config";
+import HelpButton from "../help/HelpButton";
+import { DRINK_PRESETS, DrinkPreset, Entry, FREQUENCIES } from "./config";
 import { calculateSavings, formatNumber, parsePrice } from "./utils";
-import theme from "@/app/theme/constantStyling";
 
 type Props = {
   entry: Entry;
@@ -93,7 +89,13 @@ export default function DrinkFormScreen({
         stickyHeaderIndices={[1]}
       >
         <View style={styles.hero}>
-          <Text style={styles.header}>{entry.type}</Text>
+          <View style={styles.firstLine}>
+            <HelpButton helpKey="savingcalculator" />
+            <Text style={styles.header}>{entry.type}</Text>
+            <Pressable onPress={onBack}>
+              <Text style={{ fontSize: 20 }}>x</Text>
+            </Pressable>
+          </View>
           <Text style={styles.heroBody}>
             Juster mengde, pris og startdato for å se hvor mye dette koster over
             tid.
@@ -220,7 +222,8 @@ export default function DrinkFormScreen({
           <Text style={styles.sectionLabel}>Egen pris hvis du vil justere</Text>
           {selectedPreset && (
             <Text style={styles.helperText}>
-              Valgt preset: {selectedPreset.label} ({formatNumber(selectedPreset.price)} kr)
+              Valgt preset: {selectedPreset.label} (
+              {formatNumber(selectedPreset.price)} kr)
             </Text>
           )}
           <TextInput
@@ -259,6 +262,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 12,
+  },
+  firstLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   hero: {
     paddingTop: 2,

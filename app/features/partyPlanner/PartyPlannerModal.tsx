@@ -18,11 +18,7 @@ type Props = {
   }) => void;
 };
 
-export default function PartyPlannerModal({
-  visible,
-  onClose,
-  onSave,
-}: Props) {
+export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
 
@@ -36,10 +32,10 @@ export default function PartyPlannerModal({
   useEffect(() => {
     if (visible) {
       const now = new Date();
-  
+
       setStart(now);
       setEnd(new Date(now.getTime() + 8 * 60 * 60 * 1000));
-  
+
       setBeer(0);
       setWine(0);
       setDrinks(0);
@@ -49,18 +45,18 @@ export default function PartyPlannerModal({
   }, [visible]);
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.card}>
-        <View style={styles.header}>
-  <HelpButton helpKey="partyplanner" />
+          <View style={styles.header}>
+            <HelpButton helpKey="partyplanner" />
 
-  <Text style={styles.title}>Planlegg festen</Text>
+            <Text style={styles.title}>Planlegg festen</Text>
 
-  <Pressable onPress={onClose}>
-    <Text style={styles.close}>✕</Text>
-  </Pressable>
-</View>
+            <Pressable onPress={onClose}>
+              <Text style={styles.close}>✕</Text>
+            </Pressable>
+          </View>
 
           {/* drikke */}
           <Text style={styles.subtitle}>Drikke</Text>
@@ -85,7 +81,6 @@ export default function PartyPlannerModal({
             <Pressable onPress={() => setWine(wine + 1)}>
               <Text style={styles.btn}>+</Text>
             </Pressable>
-            
           </View>
 
           <View style={styles.row}>
@@ -103,9 +98,15 @@ export default function PartyPlannerModal({
           <Text style={styles.subtitle}>Start</Text>
 
           {!editingStart ? (
-            <Pressable onPress={() => setEditingStart(true)} style={styles.timeButton}>
+            <Pressable
+              onPress={() => setEditingStart(true)}
+              style={styles.timeButton}
+            >
               <Text>
-                {start.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                {start.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </Text>
             </Pressable>
           ) : (
@@ -118,7 +119,10 @@ export default function PartyPlannerModal({
                   if (date) setStart(date);
                 }}
               />
-              <EditButton isEditing={true} onPress={() => setEditingStart(false)} />
+              <EditButton
+                isEditing={true}
+                onPress={() => setEditingStart(false)}
+              />
             </View>
           )}
 
@@ -126,9 +130,15 @@ export default function PartyPlannerModal({
           <Text style={styles.subtitle}>Slutt</Text>
 
           {!editingEnd ? (
-            <Pressable onPress={() => setEditingEnd(true)} style={styles.timeButton}>
+            <Pressable
+              onPress={() => setEditingEnd(true)}
+              style={styles.timeButton}
+            >
               <Text>
-                {end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                {end.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </Text>
             </Pressable>
           ) : (
@@ -141,7 +151,10 @@ export default function PartyPlannerModal({
                   if (date) setEnd(date);
                 }}
               />
-              <EditButton isEditing={true} onPress={() => setEditingEnd(false)} />
+              <EditButton
+                isEditing={true}
+                onPress={() => setEditingEnd(false)}
+              />
             </View>
           )}
 
@@ -167,66 +180,66 @@ export default function PartyPlannerModal({
 }
 
 const styles = StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: "rgba(0,0,0,0.6)",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  
-    card: {
-      width: "90%",
-      backgroundColor: "white",
-      borderRadius: 20,
-      padding: 20,
-    },
-  
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-      },
-      
-      title: {
-        fontSize: 22,
-        fontWeight: "bold",
-        flex: 1,
-        textAlign: "center",
-      },
-  
-    close: {
-      fontSize: 20,
-    },
-  
-    subtitle: {
-      marginTop: 15,
-      fontWeight: "bold",
-    },
-  
-    row: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 10,
-      marginTop: 10,
-    },
-  
-    btn: {
-      fontSize: 20,
-      paddingHorizontal: 8,
-    },
-  
-    timeButton: {
-      backgroundColor: "#f2f2f2",
-      padding: 12,
-      borderRadius: 10,
-      marginTop: 10,
-    },
-    pickerBox: {
-      backgroundColor: "#f2f2f2",
-      borderRadius: 12,
-      padding: 10,
-      marginTop: 10,
-      alignItems: "center",
-    },
-  });
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  card: {
+    width: "90%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+  },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    flex: 1,
+    textAlign: "center",
+  },
+
+  close: {
+    fontSize: 20,
+  },
+
+  subtitle: {
+    marginTop: 15,
+    fontWeight: "bold",
+  },
+
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 10,
+  },
+
+  btn: {
+    fontSize: 20,
+    paddingHorizontal: 8,
+  },
+
+  timeButton: {
+    backgroundColor: "#f2f2f2",
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  pickerBox: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 12,
+    padding: 10,
+    marginTop: 10,
+    alignItems: "center",
+  },
+});

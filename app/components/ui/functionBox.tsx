@@ -26,9 +26,7 @@ export default function FunctionBox({
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{title}</Text>
-          {description && (
-<Text style={styles.description}>{description}</Text>
-)}
+          {description && <Text style={styles.description}>{description}</Text>}
         </View>
         {helpBtn && <View style={styles.help}>{helpBtn}</View>}
       </View>
@@ -64,11 +62,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.darkGrey,
     marginTop: 5,
-    marginBottom: 10
+    marginBottom: 10,
   },
 
   help: {
-    marginRight: 30,
+    marginLeft: 12,
   },
 
   content: {

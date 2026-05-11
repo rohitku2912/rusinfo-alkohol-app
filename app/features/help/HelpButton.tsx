@@ -1,8 +1,8 @@
+import theme from "@/app/theme/constantStyling";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { helpContent } from "./helpContent";
-import theme from "@/app/theme/constantStyling";
 
 type Props = {
   helpKey: string;
@@ -32,16 +32,9 @@ export default function HelpButton({ helpKey }: Props) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    position: "absolute",
-  
-    zIndex: 999,
-  elevation: 10,
-  },
-
   icon: {
-    fontSize: 30,
-    color: theme.colors.lightGrey,
+    fontSize: 22,
+    color: theme.colors.primary,
   },
 
   overlay: {

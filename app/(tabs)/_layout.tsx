@@ -37,8 +37,7 @@ export default function TabsLayout() {
             height: 58,
             borderRadius: 24,
             bottom: Math.max(insets.bottom, 12),
-            borderTopWidth: 0,
-            borderWidth: 1,
+            borderWidth: 2,
             paddingTop: 6,
             paddingBottom: 8,
           },
@@ -59,11 +58,11 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="drink-log"
+          name="overView"
           options={{
-            title: "Drikklogg",
+            title: "Oversikt",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="beer" size={24} color={color} />
+              <Ionicons name="bar-chart" size={24} color={color} />
             ),
           }}
         />

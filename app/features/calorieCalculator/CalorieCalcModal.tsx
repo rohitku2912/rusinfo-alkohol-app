@@ -21,7 +21,7 @@ import {
   calculateTotalAvoidedCalories,
   createSavedEntry,
 } from "../savingsCalculator/utils";
-import HelpButton from "../help/HelpButton";
+import theme from "@/app/theme/constantStyling";
 
 type Screen = "menu" | "form";
 
@@ -122,14 +122,15 @@ export default function CalorieCalcModal({
     <Modal
       transparent
       visible={isVisible}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={handleClose}
     >
       <View style={styles.backdrop}>
-        <Pressable style={styles.backdropDismissArea} onPress={Keyboard.dismiss} />
+        <Pressable
+          style={styles.backdropDismissArea}
+          onPress={Keyboard.dismiss}
+        />
         <View style={styles.modalBox}>
-          <View style={styles.handle} />
-
           {screen === "menu" && (
             <ScrollView
               keyboardShouldPersistTaps="handled"
@@ -138,7 +139,6 @@ export default function CalorieCalcModal({
               showsVerticalScrollIndicator={false}
               bounces={false}
             >
-              <HelpButton helpKey="caloriecalculator"/>
               <MenuScreen
                 totalCalories={totalCalories}
                 savedEntries={savedEntries}
@@ -167,41 +167,21 @@ export default function CalorieCalcModal({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(10, 23, 43, 0.48)",
-    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 24,
   },
   backdropDismissArea: {
     ...StyleSheet.absoluteFillObject,
   },
   modalBox: {
-    width: "100%",
-    height: "94%",
-    backgroundColor: "#f7f1e8",
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 16,
-    borderWidth: 1,
-    borderColor: "rgba(94, 63, 48, 0.12)",
-    shadowColor: "#000",
-    shadowOpacity: 0.18,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 10,
-  },
-  handle: {
-    alignSelf: "center",
-    width: 56,
-    height: 6,
-    borderRadius: 999,
-    backgroundColor: "rgba(107, 86, 73, 0.35)",
-    marginBottom: 14,
+    width: "90%",
+    height: "90%",
+    backgroundColor: theme.colors.box,
+    borderRadius: 20,
+    padding: 20,
   },
   content: {
-    flexGrow: 1,
-    paddingBottom: 12,
+    paddingBottom: theme.spacing.small,
   },
 });

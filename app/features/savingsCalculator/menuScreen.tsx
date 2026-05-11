@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../../components/ui/button";
 import theme from "../../theme/constantStyling";
+import HelpButton from "../help/HelpButton";
 import { DrinkType, SavedEntry } from "./config";
 import { calculateSavings, formatNumber, getSavedEntryText } from "./utils";
 
@@ -24,7 +25,14 @@ export default function MenuScreen({
   return (
     <>
       <View style={styles.hero}>
-        <Text style={styles.header}>Sparekalkulator</Text>
+        <View style={styles.firstLine}>
+          <HelpButton helpKey="savingcalculator" />
+          <Text style={styles.header}>Sparekalkulator</Text>
+          <Pressable onPress={onClose}>
+            <Text style={{ fontSize: 20 }}>x</Text>
+          </Pressable>
+        </View>
+
         <Text style={styles.body}>
           Se hvor mye du kan spare ved å redusere alkoholforbruket.
         </Text>
@@ -44,7 +52,9 @@ export default function MenuScreen({
         {savedEntries.map((entry) => (
           <View key={entry.id} style={styles.savedItem}>
             <View style={styles.savedItemText}>
-              <Text style={styles.savedItemTitle}>{getSavedEntryText(entry)}</Text>
+              <Text style={styles.savedItemTitle}>
+                {getSavedEntryText(entry)}
+              </Text>
               <Text style={styles.savedItemMeta}>
                 {formatNumber(calculateSavings(entry))} kr spart siden{" "}
                 {entry.startDate.toDateString()}
@@ -87,7 +97,11 @@ export default function MenuScreen({
         />
       </View>
 
-      <RegularButton title="Lukk" onPress={onClose} style={styles.closeButton} />
+      <RegularButton
+        title="Lukk"
+        onPress={onClose}
+        style={styles.closeButton}
+      />
     </>
   );
 }
@@ -96,6 +110,12 @@ const styles = StyleSheet.create({
   hero: {
     paddingTop: 2,
     paddingBottom: 12,
+  },
+  firstLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
   header: {
     fontFamily: theme.fonts.heading,

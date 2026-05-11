@@ -26,6 +26,7 @@ import {
   formatNumber,
 } from "../features/savingsCalculator/utils";
 
+import { Ionicons } from "@expo/vector-icons";
 import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 import HelpButton from "../features/help/HelpButton";
@@ -100,23 +101,21 @@ export default function Dashboard() {
         <PartyPlanner />
 
         <FunctionBox
-  title="SPAREKALKULATOR"
-  helpBtn={<HelpButton helpKey="savingcalculator" />}
->
-  <View style={styles.functionContent}>
-    <Text style={styles.functionText}>
-      <Text style={styles.smallText}>Du har spart: </Text>
-      <Text style={styles.bigText}>
-        {formatNumber(savedTotal)} kr
-      </Text>
-    </Text>
+          title="SPAREKALKULATOR"
+          helpBtn={<HelpButton helpKey="savingcalculator" />}
+        >
+          <View style={styles.functionContent}>
+            <Text style={styles.functionText}>
+              <Text style={styles.smallText}>Du har spart: </Text>
+              <Text style={styles.bigText}>{formatNumber(savedTotal)} kr</Text>
+            </Text>
 
-    <RegularButton
-      title="Regn ut"
-      onPress={() => setIsSavingsVisible(true)}
-    />
-  </View>
-</FunctionBox>
+            <RegularButton
+              title="Regn ut"
+              onPress={() => setIsSavingsVisible(true)}
+            />
+          </View>
+        </FunctionBox>
 
         <FunctionBox
           title="AUDIT"
@@ -138,12 +137,12 @@ export default function Dashboard() {
           helpBtn={<HelpButton helpKey="caloriecalculator" />}
         >
           <View style={styles.functionContent}>
-         <Text style={styles.functionText}>
-      <Text style={styles.smallText}>Du har spart: </Text>
-      <Text style={styles.bigText}>
-        {formatNumber(totalCalories)} kcal
-      </Text>
-    </Text>
+            <Text style={styles.functionText}>
+              <Text style={styles.smallText}>Du har spart: </Text>
+              <Text style={styles.bigText}>
+                {formatNumber(totalCalories)} kcal
+              </Text>
+            </Text>
             <RegularButton
               title="Regn ut"
               onPress={() => setIsCaloriesVisible(true)}
@@ -188,7 +187,7 @@ export default function Dashboard() {
       </ScrollView>
       <View style={styles.EmergencyButton}>
         <Pressable onPress={() => setIsEmergencyVisible(true)}>
-        <Text style={styles.emergencyText}>Nød-knapp</Text>
+          <Ionicons name="warning" size={24} color={theme.colors.text} />
         </Pressable>
         <EmergencyModal
           isVisible={isEmergencyVisible}
@@ -286,7 +285,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.darkGrey,
   },
-  
+
   bigText: {
     fontSize: 26,
     fontWeight: "bold",

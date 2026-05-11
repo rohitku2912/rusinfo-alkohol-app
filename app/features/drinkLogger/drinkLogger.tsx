@@ -45,12 +45,6 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
     { label: customLabelPicker(), value: "custom" },
   ];
 
-  const drinkTypes = [
-    { label: "Øl", value: "beer" },
-    { label: "Vinglass", value: "wine" },
-    { label: "Drink", value: "drinks" },
-  ];
-
   function closeModal() {
     setIsVisible(false);
   }
@@ -67,23 +61,10 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
     }
   }
 
-  function datePicked() {
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-    if (date.toDateString() === today.toDateString()) {
-      return "i dag";
-    }
-    if (date.toDateString() === yesterday.toDateString()) {
-      return "i går";
-    }
-    return date.toLocaleDateString();
-  }
-
   function showDatePickerIfNeeded() {
     if (showDatePicker) {
       return (
-        <View>
+        <View style={styles.datePickerCard}>
           <DateTimePicker
             value={date}
             mode="date"
@@ -91,8 +72,11 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
             onChange={handleDateChange}
           />
           {Platform.OS === "ios" && (
-            <Pressable onPress={() => setShowDatePicker(false)}>
-              <Text>ferdig</Text>
+            <Pressable
+              onPress={() => setShowDatePicker(false)}
+              style={styles.doneDateButton}
+            >
+              <Text style={styles.doneDateText}>Ferdig</Text>
             </Pressable>
           )}
         </View>
@@ -127,82 +111,122 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
     checkAchievements();
   }
 
+  function DrinkCounter({
+    title,
+    count,
+    onAdd,
+  }: {
+    title: string;
+    count: number;
+    onAdd: () => void;
+  }) {
+    return (
+      <View style={styles.addDrinkContainer}>
+        <View>
+          <Text style={styles.drinkTitle}>{title}</Text>
+          <Text style={styles.drinkMeta}>Antall registrert</Text>
+        </View>
+        <View style={styles.counterControls}>
+          <Text style={styles.counterValue}>{count}</Text>
+          <Pressable onPress={onAdd} style={styles.addButton}>
+            <Text style={styles.addButtonText}>+1</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <Modal
       visible={isVisible}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={closeModal}
+      transparent
     >
       <View style={styles.modalContainer}>
-        <RegularButton title="lukk" onPress={closeModal} />
-        <HelpButton helpKey="drinklog" />
-        <Text style={styles.title}>Drikkelogg</Text>
+        <View style={styles.card}>
+          <View style={styles.topLine}>
+            <HelpButton helpKey="drinklog" />
+            <Text style={styles.title}>Drikkelogg</Text>
+            <Pressable onPress={closeModal}>
+              <Text style={styles.close}>✕</Text>
+            </Pressable>
+          </View>
 
-        <Text style={styles.description}>
-          Her kan du logge når du har drukket.
-        </Text>
+          <View style={styles.headerCard}>
+            <Text style={styles.description}>
+              Registrer alkohol eller marker dagen som alkoholfri.
+            </Text>
+          </View>
 
-        <Dropdown
-          style={styles.dropdown}
-          data={dateOptions}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          placeholder="Select"
-          value={dateChoice}
-          onChange={(item) => {
-            setDateChoice(item.value);
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Dato</Text>
+            <Dropdown
+              style={styles.dropdown}
+              containerStyle={styles.dropdownMenu}
+              selectedTextStyle={styles.dropdownText}
+              placeholderStyle={styles.dropdownText}
+              itemTextStyle={styles.dropdownText}
+              data={dateOptions}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Velg dato"
+              value={dateChoice}
+              onChange={(item) => {
+                setDateChoice(item.value);
 
-            if (item.value === "today") {
-              setDate(new Date());
-              setShowDatePicker(false);
-              setHasPickedCustomDate(false);
-            }
+                if (item.value === "today") {
+                  setDate(new Date());
+                  setShowDatePicker(false);
+                  setHasPickedCustomDate(false);
+                }
 
-            if (item.value === "yesterday") {
-              const yesterday = new Date();
-              yesterday.setDate(yesterday.getDate() - 1);
-              setDate(yesterday);
-              setShowDatePicker(false);
-              setHasPickedCustomDate(false);
-            }
+                if (item.value === "yesterday") {
+                  const yesterday = new Date();
+                  yesterday.setDate(yesterday.getDate() - 1);
+                  setDate(yesterday);
+                  setShowDatePicker(false);
+                  setHasPickedCustomDate(false);
+                }
 
-            if (item.value === "custom") {
-              setShowDatePicker(true);
-            }
-          }}
-        />
-        {showDatePickerIfNeeded()}
-        <View style={styles.addDrinkContainer}>
-          <Text>Øl</Text>
-          <Text>{beerCount}</Text>
-          <Pressable onPress={() => setBeerCount(beerCount + 1)}>
-            <Text>+1</Text>
-          </Pressable>
+                if (item.value === "custom") {
+                  setShowDatePicker(true);
+                }
+              }}
+            />
+            {showDatePickerIfNeeded()}
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Alkohol</Text>
+            <DrinkCounter
+              title="Øl"
+              count={beerCount}
+              onAdd={() => setBeerCount(beerCount + 1)}
+            />
+            <DrinkCounter
+              title="Glass med vin"
+              count={wineCount}
+              onAdd={() => setWineCount(wineCount + 1)}
+            />
+            <DrinkCounter
+              title="Drinker"
+              count={drinksCount}
+              onAdd={() => setDrinksCount(drinksCount + 1)}
+            />
+          </View>
+
+          <View style={styles.actionSection}>
+            <RegularButton title="Lagre i logg" onPress={saveLog} />
+            <Pressable onPress={saveWhiteDay} style={styles.whiteDayButton}>
+              <Text style={styles.whiteDayButtonText}>Logg hvit dag</Text>
+            </Pressable>
+            <Pressable onPress={clearDrinkLogs} style={styles.clearButton}>
+              <Text style={styles.clearButtonText}>Tøm drikkelogg</Text>
+            </Pressable>
+          </View>
         </View>
-        <Pressable onPress={clearDrinkLogs}>
-          <Text>Tøm drikkelogg</Text>
-        </Pressable>
-        <View style={styles.addDrinkContainer}>
-          <Text>Glass med vin</Text>
-          <Text>{wineCount}</Text>
-          <Pressable onPress={() => setWineCount(wineCount + 1)}>
-            <Text>+1</Text>
-          </Pressable>
-        </View>
-        <View style={styles.addDrinkContainer}>
-          <Text>Drinker</Text>
-          <Text>{drinksCount}</Text>
-          <Pressable onPress={() => setDrinksCount(drinksCount + 1)}>
-            <Text>+1</Text>
-          </Pressable>
-        </View>
-        <Pressable onPress={saveLog}>
-          <Text>Lagre i din Logg</Text>
-        </Pressable>
-        <Pressable onPress={saveWhiteDay}>
-          <Text>Logg hvit dag</Text>
-        </Pressable>
       </View>
     </Modal>
   );
@@ -211,32 +235,162 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    padding: theme.spacing.large,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  card: {
+    width: "90%",
+    backgroundColor: theme.colors.box,
+    borderRadius: 20,
+    padding: 20,
+  },
+  content: {
+    padding: theme.spacing.medium,
     paddingTop: 56,
-    backgroundColor: "theme.colors.background",
+    paddingBottom: theme.spacing.large,
+  },
+  topLine: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: theme.spacing.medium,
+  },
+  headerCard: {
+    marginBottom: theme.spacing.small,
+  },
+  close: {
+    fontSize: 20,
   },
   title: {
-    marginTop: theme.spacing.large,
     fontSize: 28,
+    fontFamily: theme.fonts.heading,
     fontWeight: "700",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
   },
   description: {
     marginTop: theme.spacing.small,
     fontSize: 16,
-    color: theme.colors.lightText,
+    lineHeight: 22,
+    color: theme.colors.darkGrey,
+  },
+  section: {
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    gap: theme.spacing.small,
+    marginTop: theme.spacing.small,
+    padding: theme.spacing.medium,
+  },
+  sectionTitle: {
+    color: theme.colors.text,
+    fontSize: 16,
+    fontWeight: "700",
   },
   dropdown: {
-    width: 120,
-    backgroundColor: "theme.colors.background",
+    width: "100%",
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderWidth: 1,
     borderRadius: theme.borderRadius.medium,
-    padding: theme.spacing.small,
-    marginTop: theme.spacing.medium,
+    height: 48,
+    paddingHorizontal: theme.spacing.medium,
+  },
+  dropdownMenu: {
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.medium,
+  },
+  dropdownText: {
+    color: theme.colors.text,
+    fontSize: 15,
   },
   addDrinkContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#EAF4EE",
+    borderRadius: theme.borderRadius.small,
+    paddingHorizontal: theme.spacing.medium,
+    paddingVertical: 12,
+  },
+  drinkTitle: {
+    color: theme.colors.text,
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  drinkMeta: {
+    color: theme.colors.darkGrey,
+    fontSize: 12,
+    marginTop: 2,
+  },
+  counterControls: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing.small,
+  },
+  counterValue: {
+    color: theme.colors.text,
+    fontSize: 20,
+    fontWeight: "700",
+    minWidth: 28,
+    textAlign: "center",
+  },
+  addButton: {
+    alignItems: "center",
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.small,
+    justifyContent: "center",
+    minWidth: 48,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  addButtonText: {
+    color: theme.colors.buttonText,
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  actionSection: {
+    gap: theme.spacing.small,
     marginTop: theme.spacing.medium,
-    gap: theme.spacing.medium,
+  },
+  whiteDayButton: {
+    alignItems: "center",
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    height: 50,
+    justifyContent: "center",
+  },
+  whiteDayButtonText: {
+    color: theme.colors.primary,
+    fontWeight: "700",
+  },
+  clearButton: {
+    alignItems: "center",
+    paddingVertical: theme.spacing.small,
+  },
+  clearButtonText: {
+    color: theme.colors.attention,
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  datePickerCard: {
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    overflow: "hidden",
+  },
+  doneDateButton: {
+    alignItems: "center",
+    borderTopColor: theme.colors.lightGrey,
+    borderTopWidth: 1,
+    padding: theme.spacing.small,
+  },
+  doneDateText: {
+    color: theme.colors.primary,
+    fontWeight: "700",
   },
 });

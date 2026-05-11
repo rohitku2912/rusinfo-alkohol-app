@@ -1,3 +1,4 @@
+import theme from "@/app/theme/constantStyling";
 import { useState } from "react";
 import {
   Keyboard,
@@ -8,7 +9,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import HelpButton from "../help/HelpButton";
 import DrinkFormScreen from "./DrinkFormScreen";
 import {
   DRINK_PRESETS,
@@ -19,7 +19,6 @@ import {
 } from "./config";
 import MenuScreen from "./menuScreen";
 import { calculateTotalSavings, createSavedEntry } from "./utils";
-import theme from "@/app/theme/constantStyling";
 
 type Screen = "menu" | "form";
 
@@ -119,7 +118,7 @@ export default function SavingsCalcModal({
     <Modal
       transparent
       visible={isVisible}
-      animationType="slide"
+      animationType="fade"
       onRequestClose={handleClose}
     >
       <View style={styles.backdrop}>
@@ -128,8 +127,6 @@ export default function SavingsCalcModal({
           onPress={Keyboard.dismiss}
         />
         <View style={styles.modalBox}>
-          <View style={styles.handle} />
-
           {screen === "menu" && (
             <ScrollView
               keyboardShouldPersistTaps="handled"
@@ -138,7 +135,6 @@ export default function SavingsCalcModal({
               showsVerticalScrollIndicator={false}
               bounces={false}
             >
-              <HelpButton helpKey="savingcalculator" />
               <MenuScreen
                 savedTotal={savedTotal}
                 savedEntries={savedEntries}
@@ -167,41 +163,21 @@ export default function SavingsCalcModal({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(31, 42, 36, 0.42)",
-    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 24,
   },
   backdropDismissArea: {
     ...StyleSheet.absoluteFillObject,
   },
   modalBox: {
-    width: "100%",
-    height: "94%",
-    backgroundColor: theme.colors.background,
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 16,
-    borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
-    shadowColor: "#000",
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
-  handle: {
-    alignSelf: "center",
-    width: 44,
-    height: 5,
-    borderRadius: 999,
-    backgroundColor: theme.colors.lightGrey,
-    marginBottom: 14,
+    width: "90%",
+    height: "90%",
+    backgroundColor: theme.colors.box,
+    borderRadius: 20,
+    padding: 20,
   },
   content: {
-    flexGrow: 1,
-    paddingBottom: 12,
+    paddingBottom: theme.spacing.small,
   },
 });

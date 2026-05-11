@@ -18,7 +18,7 @@ import Stats from "../features/overView/Stats";
 import theme from "../theme/constantStyling";
 import { getPreviousWeek } from "../utils/weekHelpers";
 
-export default function DrinkLog() {
+export default function OverView() {
   const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
   const [lastWeekResult, setLastWeekResult] =
     useState<WeeklyGoalsResult | null>(null);

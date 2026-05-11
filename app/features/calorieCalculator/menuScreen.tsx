@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../../components/ui/button";
+import theme from "../../theme/constantStyling";
+import HelpButton from "../help/HelpButton";
 import { DrinkType, SavedEntry } from "../savingsCalculator/config";
 import {
   calculateAvoidedCalories,
@@ -27,11 +29,17 @@ export default function MenuScreen({
   return (
     <>
       <View style={styles.hero}>
-        <Text style={styles.eyebrow}>Kalorikalkulator</Text>
-        <Text style={styles.header}>Hvor mange kalorier har du unngått?</Text>
+        <View style={styles.firstLine}>
+          <HelpButton helpKey="caloriecalculator" />
+          <Text style={styles.header}>Kalorikalkulator</Text>
+          <Pressable onPress={onClose}>
+            <Text style={{ fontSize: 20 }}>x</Text>
+          </Pressable>
+        </View>
+
         <Text style={styles.body}>
-          Bruk de samme drikkevalgene som i sparekalkulatoren og juster dem ved
-          behov.
+          Se omtrent hvor mange kalorier du kan unngå ved å redusere
+          alkoholforbruket.
         </Text>
       </View>
 
@@ -41,7 +49,7 @@ export default function MenuScreen({
       </View>
 
       <View style={styles.savedList}>
-        <Text style={styles.savedListTitle}>Dette består summen av</Text>
+        <Text style={styles.savedListTitle}>Lagrede beregninger</Text>
         {savedEntries.length === 0 && (
           <Text style={styles.emptyText}>Ingen valg lagret ennå.</Text>
         )}
@@ -71,6 +79,7 @@ export default function MenuScreen({
       </View>
 
       <View style={styles.buttons}>
+        <Text style={styles.savedListTitle}>Legg til drikke</Text>
         <RegularButton
           title="Øl"
           onPress={() => onSelect("ØL")}
@@ -95,80 +104,73 @@ export default function MenuScreen({
 
 const styles = StyleSheet.create({
   hero: {
-    backgroundColor: "#fffaf4",
-    borderRadius: 24,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "rgba(133, 92, 66, 0.12)",
+    paddingTop: 2,
+    paddingBottom: 12,
   },
-  eyebrow: {
-    textTransform: "uppercase",
-    letterSpacing: 1.2,
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#9c5f34",
-    marginBottom: 8,
+  firstLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
   },
   header: {
-    fontSize: 28,
-    lineHeight: 34,
-    fontWeight: "800",
+    fontFamily: theme.fonts.heading,
+    fontSize: 30,
+    fontWeight: "700",
     textAlign: "left",
-    color: "#2f221b",
+    color: theme.colors.text,
   },
   body: {
     fontSize: 15,
     lineHeight: 22,
-    color: "#6b5649",
+    color: theme.colors.darkGrey,
     textAlign: "left",
-    marginTop: 10,
+    marginTop: 6,
   },
   totalCard: {
-    marginTop: 16,
+    marginTop: 8,
     marginBottom: 12,
-    backgroundColor: "#c55c2f",
-    borderRadius: 24,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.medium,
     paddingVertical: 18,
     paddingHorizontal: 20,
   },
   totalLabel: {
     color: "rgba(255,255,255,0.82)",
-    fontSize: 13,
-    textTransform: "uppercase",
-    letterSpacing: 1,
+    fontSize: 14,
     marginBottom: 6,
   },
   totalValue: {
-    color: "#fffaf4",
+    color: theme.colors.buttonText,
     textAlign: "left",
     fontSize: 30,
-    fontWeight: "800",
+    fontWeight: "700",
   },
   savedList: {
     marginTop: 4,
     marginBottom: 12,
-    backgroundColor: "#fffaf4",
-    borderRadius: 24,
+    backgroundColor: theme.colors.box,
+    borderRadius: theme.borderRadius.medium,
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(133, 92, 66, 0.12)",
+    borderColor: theme.colors.lightGrey,
     gap: 12,
   },
   savedListTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#4b382e",
+    color: theme.colors.text,
   },
   emptyText: {
     fontSize: 14,
-    color: "#7b675a",
+    color: theme.colors.darkGrey,
   },
   savedItem: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.box,
     borderWidth: 1,
-    borderColor: "#eadbcc",
-    borderRadius: 18,
-    padding: 14,
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.small,
+    padding: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -184,44 +186,49 @@ const styles = StyleSheet.create({
   savedItemTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#2f221b",
+    color: theme.colors.text,
   },
   savedItemMeta: {
     fontSize: 13,
-    color: "#7b675a",
+    color: theme.colors.darkGrey,
   },
   editButton: {
-    backgroundColor: "#c55c2f",
-    borderRadius: 12,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.small,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   editButtonText: {
-    color: "#fffaf4",
+    color: theme.colors.buttonText,
     fontWeight: "700",
   },
   deleteButton: {
-    backgroundColor: "#6b5649",
-    borderRadius: 12,
+    backgroundColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.small,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   deleteButtonText: {
-    color: "#fffaf4",
+    color: theme.colors.text,
     fontWeight: "700",
   },
   buttons: {
-    gap: 12,
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    gap: 10,
     marginVertical: 12,
+    padding: 16,
   },
   primaryButton: {
     width: "100%",
-    borderRadius: 18,
-    height: 56,
+    borderRadius: theme.borderRadius.medium,
+    height: 50,
   },
   closeButton: {
     marginTop: 8,
-    backgroundColor: "#6b5649",
-    borderRadius: 18,
+    backgroundColor: theme.colors.darkGrey,
+    borderRadius: theme.borderRadius.medium,
   },
 });
