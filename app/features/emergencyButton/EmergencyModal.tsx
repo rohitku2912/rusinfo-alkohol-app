@@ -22,7 +22,6 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
     setIsVisible(false);
   }
 
-  const [isEditingNumber, setIsEditingNumber] = useState(false);
   const [isEditingPlan, setIsEditingPlan] = useState(false);
 
   return (
@@ -47,17 +46,12 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
 </View>
 
     <ScrollView contentContainerStyle={styles.scrollContent}>
-      {!isEditingNumber && !isEditingPlan && <PersonalGoal />}
+    <EmergencyPlan onEditingChange={setIsEditingPlan} />
+  <PersonalGoal />
+<CallAFriend/>
 
-      {!isEditingNumber && (
-        <EmergencyPlan onEditingChange={setIsEditingPlan} />
-      )}
-
-      {!isEditingPlan && (
-        <CallAFriend onEditingChange={setIsEditingNumber} />
-      )}
     </ScrollView>
-
+    
   </View>
 </Modal>
   );
@@ -66,7 +60,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     marginTop: 60,
-    backgroundColor: "#FFF8F6",
+    backgroundColor: "#e6eff7",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingTop: 24,

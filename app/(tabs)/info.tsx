@@ -174,7 +174,7 @@ export default function Info() {
                             : "arrow-forward-circle"
                         }
                         size={26}
-                        color={theme.colors.lightText}
+                        color={"#5f6b5a"}
                       />
                     </View>
                   </TouchableOpacity>
@@ -383,7 +383,7 @@ export default function Info() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "700",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     marginBottom: theme.spacing.medium,
   },
   searchRow: {
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.large,
   },
   searchInput: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#f5f7f3",
     borderRadius: 22,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: theme.colors.lightText,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: "#d9ddd6",
   },
   searchIcon: {
     position: "absolute",
@@ -429,14 +429,14 @@ const styles = StyleSheet.create({
   categoriesTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     fontFamily: theme.fonts.heading,
     marginBottom: theme.spacing.small,
   },
   categoryBlock: {
     borderRadius: theme.borderRadius.medium,
     overflow: "hidden",
-    backgroundColor: "#e8e8e3",
+    backgroundColor: "#eef1ec",
   },
   categoryRow: {
     flexDirection: "row",
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     fontWeight: "500",
     flex: 1,
   },
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   articleList: {
-    backgroundColor: "#e8e8e3",
+    backgroundColor: "#eef1ec",
     paddingHorizontal: 18,
     paddingBottom: 8,
   },
@@ -467,12 +467,12 @@ const styles = StyleSheet.create({
   },
   articleText: {
     fontSize: 15,
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     flex: 1,
   },
   divider: {
     height: 1,
-    backgroundColor: "#d0d0c8",
+    backgroundColor: "#d9ddd6",
   },
   qaSection: {
     marginTop: theme.spacing.large * 2.5,
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     fontFamily: theme.fonts.heading,
   },
   sectionBody: {
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
   },
   qaButton: {
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: "#e8e8e3",
+    backgroundColor: "#eef1ec",
     padding: theme.spacing.medium,
     flexDirection: "row",
     alignItems: "center",
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
   qaTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
   },
   qaSubtitle: {
     fontSize: 13,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   },
   modalSafe: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f8f4",
   },
   modalHeader: {
     flexDirection: "row",
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: "700",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     marginBottom: theme.spacing.medium,
     fontFamily: theme.fonts.heading,
   },
@@ -568,12 +568,11 @@ const styles = StyleSheet.create({
   },
   feedbackButton: {
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: "#e8e8e3",
+    backgroundColor: "#eef1ec",
     padding: theme.spacing.medium,
     flexDirection: "row",
     alignItems: "center",
     gap: theme.spacing.medium,
-    marginTop: theme.spacing.small,
   },
   feedbackContent: {
     padding: theme.spacing.large,
@@ -582,7 +581,7 @@ const styles = StyleSheet.create({
   feedbackTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.lightText,
+    color: theme.colors.text,
     marginBottom: theme.spacing.small,
     fontFamily: theme.fonts.heading,
   },
@@ -593,14 +592,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.large,
   },
   feedbackInput: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#f5f7f3",
+    borderColor: "#d9ddd6",
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     fontSize: 15,
     color: theme.colors.lightText,
     height: 160,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
   },
   feedbackCount: {
     fontSize: 12,

@@ -17,7 +17,7 @@ export default function EditButton({
       activeOpacity={0.8}
       style={[
         {
-          backgroundColor: isEditing ? "#7f9bb3" : "#b87474",
+          backgroundColor: isEditing ? "#3B82F6" : "#1E3A8A",
           paddingVertical: 10,
           paddingHorizontal: 14,
           borderRadius: 12,
