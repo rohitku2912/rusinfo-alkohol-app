@@ -224,7 +224,7 @@ export default function TriggerDisplay() {
 
   return (
     <View style={styles.container}>
-      <HelpButton helpKey="trigger"/>
+      <HelpButton helpKey="trigger" />
       <TouchableOpacity
         onPress={async () => {
           await AsyncStorage.removeItem(TRIGGERS_STORAGE_KEY);
@@ -244,7 +244,7 @@ export default function TriggerDisplay() {
         }}
         style={{ marginBottom: 10 }}
       ></TouchableOpacity>
-      
+
       {/* filter */}
       <View style={styles.filterRow}>
         <TouchableOpacity
@@ -312,7 +312,6 @@ export default function TriggerDisplay() {
               onChangeText={setSearchText}
             />
           </View>
-          
 
           <View style={styles.addButtonWrapper}>
             <RegularButton
@@ -335,7 +334,6 @@ export default function TriggerDisplay() {
           contentContainerStyle={{ gap: 10, marginTop: 10 }}
           showsVerticalScrollIndicator={false}
         />
-        
       )}
 
       {selectedFilter === "beskyttelsesfaktorer" && (
@@ -373,7 +371,6 @@ export default function TriggerDisplay() {
         onBack={handleBackFromProtectionFactors}
       />
     </View>
-    
   );
 }
 
@@ -381,14 +378,14 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     flex: 1,
-    position: "relative"
+    position: "relative",
   },
 
   title: {
     fontSize: 20,
     fontWeight: "600",
     marginBottom: 15,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
 
   filterRow: {
@@ -412,11 +409,11 @@ const styles = StyleSheet.create({
   },
 
   filterText: {
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
 
   selectedFilterText: {
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
 
   list: {
@@ -503,11 +500,11 @@ const styles = StyleSheet.create({
 
   searchInput: {
     borderWidth: 1,
-    borderColor: theme.colors.text,
+    borderColor: theme.colors.lightText,
     borderRadius: 20,
     padding: 8,
     backgroundColor: theme.colors.background,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
 
   addButtonWrapper: {

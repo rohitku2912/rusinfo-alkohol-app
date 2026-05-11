@@ -27,19 +27,18 @@ export default function TabsLayout() {
     <AchievementProvider>
       <Tabs
         screenOptions={{
+          tabBarActiveTintColor: theme.colors.primary,
+
           headerShown: false,
-          tabBarActiveTintColor: "#2E7D32",
           tabBarStyle: {
             position: "absolute",
             width: "90%",
             marginLeft: "5%",
-            height: 64,
-            backgroundColor: "#fffaf3",
+            height: 58,
             borderRadius: 24,
             bottom: Math.max(insets.bottom, 12),
             borderTopWidth: 0,
             borderWidth: 1,
-            borderColor: "rgba(0, 0, 0, 0.08)",
             paddingTop: 6,
             paddingBottom: 8,
           },

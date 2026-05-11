@@ -13,8 +13,8 @@ import {
 } from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
-import ProgramTimer from "../features/programTimer/ProgramTimer";
 import CalorieCalcModal from "../features/calorieCalculator/CalorieCalcModal";
+import ProgramTimer from "../features/programTimer/ProgramTimer";
 import { SavedEntry } from "../features/savingsCalculator/config";
 import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
 import theme from "../theme/constantStyling";
@@ -28,8 +28,8 @@ import {
 
 import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
-import PartyPlanner from "../features/partyPlanner/partyPlanner";
 import HelpButton from "../features/help/HelpButton";
+import PartyPlanner from "../features/partyPlanner/partyPlanner";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -89,7 +89,7 @@ export default function Dashboard() {
         <FunctionBox
           title="DRIKKELOGG"
           description="logg her når du har drukket"
-          helpBtn={<HelpButton helpKey="drinklog"/>}
+          helpBtn={<HelpButton helpKey="drinklog" />}
         >
           <RegularButton
             title="regn ut"
@@ -102,7 +102,7 @@ export default function Dashboard() {
         <FunctionBox
           title="SPAREKALKULATOR"
           description="du har spart så langt"
-          helpBtn={<HelpButton helpKey="savingcalculator"/>}
+          helpBtn={<HelpButton helpKey="savingcalculator" />}
         >
           <View style={styles.functionContent}>
             <RegularButton
@@ -115,8 +115,11 @@ export default function Dashboard() {
           </View>
         </FunctionBox>
 
-        <FunctionBox title="AUDIT" description="ta en test"
-        helpBtn={<HelpButton helpKey="audit"/>}>
+        <FunctionBox
+          title="AUDIT"
+          description="ta en test"
+          helpBtn={<HelpButton helpKey="audit" />}
+        >
           <RegularButton
             title="open the AUDIT"
             onPress={() => setIsAuditVisible(true)}
@@ -130,7 +133,7 @@ export default function Dashboard() {
         <FunctionBox
           title="KALORIKALKULATOR"
           description="du har unngått så langt"
-          helpBtn={<HelpButton helpKey="caloriecalculator"/>}
+          helpBtn={<HelpButton helpKey="caloriecalculator" />}
         >
           <View style={styles.functionContent}>
             <RegularButton
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
     bottom: 100,
     right: 20,
     zIndex: 10,
-    backgroundColor: "#a46e6e",
+    backgroundColor: theme.colors.emergency,
     padding: 10,
     borderRadius: 100,
     borderColor: "#c48c8c",
@@ -256,12 +259,12 @@ const styles = StyleSheet.create({
   debugTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     marginBottom: theme.spacing.small,
   },
   debugText: {
     fontSize: 15,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
     marginBottom: 6,
   },
 });

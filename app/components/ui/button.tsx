@@ -32,7 +32,7 @@ export default function RegularButton({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.secondary,
+    backgroundColor: theme.colors.primary,
     borderRadius: theme.borderRadius.large,
     alignItems: "center",
     justifyContent: "center",
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     // plasserer knappen til høyre
   },
   text: {
-    color: "#ffecec",
+    color: theme.colors.buttonText,
     fontWeight: "bold",
     fontFamily: theme.fonts.main,
     alignItems: "center",

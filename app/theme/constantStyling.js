@@ -1,15 +1,26 @@
 const theme = {
   colors: {
-    primary: "#2E7D32",
-    secondary: "#a26d6d",
-    box: "#263853",
-    background: "#F9E4D7",
+    /**
+     * Used for:
+    main buttons
+    progress highlights
+    active states
+    important positive actions
+    */
+    primary: "#5E9C76",
+    /** */
+    secondary: "rgb(162, 109, 109)",
+    box: "#FFFFFF",
+    background: "#dce0d4",
     accent: "#FFC107",
     attention: "#E53935",
     lightText: "#FFFFFF",
     lightGrey: "#e2e1e1",
     darkGrey: "#424242",
-    darkText: "#212121",
+    text: "#1F2A24",
+    emergency: "#FF5722",
+    buttonText: "#fffaf3",
+    button: "#529255",
   },
   fonts: {
     main: "Arial",

@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 6,
     padding: 10,
-    color: theme.colors.lightText,
+    color: theme.colors.darkText,
   },
 
   description: {

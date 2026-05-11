@@ -219,12 +219,12 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.large,
     fontSize: 28,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
   description: {
     marginTop: theme.spacing.small,
     fontSize: 16,
-    color: theme.colors.text,
+    color: theme.colors.lightText,
   },
   dropdown: {
     width: 120,
