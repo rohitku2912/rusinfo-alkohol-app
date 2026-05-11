@@ -19,6 +19,7 @@ import {
 } from "./config";
 import MenuScreen from "./menuScreen";
 import { calculateTotalSavings, createSavedEntry } from "./utils";
+import theme from "@/app/theme/constantStyling";
 
 type Screen = "menu" | "form";
 
@@ -121,7 +122,6 @@ export default function SavingsCalcModal({
       animationType="slide"
       onRequestClose={handleClose}
     >
-      
       <View style={styles.backdrop}>
         <Pressable
           style={styles.backdropDismissArea}
@@ -131,7 +131,6 @@ export default function SavingsCalcModal({
           <View style={styles.handle} />
 
           {screen === "menu" && (
-            
             <ScrollView
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode={keyboardDismissMode}
@@ -139,7 +138,7 @@ export default function SavingsCalcModal({
               showsVerticalScrollIndicator={false}
               bounces={false}
             >
-            <HelpButton helpKey="savingcalculator"/>
+              <HelpButton helpKey="savingcalculator" />
               <MenuScreen
                 savedTotal={savedTotal}
                 savedEntries={savedEntries}
@@ -168,7 +167,7 @@ export default function SavingsCalcModal({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(10, 23, 43, 0.48)",
+    backgroundColor: "rgba(31, 42, 36, 0.42)",
     justifyContent: "flex-end",
     alignItems: "center",
     paddingTop: 24,
@@ -179,26 +178,26 @@ const styles = StyleSheet.create({
   modalBox: {
     width: "100%",
     height: "94%",
-    backgroundColor: "#f7f1e8",
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
+    backgroundColor: theme.colors.background,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 16,
     borderWidth: 1,
-    borderColor: "rgba(94, 63, 48, 0.12)",
+    borderColor: theme.colors.lightGrey,
     shadowColor: "#000",
-    shadowOpacity: 0.18,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 10,
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 8,
   },
   handle: {
     alignSelf: "center",
-    width: 56,
-    height: 6,
+    width: 44,
+    height: 5,
     borderRadius: 999,
-    backgroundColor: "rgba(107, 86, 73, 0.35)",
+    backgroundColor: theme.colors.lightGrey,
     marginBottom: 14,
   },
   content: {
