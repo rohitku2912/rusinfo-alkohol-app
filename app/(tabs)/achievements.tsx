@@ -1,13 +1,22 @@
 import theme from "@/app/theme/constantStyling";
 import { StyleSheet, Text, View } from "react-native";
 import ShowAchievements from "../features/achievements/ShowAchievements";
+import HelpButton from "../features/help/HelpButton";
 
 export default function Achievements() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Prestasjoner</Text>
-        <Text style={styles.subtitle}>Følg fremgangen din steg for steg.</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles.title}>Prestasjoner</Text>
+          <HelpButton helpKey="overview" />
+        </View>
       </View>
       <ShowAchievements />
     </View>

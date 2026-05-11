@@ -17,6 +17,11 @@ export const helpContent: Record<string, { title: string; description: string }>
     title: "Drikkelogg",
     description: "Dette er en drikkelogg der du kan registrere hvor mye og hva du har drukket, samt hvilken dag det gjelder. Loggen hjelper deg å få oversikt over alkoholforbruket ditt over tid. Ved å registrere drikkingen din kan du lettere se mønstre, reflektere over vaner og ta mer bevisste valg fremover."
   },
+  overview: {
+    title: "Oversikt",
+    description:
+      "Her får du en samlet oversikt over ukentlige mål, resultatet fra forrige uke, statistikk for de siste 30 dagene og utviklingen i alkoholforbruket ditt over tid. Oversikten oppdateres når du registrerer nye dager i drikkeloggen.",
+  },
   savingcalculator:{
     title: "Sparekalkulator",
     description: "Dette er en oversikt over dine drikkevaner og kostnader. Her kan du legge til ulike typer drikker, se hvor ofte du bruker dem, og få en samlet oversikt over både pris og forbruk over tid. Kalkulatoren hjelper deg å forstå hva alkoholvanene dine faktisk koster deg – både økonomisk og i hverdagen. Ved å følge med på utviklingen kan du lettere ta bevisste valg og justere vanene dine hvis du ønsker det."

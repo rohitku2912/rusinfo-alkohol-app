@@ -12,6 +12,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import HelpButton from "../features/help/HelpButton";
 import DrinkChart from "../features/overView/DrinkChart";
 import Goals from "../features/overView/Goals";
 import Stats from "../features/overView/Stats";
@@ -108,7 +109,13 @@ export default function OverView() {
   }
 
   return (
-    <View>
+    <View style={styles.screen}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.pageTitle}>Oversikt</Text>
+        </View>
+        <HelpButton helpKey="overview" />
+      </View>
       <Goals logs={logs} />
       {showLastWeekResult()}
       <Stats logs={logs} />
@@ -118,6 +125,23 @@ export default function OverView() {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: theme.spacing.medium,
+    marginBottom: 4,
+  },
+  pageTitle: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.heading,
+    fontSize: 28,
+    fontWeight: "700",
+  },
   lastWeekCard: {
     backgroundColor: "#ffffff",
     borderRadius: theme.borderRadius.medium,
@@ -134,7 +158,8 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 14,
-    color: theme.colors.text,
+    fontWeight: "700",
+    color: theme.colors.primary,
   },
   successPill: {
     backgroundColor: "#E6F4EA",

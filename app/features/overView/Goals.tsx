@@ -100,10 +100,13 @@ export default function Goals(props: Props) {
     }
 
     return (
-      <View style={styles.goalCard}>
-        <Text style={styles.goalTitle}>
-          {props.title}: {props.current} / {props.goal}
-        </Text>
+      <View style={styles.goalProgressBlock}>
+        <View style={styles.goalTextLine}>
+          <Text style={styles.goalTitle}>{props.title}</Text>
+          <Text style={styles.goalValue}>
+            {props.current} / {props.goal}
+          </Text>
+        </View>
         <View style={styles.fullBar}>
           <View
             style={[styles.progress, { width: `${progress * 100}%` }]}
@@ -114,27 +117,29 @@ export default function Goals(props: Props) {
   }
   return (
     <View>
-      <View style={styles.goalHeaderLine}>
-        <Text style={styles.weeklyTitle}>Ukentlige mål</Text>
-        <Feather
-          name="edit"
-          size={24}
-          color="black"
-          style={styles.editGoalsButton}
-          onPress={() => setShowModal(true)}
+      <View style={styles.goalsCard}>
+        <View style={styles.goalHeaderLine}>
+          <Text style={styles.weeklyTitle}>Ukentlige mål</Text>
+          <Feather
+            name="edit"
+            size={22}
+            color={theme.colors.text}
+            style={styles.editGoalsButton}
+            onPress={() => setShowModal(true)}
+          />
+        </View>
+        <ProgressBar
+          title="Hvite dager"
+          current={whiteDaysCurrent}
+          goal={whiteDaysGoal}
+        />
+
+        <ProgressBar
+          title="Drikkegrense"
+          current={maxDrinkUnitsCurrent}
+          goal={maxDrinkUnitsGoal}
         />
       </View>
-      <ProgressBar
-        title="Hvite dager"
-        current={whiteDaysCurrent}
-        goal={whiteDaysGoal}
-      />
-
-      <ProgressBar
-        title="Drikkegrense"
-        current={maxDrinkUnitsCurrent}
-        goal={maxDrinkUnitsGoal}
-      />
       <AppModal
         visible={showModal}
         title="Endre mål"
@@ -180,27 +185,45 @@ export default function Goals(props: Props) {
 
 const styles = StyleSheet.create({
   fullBar: {
-    height: 20,
+    height: 10,
     width: "100%",
-    backgroundColor: "lightgray",
-    borderRadius: 10,
+    backgroundColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.large,
+    overflow: "hidden",
   },
   progress: {
-    height: 20,
+    height: "100%",
     backgroundColor: theme.colors.primary,
-    borderRadius: 10,
+    borderRadius: theme.borderRadius.large,
   },
-  goalCard: {
-    backgroundColor: "#ffffff",
+  goalsCard: {
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderWidth: 1,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     marginHorizontal: theme.spacing.medium,
     marginBottom: theme.spacing.small,
+    gap: 12,
+  },
+  goalProgressBlock: {
     gap: 8,
+  },
+  goalTextLine: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: theme.spacing.medium,
   },
   goalTitle: {
     fontSize: 14,
+    fontWeight: "700",
     color: theme.colors.text,
+  },
+  goalValue: {
+    color: theme.colors.primary,
+    fontSize: 14,
+    fontWeight: "700",
   },
   weeklyTitle: {
     fontSize: 16,
@@ -210,12 +233,10 @@ const styles = StyleSheet.create({
   goalHeaderLine: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: theme.spacing.medium,
   },
   editGoalsButton: {
-    color: theme.colors.text,
     marginLeft: "auto",
-    padding: theme.spacing.small,
+    padding: 4,
   },
   editInnerView: {
     flexDirection: "row",
