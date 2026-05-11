@@ -1,4 +1,3 @@
-import theme from "@/app/theme/constantStyling";
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
@@ -15,7 +14,7 @@ export default function HelpButton({ helpKey }: Props) {
 
   return (
     <>
-      <Pressable onPress={() => setOpen(true)} style={styles.button}>
+      <Pressable onPress={() => setOpen(true)} >
         <MaterialIcons name="help" style={styles.icon} />
       </Pressable>
 
@@ -34,7 +33,7 @@ export default function HelpButton({ helpKey }: Props) {
 const styles = StyleSheet.create({
   icon: {
     fontSize: 22,
-    color: theme.colors.primary,
+    color: "#2F4FA3",
   },
 
   overlay: {

@@ -1,7 +1,13 @@
 import { getProgramStartDate } from "@/lib/storage/onboarding";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FunctionBox from "../../components/ui/functionBox";
+import HelpButton from "../help/HelpButton";
+import theme from "@/app/theme/constantStyling";
+
+const START_KEY = "program_start_date";
+
 
 function getDays(start: Date): number {
   return Math.floor((Date.now() - start.getTime()) / 86_400_000);
@@ -21,6 +27,15 @@ function Ring({ value, label }: { value: number; label: string }) {
 export default function ProgramTimer() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [days, setDays] = useState(0);
+
+  const resetProgram = async () => {
+    const now = new Date();
+  
+    await AsyncStorage.setItem(START_KEY, now.toISOString());
+  
+    setStartDate(now);
+    setDays(0);
+  };
 
   useEffect(() => {
     getProgramStartDate().then((date) => {
@@ -42,13 +57,18 @@ export default function ProgramTimer() {
     <FunctionBox
       title="TID SIDEN DU STARTET"
       description="Din reise så langt"
+      helpBtn={<HelpButton helpKey="daycounter"/>}
     >
+      <TouchableOpacity style={styles.resetButton} onPress={resetProgram}>
+  <Text style={styles.resetText}>Nullstill</Text>
+</TouchableOpacity>
       <View style={styles.ringsRow}>
-        <Ring value={days} label="dager" />
+        <Ring value={days} label="Dager" />
       </View>
     </FunctionBox>
   );
 }
+
 
 const styles = StyleSheet.create({
   ringsRow: {
@@ -64,7 +84,7 @@ const styles = StyleSheet.create({
     height: 76,
     borderRadius: 38,
     borderWidth: 2.5,
-    borderColor: "#2E7D32",
+    borderColor: theme.colors.button,
     backgroundColor: "rgba(255,255,255,0.07)",
     alignItems: "center",
     justifyContent: "center",
@@ -72,11 +92,25 @@ const styles = StyleSheet.create({
   ringNumber: {
     fontSize: 26,
     fontWeight: "800",
-    color: "#f6ede4",
+    color: theme.colors.text,
   },
   ringLabel: {
     fontSize: 12,
-    color: "#b8a898",
+    color: theme.colors.text,
     fontWeight: "500",
+  },
+  resetButton: {
+    marginTop: 10,
+    alignSelf: "flex-end",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    backgroundColor: "rgba(47, 79, 163, 0.12)",
+  },
+  
+  resetText: {
+    color: "#2F4FA3",
+    fontWeight: "600",
+    fontSize: 12,
   },
 });

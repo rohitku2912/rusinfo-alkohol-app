@@ -20,8 +20,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
 import HelpButton from "../features/help/HelpButton";
+import theme from "../theme/constantStyling";
 
 const PREVIOUS_QUESTIONS_URL = "https://rusinfo.no/2018/12/chat-apningstid/";
 const RUSINFO_PHONE_URL = "tel:+4791508588";
@@ -108,8 +108,10 @@ export default function Info() {
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <View style={styles.container}>
-      <HelpButton helpKey="info"/>
-        <Text style={styles.title}>Informasjon</Text>
+      <View style={styles.headerRow}>
+  <Text style={styles.title}>Informasjon</Text>
+  <HelpButton helpKey="info" />
+</View>
 
         {/* Søkefelt — filtrerer på tvers av alle artikler */}
         <View style={styles.searchRow}>
@@ -389,6 +391,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: theme.spacing.large,
     paddingTop: 16,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
   },
   title: {
     fontSize: 28,

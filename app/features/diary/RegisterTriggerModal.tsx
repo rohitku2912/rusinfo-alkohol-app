@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import HelpButton from "../help/HelpButton";
 
 type Props = {
   visible: boolean;
@@ -88,6 +89,7 @@ export default function RegisterTriggerModal({
           <View style={styles.container}>
             {/* header */}
             <View style={styles.header}>
+            <HelpButton helpKey="trigger" />
               <Text style={styles.title}>
                 {selectedTrigger ? "Beskyttelsesfaktorer" : "Trigger"}
               </Text>

@@ -153,8 +153,8 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
           {/* før partystart */}
           {party.status === "scheduled" && (
-            <Text style={{ color: "#c9b6a3", marginBottom: 12 }}>
-              startar om {Math.floor(timeUntilStart / 60000)} min
+            <Text style={{ color: theme.colors.text, marginBottom: 12 }}>
+              Starter om {Math.floor(timeUntilStart / 60000)} min
             </Text>
           )}
 

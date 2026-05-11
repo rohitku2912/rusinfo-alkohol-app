@@ -12,7 +12,6 @@ import {
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
 import theme from "../../theme/constantStyling";
-import HelpButton from "../help/HelpButton";
 import ProtectionFactorList from "./ProtectionFactorDisplay";
 import RegisterTriggerModal from "./RegisterTriggerModal";
 import TriggerStats from "./TriggerStats";
@@ -224,7 +223,6 @@ export default function TriggerDisplay() {
 
   return (
     <View style={styles.container}>
-      <HelpButton helpKey="trigger" />
       <TouchableOpacity
         onPress={async () => {
           await AsyncStorage.removeItem(TRIGGERS_STORAGE_KEY);

@@ -2,20 +2,25 @@ export const helpContent: Record<string, { title: string; description: string }>
   diary: {
     title: "Dagbok",
     description:
-      "Skriv ned tanker, følelser og opplevelser knyttet til alkoholbruk. Dette kan hjelpe deg med å identifisere mønstre og triggere. Trykk på + Nytt innlegg for å lage et nytt dagbokinnlegg. Du kan filtrere innleggene ved å trykke på de ulike taggene, og du kan også legge til nye når du registrerer et nytt dagbokinnlegg. For å slette et innlegg, trykker du på søppelbøtten.",
+      "Her kan du skrive ned tanker, følelser og situasjoner knyttet til alkoholbruk. Målet er å hjelpe deg å oppdage mønstre og triggere over tid. Trykk på + Nytt innlegg for å legge til en ny oppføring. Du kan filtrere innlegg med tagger, og legge til nye tagger når du skriver. Trykk på søppelbøtten for å slette et innlegg.",
   },
+
   trigger: {
     title: "Trigger",
     description:
-      "Identifiser situasjoner, steder eller følelser som utløser lysten til å drikke. Å være bevisst på disse kan hjelpe deg med å unngå dem eller håndtere dem bedre. Trykk på + Registrer for å registrere en trigger. Du kan også legge til hvilke beskyttelsesfaktorer som hjalp deg i den situasjonen. På beskyttelsesfaktor-siden ser du alle beskyttelsesfaktorer du har registrert. I oversikten ser du statistikk over mest registrerte triggere og beskyttelsesfaktorer.",
+      "Her registrerer du situasjoner, steder eller følelser som gjør at du får lyst til å drikke. Dette gir deg bedre oversikt over hva som påvirker deg. Trykk på + Registrer for å legge til en trigger. Du kan også legge til hva som hjalp deg i situasjonen (beskyttelsesfaktorer). I oversikten ser du hvilke triggere og beskyttelsesfaktorer som er mest brukt.",
   },
+
   partyplanner: {
     title: "Planlegg festen",
-    description: "Denne funksjonen hjelper deg å planlegge en fest ved å sette start- og sluttid og legge inn hvor mye du planlegger å drikke. Underveis får du en nedtelling i sanntid, og når festen er ferdig kan du se om du klarte målet ditt. Det gir deg enkel oversikt over tid og planlagt mengde, og gjør det lettere å reflektere etterpå."
+    description:
+      "Dette verktøyet hjelper deg å planlegge en fest ved å sette tidspunkt og planlagt mengde alkohol. Underveis får du oversikt i sanntid, og etterpå kan du se hvordan planen stemte. Det gjør det enklere å reflektere over egne valg.",
   },
-  drinklog:{
+
+  drinklog: {
     title: "Drikkelogg",
-    description: "Dette er en drikkelogg der du kan registrere hvor mye og hva du har drukket, samt hvilken dag det gjelder. Loggen hjelper deg å få oversikt over alkoholforbruket ditt over tid. Ved å registrere drikkingen din kan du lettere se mønstre, reflektere over vaner og ta mer bevisste valg fremover."
+    description:
+      "Her kan du registrere hva og hvor mye du har drukket. Loggen gir deg oversikt over alkoholvanene dine over tid. Dette gjør det lettere å se mønstre og forstå egne valg bedre.",
   },
   overview: {
     title: "Oversikt",
@@ -24,30 +29,41 @@ export const helpContent: Record<string, { title: string; description: string }>
   },
   savingcalculator:{
     title: "Sparekalkulator",
-    description: "Dette er en oversikt over dine drikkevaner og kostnader. Her kan du legge til ulike typer drikker, se hvor ofte du bruker dem, og få en samlet oversikt over både pris og forbruk over tid. Kalkulatoren hjelper deg å forstå hva alkoholvanene dine faktisk koster deg – både økonomisk og i hverdagen. Ved å følge med på utviklingen kan du lettere ta bevisste valg og justere vanene dine hvis du ønsker det."
+    description:
+      "Her får du oversikt over hvor mye alkoholvanene dine koster deg. Du kan legge inn drikker og forbruk, og se en samlet kostnad over tid. Dette gir deg bedre forståelse av økonomien bak vanene dine.",
   },
 
   caloriecalculator: {
     title: "Kalorikalkulator",
-    description: "Dette er en kalorikalkulator som gir deg oversikt over hvor mange kalorier du potensielt sparer ved å redusere eller endre alkoholvanene dine. Her kan du legge inn ulike drikker, mengde og hvor ofte de brukes, og få en samlet beregning over tid. Verktøyet er laget for å gjøre det enklere å forstå sammenhengen mellom vaner, energi og helse, slik at du kan ta mer bevisste valg i hverdagen."
+    description:
+      "Denne kalkulatoren viser hvor mange kalorier du kan spare ved å redusere alkoholforbruket. Du legger inn type drikke og mengde, og får en samlet oversikt. Dette gjør det enklere å forstå sammenhengen mellom vaner og helse.",
   },
+
   audit: {
     title: "AUDIT",
-    description: "Dette er en kort spørreundersøkelse (AUDIT-test) som hjelper deg å få bedre innsikt i hvordan alkoholbruket ditt kan påvirke deg. Testen består av 10 spørsmål om drikkemønstre, vaner og mulige konsekvenser av alkoholbruk. Når du har svart på alle spørsmålene, får du en poengsum som gir en indikasjon på lav, økende, høy eller svært høy risiko. Formålet er å gi deg bedre forståelse av egne vaner, slik at du kan reflektere og ta mer bevisste valg dersom du ønsker det."
+    description:
+      "Dette er en kort test som gir deg innsikt i alkoholvanene dine. Du svarer på 10 spørsmål, og får en score som viser lav, moderat eller høy risiko. Målet er å hjelpe deg å reflektere over egne vaner.",
   },
+
   emergencybutton: {
     title: "Nødknapp",
     description:
-  "Her finner du en plan for hva du kan gjøre hvis du kjenner på trangen til å drikke. Du kan gjøre planen mer personlig ved å bruke rediger-knappene. Når du trykker på en trigger, ser du hvilke beskyttelsesfaktorer du tidligere har registrert i trigger-dagboken. Du kan også legge til et telefonnummer til noen du kan kontakte når det er vanskelig. Det kan være en venn, et familiemedlem eller en annen person du stoler på. Etter at nummeret er lagt inn, kan du trykke på det for å ringe direkte. Ved å ha en tydelig plan på forhånd kan det gjøre det lettere å håndtere vanskelige situasjoner og ta gode valg i øyeblikket."
+      "Her finner du en personlig plan for vanskelige situasjoner. Du kan legge inn hva som hjelper deg, og et telefonnummer til noen du kan kontakte. Trykk på nummeret for å ringe direkte. Målet er å gjøre det enklere å håndtere sterke følelser i øyeblikket.",
   },
+
   achievements: {
     title: "Prestasjoner",
     description:
-  "Her finner du oversikt over prestasjoner du er i ferd med å oppnå, de du allerede har fullført, og nye mål som kommer. Prestasjonene er laget for å motivere og gi deg små milepæler underveis, slik at du kan se fremgangen din over tid. Hver prestasjon markerer et steg i retning av bedre oversikt, mestring og bevisste valg i hverdagen."
+      "Her ser du mål du jobber mot og prestasjoner du har fullført. Dette gir deg oversikt over fremgang og små milepæler underveis. Målet er å motivere deg og synliggjøre utviklingen din over tid.",
   },
+
   info: {
     title: "Informasjon",
     description:
-  "Her finner du artikler og informasjon om alkohol og hvordan det kan påvirke kropp, helse og livssituasjon. Innholdet er laget for å gi deg kunnskap, støtte refleksjon og øke forståelsen av egne vaner. Artiklene dekker ulike temaer som forbruk, helsekonsekvenser, psykisk helse og gode strategier for endring eller kontroll. Målet er å gi deg trygg og nøytral informasjon som kan hjelpe deg å ta informerte valg i eget tempo."
+      "Her finner du artikler om alkohol, helse og vaner. Innholdet gir deg kunnskap og støtte til refleksjon, slik at du kan forstå egne valg bedre og ta informerte beslutninger.",
+  },
+  daycounter: {
+    title: "Teller",
+    description: "Her ser du hvor lenge det er siden du startet programmet. Tallet oppdateres automatisk og viser antall dager som har gått siden startdatoen din ble registrert. Trykker du på «Nullstill», starter tellingen på nytt fra i dag. Dette gir deg oversikt over utviklingen din over tid."
   }
 }; 
