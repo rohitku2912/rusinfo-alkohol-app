@@ -24,7 +24,7 @@ const theme = {
   },
   fonts: {
     main: "Arial",
-    heading: "Georgia",
+    heading: "Roboto",
   },
   spacing: {
     small: 8,

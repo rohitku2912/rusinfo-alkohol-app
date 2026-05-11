@@ -1,6 +1,15 @@
+import BackButton from "@/app/components/ui/backButton";
 import RegularButton from "@/app/components/ui/button";
+import theme from "@/app/theme/constantStyling";
 import { useState } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import HelpButton from "../help/HelpButton";
 
 type Props = {
@@ -150,15 +159,26 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
     setIsVisible(false);
   }
 
+  function restartQuiz() {
+    setAnswers({});
+    setCurrentQuestionNumber(0);
+    setGender(null);
+    setScreen("start");
+  }
+
   function showOptions(option: Option) {
     const isSelected = answers[currentQuestion.id] === option.id;
     return (
       <Pressable
         key={option.id}
         onPress={() => chooseOption(currentQuestion.id, option.id)}
-        style={isSelected ? Styles.selectedOption : Styles.notSelectedOption}
+        style={[styles.option, isSelected && styles.selectedOption]}
       >
-        <Text>{option.text}</Text>
+        <Text
+          style={[styles.optionText, isSelected && styles.selectedOptionText]}
+        >
+          {option.text}
+        </Text>
       </Pressable>
     );
   }
@@ -188,10 +208,6 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
       total += answer;
     }
     return total;
-  }
-
-  function AuditResult() {
-    return <Text> score: {calculateScore()}</Text>;
   }
 
   function scoreToRisk(): RiskLevel {
@@ -225,9 +241,9 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
 
     if (risk === "lav") {
       return (
-        <View>
-          <Text>Lav risiko</Text>
-          <Text>
+        <View style={styles.resultCard}>
+          <Text style={styles.resultTitle}>Lav risiko</Text>
+          <Text style={styles.bodyText}>
             Dine svar viser at du aldri eller i blant drikker alkohol, og at du
             kontrollerer dette på en bra måte.
           </Text>
@@ -237,9 +253,9 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
 
     if (risk === "okende") {
       return (
-        <View>
-          <Text>Økende risiko</Text>
-          <Text>
+        <View style={styles.resultCard}>
+          <Text style={styles.resultTitle}>Økende risiko</Text>
+          <Text style={styles.bodyText}>
             Det kan se ut som om du drikker alkohol på en måte hvor det kan være
             risiko for å utvikle alkoholrelaterte problemer. Du bør tenke
             igjennom din bruk av alkohol og kanskje vurdere å endre
@@ -251,9 +267,9 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
 
     if (risk === "hoy") {
       return (
-        <View>
-          <Text>Høy risiko</Text>
-          <Text>
+        <View style={styles.resultCard}>
+          <Text style={styles.resultTitle}>Høy risiko</Text>
+          <Text style={styles.bodyText}>
             Du drikker alkohol på en måte der det er høy risiko for at du kan
             utvikle alkoholrelaterte problem. Du bør vurdere å redusere ditt
             inntak av alkohol. Det kan være lurt å snakke med noen om din bruk
@@ -265,9 +281,9 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
     }
 
     return (
-      <View>
-        <Text>Svært høy risiko</Text>
-        <Text>
+      <View style={styles.resultCard}>
+        <Text style={styles.resultTitle}>Svært høy risiko</Text>
+        <Text style={styles.bodyText}>
           Du drikker for mye alkohol og kanskje har du allerede fått et
           alkoholrelatert problem. Din skåre antyder alkoholavhengighet.
           Problemene dine er av en sånn art at denne appen alene kanskje ikke
@@ -278,10 +294,10 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
           familien din, en venn, kollega eller andre. Om du ønsker å snakke med
           noen annonymt kan du ringe eller chatte med rusinfo:
         </Text>
-        <View style={Styles.callBox}>
-          <Text>Ring rusinfo:</Text>
-          <Text>915 08 588</Text>
-          <Text>(kl 11-18)</Text>
+        <View style={styles.callBox}>
+          <Text style={styles.callLabel}>Ring rusinfo:</Text>
+          <Text style={styles.callNumber}>915 08 588</Text>
+          <Text style={styles.callTime}>(kl 11-18)</Text>
         </View>
       </View>
     );
@@ -289,45 +305,61 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
 
   function startScreen() {
     return (
-      <View>
-        <HelpButton helpKey="audit" />
-        <Text>Velkommen til AUDIT-testen</Text>
-        <Text>
+      <View style={styles.screen}>
+        <View style={styles.helpRow}>
+          <HelpButton helpKey="audit" />
+        </View>
+        <Text style={styles.title}>AUDIT-testen</Text>
+        <Text style={styles.lead}>
           Dette er en test som kan hjelpe deg å forstå ditt eget alkoholforbruk
-          bedre
+          bedre.
         </Text>
-        <Text>
+        <Text style={styles.bodyText}>
           Du vil få 10 spørsmål om ditt alkoholforbruk, og til slutt vil du få
-          en score som indikerer din risiko for alkoholrelaterte problemer
+          en score som indikerer din risiko for alkoholrelaterte problemer.
         </Text>
-        <RegularButton title="Start test" onPress={() => setScreen("gender")} />
+        <RegularButton
+          title="Start test"
+          onPress={() => setScreen("gender")}
+          style={styles.primaryButton}
+        />
       </View>
     );
   }
 
   function GenderScreen() {
     return (
-      <View>
-        <Text>Hva er kjønnet ditt?</Text>
-        <Text>
-          Dette blir du spurt om fordi det påvirker resultatet til slutt
+      <View style={styles.screen}>
+        <Text style={styles.title}>Hva er kjønnet ditt?</Text>
+        <Text style={styles.bodyText}>
+          Dette blir du spurt om fordi det påvirker resultatet til slutt.
         </Text>
 
         <Pressable
           onPress={() => setGender("Dame")}
-          style={
-            gender === "Dame" ? Styles.selectedOption : Styles.notSelectedOption
-          }
+          style={[styles.option, gender === "Dame" && styles.selectedOption]}
         >
-          <Text>Dame</Text>
+          <Text
+            style={[
+              styles.optionText,
+              gender === "Dame" && styles.selectedOptionText,
+            ]}
+          >
+            Dame
+          </Text>
         </Pressable>
         <Pressable
           onPress={() => setGender("Mann")}
-          style={
-            gender === "Mann" ? Styles.selectedOption : Styles.notSelectedOption
-          }
+          style={[styles.option, gender === "Mann" && styles.selectedOption]}
         >
-          <Text>Mann</Text>
+          <Text
+            style={[
+              styles.optionText,
+              gender === "Mann" && styles.selectedOptionText,
+            ]}
+          >
+            Mann
+          </Text>
         </Pressable>
         <RegularButton
           title="Neste"
@@ -335,25 +367,57 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
             if (!gender) return;
             setScreen("quiz");
           }}
+          style={styles.primaryButton}
         />
       </View>
     );
   }
 
   function QuizScreen() {
+    const progress = (currentQuestionNumber + 1) / questions.length;
+
     return (
-      <>
-        <Text>{currentQuestion.text}</Text>
+      <View style={styles.screen}>
+        <Text style={styles.progressText}>
+          Spørsmål {currentQuestionNumber + 1} av {questions.length}
+        </Text>
+        <View style={styles.progressTrack}>
+          <View
+            style={[styles.progressFill, { width: `${progress * 100}%` }]}
+          />
+        </View>
+        <Text style={styles.questionText}>{currentQuestion.text}</Text>
         {currentQuestion.options.map(showOptions)}
-        <RegularButton title="Next" onPress={goToNextQuestion} />
-      </>
+        <RegularButton
+          title={
+            currentQuestionNumber === questions.length - 1
+              ? "Se resultat"
+              : "Neste"
+          }
+          onPress={goToNextQuestion}
+          style={[
+            styles.primaryButton,
+            !hasAnsweredCurrentQuestion && styles.disabledButton,
+          ]}
+        />
+      </View>
     );
   }
 
   function ResultScreen() {
     return (
-      <View>
-        <Text>Score: {calculateScore()}</Text>
+      <View style={styles.screen}>
+        <Text style={styles.title}>Resultat</Text>
+        <View style={styles.scoreBox}>
+          <Text style={styles.scoreLabel}>Din score</Text>
+          <Text style={styles.scoreValue}>{calculateScore()}</Text>
+        </View>
+        {renderRiskResult()}
+        <RegularButton
+          title="Ta testen på nytt"
+          onPress={restartQuiz}
+          style={styles.primaryButton}
+        />
       </View>
     );
   }
@@ -371,31 +435,165 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <View style={Styles.modalContainer}>
-        <RegularButton title="close modal" onPress={closeModal} />
-
+      <ScrollView
+        style={styles.modalContainer}
+        contentContainerStyle={styles.modalContent}
+      >
+        <BackButton onPress={closeModal} style={styles.backButton} />
         {controllScreen()}
-
-        <Text>{JSON.stringify(answers)}</Text>
-      </View>
+      </ScrollView>
     </Modal>
   );
 }
 
-const Styles = {
+const styles = StyleSheet.create({
   modalContainer: {
-    marginTop: 50,
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  modalContent: {
+    flexGrow: 1,
     padding: 20,
+    paddingTop: 56,
+    paddingBottom: 32,
+  },
+  backButton: {
+    alignSelf: "flex-start",
+  },
+  screen: {
+    backgroundColor: theme.colors.box,
+    borderRadius: theme.borderRadius.medium,
+    gap: 14,
+    marginTop: 16,
+    padding: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  helpRow: {
+    alignItems: "flex-end",
+  },
+  title: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.heading,
+    fontSize: 28,
+    fontWeight: "700",
+  },
+  lead: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.main,
+    fontSize: 17,
+    fontWeight: "700",
+    lineHeight: 23,
+  },
+  bodyText: {
+    color: theme.colors.darkGrey,
+    fontFamily: theme.fonts.main,
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  option: {
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 13,
   },
   selectedOption: {
-    backgroundColor: "lightblue",
+    backgroundColor: "#EAF4EE",
+    borderColor: theme.colors.primary,
   },
-  notSelectedOption: {
-    backgroundColor: "white",
+  optionText: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.main,
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  selectedOptionText: {
+    color: theme.colors.primary,
+    fontWeight: "700",
+  },
+  primaryButton: {
+    marginTop: 8,
+  },
+  disabledButton: {
+    opacity: 0.45,
+  },
+  progressText: {
+    color: theme.colors.darkGrey,
+    fontFamily: theme.fonts.main,
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  progressTrack: {
+    backgroundColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.large,
+    height: 8,
+    overflow: "hidden",
+  },
+  progressFill: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.large,
+    height: "100%",
+  },
+  questionText: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.heading,
+    fontSize: 22,
+    fontWeight: "700",
+    lineHeight: 28,
+  },
+  scoreBox: {
+    alignItems: "center",
+    backgroundColor: "#EAF4EE",
+    borderRadius: theme.borderRadius.medium,
+    padding: 16,
+  },
+  scoreLabel: {
+    color: theme.colors.darkGrey,
+    fontFamily: theme.fonts.main,
+    fontSize: 14,
+  },
+  scoreValue: {
+    color: theme.colors.primary,
+    fontFamily: theme.fonts.heading,
+    fontSize: 42,
+    fontWeight: "700",
+  },
+  resultCard: {
+    gap: 10,
+  },
+  resultTitle: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.heading,
+    fontSize: 24,
+    fontWeight: "700",
   },
   callBox: {
-    backgroundColor: "lightgray",
-    padding: 10,
-    margin: 10,
+    backgroundColor: "#FFF4D2",
+    borderColor: theme.colors.accent,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    gap: 4,
+    marginTop: 6,
+    padding: 14,
   },
-};
+  callLabel: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.main,
+    fontWeight: "700",
+  },
+  callNumber: {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.heading,
+    fontSize: 26,
+    fontWeight: "700",
+  },
+  callTime: {
+    color: theme.colors.darkGrey,
+    fontFamily: theme.fonts.main,
+  },
+});
