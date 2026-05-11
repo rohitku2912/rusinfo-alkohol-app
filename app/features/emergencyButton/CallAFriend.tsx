@@ -160,77 +160,61 @@ export default function CallAFriend({ onEditingChange }: Props) {
 }
 
 const styles = StyleSheet.create({
-  resetButton: {
-    alignSelf: "flex-start",
-    marginBottom: 10,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    backgroundColor: "#fee2e2",
-    borderRadius: 8,
-  },
-
-  resetText: {
-    color: "#b91c1c",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-
   row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    marginTop: 12,
   },
 
   numberText: {
     fontSize: 16,
-    color: "#1f2937",
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    marginTop: 6,
-    backgroundColor: "#739bec",
+    color: "#111827",
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    marginTop: 8,
+    backgroundColor: "rgba(99, 102, 241, 0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(99, 102, 241, 0.15)",
   },
 
   numberLink: {
-    color: "#4338ca",
     fontWeight: "600",
-  },
-
-  placeholderText: {
-    color: "#9ca3af",
-    fontStyle: "italic",
+    color: "#1D4ED8",
   },
 
   inputInline: {
     fontSize: 16,
-    padding: 0,
-    margin: 0,
-    borderBottomWidth: 1,
-    borderColor: "#a1aaf7",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    backgroundColor: "#F9FAFB",
   },
 
   error: {
-    color: "red",
-    marginTop: 4,
-    fontSize: 12,
+    color: "#B91C1C",
+    marginTop: 6,
+    fontSize: 13,
+    lineHeight: 18,
   },
 
   emptyState: {
-    
-    padding: 12,
-    borderRadius: 10,
+    padding: 14,
+    borderRadius: 14,
+    backgroundColor: "rgba(243, 244, 246, 0.8)",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
 
   emptyText: {
-    fontSize: 16,
-    color: "#374151",
-    fontWeight: "500",
+    fontSize: 15,
+    color: "#111827",
+    fontWeight: "600",
   },
 
   emptyHint: {
     marginTop: 4,
     fontSize: 13,
-    color: "#9ca3af",
-    fontStyle: "italic",
+    color: "#6B7280",
   },
 });

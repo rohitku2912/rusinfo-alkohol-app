@@ -27,86 +27,124 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
 
   return (
     <Modal
-      visible={isVisible}
-      animationType="slide"
-      onRequestClose={closeModal} transparent
-    >
-      <View style={styles.modalContainer}>
-        <Pressable onPress={closeModal} style={styles.closeButton}>
-          <Text style={styles.closeText}>✕</Text>
-        </Pressable>
+  visible={isVisible}
+  animationType="slide"
+  onRequestClose={closeModal}
+  transparent
+>
+  <View style={styles.modalContainer}>
+    
+    <Pressable onPress={closeModal} style={styles.closeButton}>
+      <Text style={styles.closeText}>✕</Text>
+    </Pressable>
 
-        
-          <Text style={styles.header}>Kriseplan</Text>
-          <View style={{ position: "absolute", top: 0, right: 0 }}>
-
-  <View style={{ right: 50 }}>
-
+    <View style={styles.headerRow}>
+  <View style={styles.helpButton}>
     <HelpButton helpKey="emergencybutton" />
-
   </View>
 
+  <Text style={styles.header}>Trenger du hjelp?</Text>
 </View>
-<ScrollView contentContainerStyle={styles.scrollContent}>
-          {!isEditingNumber && !isEditingPlan && <PersonalGoal />}
 
-          {!isEditingNumber && (
-            <EmergencyPlan onEditingChange={setIsEditingPlan} />
-          )}
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+      {!isEditingNumber && !isEditingPlan && <PersonalGoal />}
 
-          {!isEditingPlan && (
-            <CallAFriend onEditingChange={setIsEditingNumber} />
-          )}
-        </ScrollView>
-      </View>
-    </Modal>
+      {!isEditingNumber && (
+        <EmergencyPlan onEditingChange={setIsEditingPlan} />
+      )}
+
+      {!isEditingPlan && (
+        <CallAFriend onEditingChange={setIsEditingNumber} />
+      )}
+    </ScrollView>
+
+  </View>
+</Modal>
   );
 }
 const styles = StyleSheet.create({
   modalContainer: {
-    marginTop: 50,
-  backgroundColor: "#f8d7da",
-    position: "relative",
+    flex: 1,
+    marginTop: 60,
+    backgroundColor: "#FFF8F6",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingTop: 24,
+    paddingHorizontal: 20,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 10,
   },
+
   header: {
-    fontSize: 25,
-    fontWeight: "bold",
-    margin: 10,
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#2B2B2B",
+    marginBottom: 24,
+    textAlign: "center",
+    letterSpacing: 0.5,
   },
+
   subHeader: {
-    fontSize: 13,
-    fontWeight: "light",
+    fontSize: 14,
+    color: "#6B7280",
+    lineHeight: 22,
   },
+
   button: {
-    fontSize: 16,
-    fontWeight: "bold",
-    margin: 10,
-    backgroundColor: "lightgray",
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: "#E9D5FF",
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+    borderRadius: 16,
+    marginTop: 12,
   },
+
   edit: {
-    fontSize: 16,
-    fontWeight: "bold",
-    margin: 10,
-    backgroundColor: "lightgray",
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 14,
+    marginTop: 10,
   },
+
   closeButton: {
     position: "absolute",
-    top: 10,
-    right: 10,
-    padding: 8,
-    zIndex: 10,
+    top: 18,
+    right: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 20,
   },
 
   closeText: {
-    fontSize: 22,
-    fontWeight: "600",
-    color: "#111827",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#374151",
   },
+
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 60,
+    gap: 18,
+  },
+  headerRow: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+    position: "relative",
+  },
+  helpButton: {
+    position: "absolute",
+    left: 0,
+    top: 0
   },
 });

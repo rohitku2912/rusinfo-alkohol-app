@@ -82,7 +82,7 @@ export default function RegisterTriggerModal({
   ).filter((f) => f && !presetProtectionFactors.includes(f));
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType="fade" transparent>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.overlay}>
           <View style={styles.container}>
@@ -206,7 +206,7 @@ export default function RegisterTriggerModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.55)",
+    backgroundColor: "rgba(60, 70, 60, 0.25)",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -214,9 +214,11 @@ const styles = StyleSheet.create({
   container: {
     width: "92%",
     maxHeight: "85%",
-    backgroundColor: "#fff",
+    backgroundColor: "#f6f7f4",
     borderRadius: 18,
     padding: 16,
+    borderWidth: 1,
+    borderColor: "#d9ded6",
   },
 
   header: {
@@ -228,6 +230,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "600",
+    color: "#2f3a2f",
   },
   subtitle: {
     fontSize: 14,
@@ -238,7 +241,7 @@ const styles = StyleSheet.create({
 
   close: {
     fontSize: 18,
-    color: "#666",
+    color: "#5c6b5c",
   },
 
   section: {
@@ -247,29 +250,34 @@ const styles = StyleSheet.create({
 
   input: {
     borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
+    borderColor: "#d9ded6",
+    borderRadius: 14,
     padding: 10,
     marginBottom: 10,
+    backgroundColor: "#ffffff",
+    color: "#2f3a2f",
   },
 
   button: {
-    backgroundColor: "#dbe4ff",
+    backgroundColor: "#c9d2c3",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 14,
     marginBottom: 10,
     alignItems: "center",
   },
 
   buttonText: {
-    fontWeight: "500",
+    fontWeight: "600",
+    color: "#2f3a2f",
   },
 
   item: {
-    padding: 12,
-    backgroundColor: "#f3f4f6",
-    borderRadius: 10,
-    marginBottom: 8,
+    backgroundColor: "#e7ebe3",
+    padding: 10,
+    borderRadius: 14,
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: "#d9ded6",
   },
 
   itemText: {
@@ -293,10 +301,12 @@ const styles = StyleSheet.create({
   },
 
   chip: {
-    backgroundColor: "#eef2ff",
+    backgroundColor: "#e7ebe3",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 14,
     marginBottom: 6,
+    borderWidth: 1,
+    borderColor: "#d9ded6",
   },
 
   helper: {

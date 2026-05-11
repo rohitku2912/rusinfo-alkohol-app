@@ -394,43 +394,39 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
+  selectedFilter: {
+    backgroundColor: "#6f8f84",
+    borderColor: "#6f8f84",
+  },
+  
   filterButton: {
     padding: 8,
     borderWidth: 1,
     borderRadius: 20,
     marginRight: 8,
-    borderColor: "#e2e8f0",
-    backgroundColor: "#f8fafc",
+    borderColor: "#c9d6e0",
+    backgroundColor: "#f2f6f9",
   },
-
-  selectedFilter: {
-    backgroundColor: "#a1aaf7",
-    borderColor: "#a1aaf7",
-  },
-
+  
   filterText: {
-    color: theme.colors.lightText,
+    color: "#2f3b44",
   },
-
+  
   selectedFilterText: {
-    color: theme.colors.lightText,
+    color: "#ffffff",
   },
-
   list: {
     marginTop: 10,
     gap: 10,
   },
 
   card: {
-    backgroundColor: "#f5f7ff",
+    backgroundColor: "#f2f6f9",
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    borderColor: "#c9d6e0",
   },
 
   cardContent: {
@@ -449,8 +445,7 @@ const styles = StyleSheet.create({
 
   cardText: {
     fontSize: 16,
-    color: "#1f2937",
-    marginBottom: 8,
+    color: "#2f3b44",
   },
 
   triggerHeader: {
@@ -462,16 +457,15 @@ const styles = StyleSheet.create({
 
   countText: {
     fontSize: 12,
-    color: "#6b7280",
+    color: "#5c6b76",
     fontStyle: "italic",
-    top: 6,
-    right: 24,
+    top: 2,
+    right: 28,
   },
 
   protectionText: {
     fontSize: 14,
-    color: "#475569",
-    marginBottom: 4,
+    color: "#3f4f5a",
   },
 
   noProtections: {

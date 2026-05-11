@@ -188,7 +188,7 @@ export default function Dashboard() {
       </ScrollView>
       <View style={styles.EmergencyButton}>
         <Pressable onPress={() => setIsEmergencyVisible(true)}>
-          <Text>Nødknapp</Text>
+        <Text style={styles.emergencyText}>Nød-knapp</Text>
         </Pressable>
         <EmergencyModal
           isVisible={isEmergencyVisible}
@@ -229,8 +229,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.emergency,
     padding: 10,
     borderRadius: 100,
-    borderColor: "#c48c8c",
+    borderColor: "red",
     borderWidth: 3,
+  },
+  emergencyText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "700",
+    textAlign: "center",
   },
   outerContainer: {
     flex: 1,

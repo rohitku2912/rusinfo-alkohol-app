@@ -18,7 +18,7 @@ const theme = {
     lightGrey: "#e2e1e1",
     darkGrey: "#424242",
     text: "#1F2A24",
-    emergency: "#FF5722",
+    emergency: "#EF4444",
     buttonText: "#fffaf3",
     button: "#529255",
   },

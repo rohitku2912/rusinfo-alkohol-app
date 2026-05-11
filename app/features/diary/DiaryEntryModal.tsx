@@ -1,18 +1,17 @@
+import EditButton from "@/app/components/ui/editButton";
 import {
   Alert,
   Keyboard,
   Modal,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  Pressable,
 } from "react-native";
 import InputBox from "../../components/ui/inputBox";
-import RegularButton from "../../components/ui/button";
-import theme from "../../theme/constantStyling";
-import EditButton from "@/app/components/ui/editButton";
+import HelpButton from "../help/HelpButton";
 
 interface DiaryEntryModalProps {
   visible: boolean;
@@ -46,14 +45,19 @@ export default function DiaryEntryModal({
   onClose,
 }: DiaryEntryModalProps) {
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType="fade" transparent>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.overlay}>
   <View style={styles.modalCard}>
-          <Pressable onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeText}>✕</Text>
-          </Pressable>
-          <Text style={styles.title}>Nytt dagbokinnlegg</Text>
+  <View style={styles.header}>
+  <HelpButton helpKey="diary" />
+
+  <Text style={styles.title}>Nytt dagbokinnlegg</Text>
+
+  <Pressable onPress={onClose}>
+    <Text style={styles.closeText}>✕</Text>
+  </Pressable>
+</View>
 
           <InputBox
             variant="entry"
@@ -130,72 +134,91 @@ export default function DiaryEntryModal({
 
 const styles = StyleSheet.create({
   overlay: {
-  flex: 1,
-  backgroundColor: "rgba(0,0,0,0.2)",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 20,
-},
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
 
-modalCard: {
-  width: "100%",
-  maxWidth: 420,
-  backgroundColor: "#f4f7f3",
-  borderRadius: 20,
-  padding: 20,
-  position: "relative",
-},
+  modalCard: {
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: "#f3f7fb",
+    borderRadius: 20,
+    padding: 20,
+    position: "relative",
+    borderWidth: 1,
+    borderColor: "#c7d6e3",
+  },
+
   title: {
     fontSize: 22,
     fontWeight: "700",
-    marginBottom: 15,
+    color: "#2f3e4f",
     textAlign: "center",
+    flex: 1,
   },
+
   tag: {
-    padding: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     borderWidth: 1,
+    borderColor: "#c7d6e3",
     borderRadius: 20,
     marginRight: 8,
+    marginBottom: 8,
+    backgroundColor: "#eef3f8",
   },
+
   selectedTag: {
-    backgroundColor: "#a1aaf7",
+    backgroundColor: "#7f9bb3",
+    borderColor: "#5f7f99",
   },
+
   tagText: {
-    color: theme.colors.text,
+    color: "#2f3b44",
+    fontWeight: "500",
   },
+
   tagInputContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
     borderRadius: 20,
     padding: 8,
+    marginTop: 10,
   },
+
   tagInput: {
-    minWidth: 60,
+    minWidth: 80,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderWidth: 1,
+    borderColor: "#c7d6e3",
     borderRadius: 20,
     marginRight: 8,
     marginBottom: 6,
     marginTop: 6,
+    backgroundColor: "#ffffff",
   },
+
   modalButtons: {
     marginTop: 20,
     gap: 10,
   },
-  closeButton: {
-    position: "absolute",
-    top: 15,
-    right: 15,
-    zIndex: 10,
-    padding: 8,
-  },
+
+  
 
   closeText: {
     fontSize: 22,
     fontWeight: "600",
-    color: "#111827",
-    
+    color: "#3b4a5a",
   },
 });

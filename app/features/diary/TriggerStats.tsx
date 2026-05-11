@@ -30,18 +30,18 @@ export default function TriggerStats({ triggerEntries }: Props) {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
-  const colors = [
-  "#f87171", 
-  "#fb923c",
-  "#fbbf24", 
-  "#34d399", 
-  "#60a5fa", 
-  "#a78bfa", 
-  "#f472b6",
-  "#22d3ee", 
-  "#94a3b8", 
-  "#fda4af",
-];
+    const colors = [
+      "#7c9a8e",
+      "#d28b5f", 
+      "#e3b23c",
+      "#4fbf9f", 
+      "#5b8cfa", 
+      "#a07bd3", 
+      "#e26aa2", 
+      "#2fb8c6", 
+      "#8a8f98", 
+      "#c97f6b", 
+    ];
 
   const triggerPieData = topTriggers.map((item, index) => ({
     value: item.count,
@@ -118,20 +118,26 @@ const styles = StyleSheet.create({
   container: {},
 
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f6f7f4",
     padding: 22,
     borderRadius: 20,
     marginBottom: 16,
-  
-    elevation: 3,
     width: "100%",
+  
+    borderWidth: 1,
+    borderColor: "#d9ded6",
+  
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
   },
 
   title: {
     fontSize: 20,
     fontWeight: "700",
     marginBottom: 18,
-    color: "#111827",
+    color: "#2f3a2f",
   },
 
   center: {
@@ -154,15 +160,17 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
     marginRight: 10,
+    opacity: 0.9,
   },
 
   legendText: {
     fontSize: 14,
-    color: "#374151",
+    color: "#3f4a3f",
   },
 
   empty: {
     fontStyle: "italic",
     opacity: 0.6,
+    color: "#5c6b5c",
   },
 });

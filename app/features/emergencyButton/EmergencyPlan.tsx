@@ -75,7 +75,7 @@ export default function EmergencyPlan({ onEditingChange }: Props) {
 
   return (
     <FunctionBox
-      title="Kriseplan"
+      title="Din kriseplan"
       description="Dette kan du gjøre om du føler på en trang til å drikke."
     >
      
@@ -169,13 +169,16 @@ export default function EmergencyPlan({ onEditingChange }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 12,
+    marginTop: 14,
   },
 
   box: {
-    padding: 12,
-    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    padding: 16,
+    borderRadius: 18,
     minHeight: 120,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
   },
 
   inputWrapper: {
@@ -183,66 +186,90 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: "#f6f6f6",
-    padding: 12,
-    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    padding: 16,
+    borderRadius: 18,
     minHeight: 120,
     fontSize: 16,
     textAlignVertical: "top",
+    lineHeight: 24,
+    color: "#1f2937",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
   },
 
   editButtonContainer: {
-    marginTop: 10,
-  },
-
-  editButton: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    zIndex: 10,
+    marginTop: 12,
   },
 
   line: {
     fontSize: 16,
-    marginBottom: 6,
-  },
-
-  triggerContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 10,
+    marginBottom: 10,
+    lineHeight: 24,
+    color: "#1f2937",
   },
 
   triggerWrap: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
-    marginTop: 10,
+    gap: 10,
+    marginTop: 14,
   },
 
   chip: {
-    backgroundColor: "#eef2ff",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 999,
     borderWidth: 1,
-    borderColor: "#dbe4ff",
+    borderColor: "#E5E7EB",
+  },
+
+  chipSelected: {
+    backgroundColor: "#DDD6FE",
+    borderColor: "#8B5CF6",
   },
 
   chipText: {
-    fontSize: 13,
-    color: "#1f2937",
-  },
-  chipSelected: {
-    backgroundColor: "#c7d2fe",
-    borderColor: "#818cf8",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#374151",
   },
 
   emptyTriggersText: {
-    marginTop: 6,
+    marginTop: 8,
     fontSize: 14,
     color: "#6b7280",
     fontStyle: "italic",
+    lineHeight: 22,
+  },
+
+  sectionTitle: {
+    marginTop: 24,
+    marginBottom: 8,
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#111827",
+  },
+
+  protectionBox: {
+    marginTop: 16,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    borderRadius: 18,
+    padding: 16,
+  },
+
+  protectionTitle: {
+    fontWeight: "700",
+    marginBottom: 10,
+    fontSize: 15,
+    color: "#111827",
+  },
+
+  protectionText: {
+    fontSize: 15,
+    lineHeight: 24,
+    marginBottom: 6,
+    color: "#374151",
   },
 });

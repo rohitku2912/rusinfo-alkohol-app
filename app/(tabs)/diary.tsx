@@ -53,15 +53,15 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   diaryTheme: {
-    backgroundColor: "#f8d7da",
+    backgroundColor: "#78a6b3"
   },
   triggerTheme: {
-    backgroundColor: "#e2e3e5",
+    backgroundColor: "#eef1ec",
   },
   tabContainer: {
     flexDirection: "row",
     padding: 0,
-    backgroundColor: "white",
+    backgroundColor: theme.colors.background
   },
   tab: {
     flex: 1,
@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 0,
   },
   diaryTab: {
-    backgroundColor: "#f8d7da",
+    backgroundColor: "#78a6b3",
   },
   triggerTab: {
-    backgroundColor: "#e2e3e5",
+    backgroundColor: "#eef1ec",
   },
   tabText: {
     fontSize: 16,

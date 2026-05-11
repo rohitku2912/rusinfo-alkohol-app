@@ -14,17 +14,19 @@ export default function EditButton({
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.7}
+      activeOpacity={0.8}
       style={[
         {
-          backgroundColor: isEditing ? "#e495d1" : "#d28383",
-          padding: 8,
-          borderRadius: 10,
+          backgroundColor: isEditing ? "#7f9bb3" : "#b87474",
+          paddingVertical: 10,
+          paddingHorizontal: 14,
+          borderRadius: 12,
           alignItems: "center",
           justifyContent: "center",
+
           shadowColor: "#000",
           shadowOpacity: 0.08,
-          shadowRadius: 4,
+          shadowRadius: 6,
           shadowOffset: { width: 0, height: 2 },
           elevation: 2,
         },
@@ -33,9 +35,10 @@ export default function EditButton({
     >
       <Text
         style={{
-          color: "white",
+          color: "#f3f7fb",
           fontWeight: "600",
           fontSize: 14,
+          letterSpacing: 0.2,
         }}
       >
         {isEditing ? "Ferdig" : "Rediger"}

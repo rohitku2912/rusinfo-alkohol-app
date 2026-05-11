@@ -11,9 +11,7 @@ import {
 } from "react-native";
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
-import theme from "../../theme/constantStyling";
 import { useAchievements } from "../achievements/AchievementProvider";
-import HelpButton from "../help/HelpButton";
 import DiaryEntryModal from "./DiaryEntryModal";
 
 type DiaryEntry = {
@@ -127,7 +125,7 @@ export default function DiaryDisplay() {
         <View style={styles.entryTags}>
           {item.tags.map((tag) => (
             <View key={tag} style={styles.entryTag}>
-              <Text style={{ color: "#4338ca", fontWeight: "600" }}>{tag}</Text>
+              <Text style={{ color: "#2f3b44", fontWeight: "600" }}>{tag}</Text>
             </View>
           ))}
         </View>
@@ -137,7 +135,6 @@ export default function DiaryDisplay() {
 
   return (
     <View style={styles.container}>
-      <HelpButton helpKey="diary" />
       {/* søk + knapp */}
       <View style={styles.searchRow}>
         <View style={styles.searchInputWrapper}>
@@ -227,7 +224,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 16,
-    backgroundColor: "#f8d7da",
+    backgroundColor: "#78a6b3",
     position: "relative",
   },
 
@@ -244,12 +241,12 @@ const styles = StyleSheet.create({
 
   searchInput: {
     borderWidth: 1,
-    borderColor: "#dbe4ff",
     borderRadius: 16,
     paddingHorizontal: 14,
     paddingVertical: 10,
     backgroundColor: "#ffffff",
-    color: theme.colors.lightText,
+    borderColor: "#c5d6e6",
+    color: "#2f3b44",
     fontSize: 15,
   },
 
@@ -267,20 +264,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderWidth: 1,
-    borderColor: "#dbe4ff",
     borderRadius: 999,
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f2e8d5",
+    borderColor: "#e3d6bf",
   },
 
   selectedTag: {
-    backgroundColor: "#818cf8",
-    borderColor: "#818cf8",
+    backgroundColor: "#d9c7a6",
+    borderColor: "#c4b08a",
   },
 
   tagText: {
-    color: theme.colors.lightText,
+    color: "#2e3a33",
     fontSize: 14,
     fontWeight: "500",
   },
@@ -290,7 +287,6 @@ const styles = StyleSheet.create({
   },
 
   entry: {
-    backgroundColor: "#ffffff",
     padding: 18,
     borderRadius: 22,
     marginBottom: 14,
@@ -300,7 +296,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 4,
     borderWidth: 1,
-    borderColor: "#eef2ff",
+    backgroundColor: "#f7f9fb",
+    borderColor: "#d6e0ea",
   },
 
   date: {
@@ -319,7 +316,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 14,
     right: 14,
-    backgroundColor: "#fff1f2",
+    backgroundColor: "#ffecee",
     padding: 8,
     borderRadius: 999,
   },
@@ -334,11 +331,10 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 999,
-    backgroundColor: "#eef2ff",
+    backgroundColor: "#d7e4ef",
     marginRight: 8,
     marginBottom: 8,
-    fontSize: 12,
-    color: "#4338ca",
-    fontWeight: "600",
+    borderWidth: 1,
+    borderColor: "#c5d6e6",
   },
 });
