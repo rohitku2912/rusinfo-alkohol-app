@@ -55,12 +55,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 6,
     padding: 10,
-    color: theme.colors.darkText,
   },
 
   description: {
     fontSize: 14,
-    color: "#666",
+    color: theme.colors.text,
     padding: 10,
   },
 

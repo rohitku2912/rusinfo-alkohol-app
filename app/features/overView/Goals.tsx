@@ -180,7 +180,6 @@ export default function Goals(props: Props) {
 
 const styles = StyleSheet.create({
   fullBar: {
-    marginLeft: 10,
     height: 20,
     width: "100%",
     backgroundColor: "lightgray",
@@ -190,13 +189,6 @@ const styles = StyleSheet.create({
     height: 20,
     backgroundColor: theme.colors.primary,
     borderRadius: 10,
-  },
-  whiteDaysComponent: {
-    backgroundColor: "#ffffff",
-    borderRadius: theme.borderRadius.medium,
-    padding: theme.spacing.medium,
-    margin: theme.spacing.medium,
-    flexDirection: "row",
   },
   goalCard: {
     backgroundColor: "#ffffff",
@@ -218,12 +210,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: theme.spacing.medium,
-    marginTop: theme.spacing.medium,
   },
   editGoalsButton: {
     color: theme.colors.text,
     marginLeft: "auto",
-    padding: theme.spacing.medium,
+    padding: theme.spacing.small,
   },
   editInnerView: {
     flexDirection: "row",
@@ -232,6 +223,6 @@ const styles = StyleSheet.create({
   },
   editOuterView: {
     gap: 10,
-    marginBottom: theme.spacing.large,
+    marginBottom: theme.spacing.small,
   },
 });

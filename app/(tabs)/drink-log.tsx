@@ -110,8 +110,8 @@ export default function DrinkLog() {
   return (
     <View>
       <Goals logs={logs} />
-      <Stats logs={logs} />
       {showLastWeekResult()}
+      <Stats logs={logs} />
       <DrinkChart logs={logs} />
     </View>
   );
@@ -123,8 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     marginHorizontal: theme.spacing.medium,
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.medium,
+    marginBottom: theme.spacing.small,
     gap: 6,
   },
   lastWeekTitle: {

@@ -1,16 +1,17 @@
+import theme from "@/app/theme/constantStyling";
 import {
-    DrinkLogEntry,
-    getLogsForLastDays,
-    getTotalDrinks,
-    getWhiteDayCount,
+  DrinkLogEntry,
+  getLogsForLastDays,
+  getTotalDrinks,
+  getWhiteDayCount,
 } from "@/lib/storage/drinkLogs";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-type props = {
+type Props = {
   logs: DrinkLogEntry[];
 };
 
-export default function Stats({ logs }: props) {
+export default function Stats({ logs }: Props) {
   function totalWhiteDaysPerMonth(logs: DrinkLogEntry[]) {
     const last30DaysLogs = getLogsForLastDays(logs, 30);
     return getWhiteDayCount(last30DaysLogs);
@@ -37,51 +38,60 @@ export default function Stats({ logs }: props) {
   }
 
   return (
-    <View>
-      <Text>De siste 30 dager</Text>
-      <Text>Hvite dager: {totalWhiteDaysPerMonth(logs)}</Text>
-      <Text>
-        Gjennomsnittlig hvite dager {averageWhiteDaysPerMonth(logs).toFixed(2)}
-      </Text>
-      <Text>antall drikker: {totalDrinksThisMonth(logs)}</Text>
-      <Text>
-        Gjennomsnittlig drikke per dag:{" "}
-        {averageDrinksPerDayThisMonth(logs).toFixed(2)}
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>De siste 30 dager</Text>
+      <View style={styles.row}>
+        <Text style={styles.label}>Hvite dager</Text>
+        <Text style={styles.value}>{totalWhiteDaysPerMonth(logs)}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Gj.snitt hvite dager</Text>
+        <Text style={styles.value}>
+          {averageWhiteDaysPerMonth(logs).toFixed(2)}
+        </Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Antall drikker</Text>
+        <Text style={styles.value}>{totalDrinksThisMonth(logs)}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Gj.snitt drikke per dag</Text>
+        <Text style={styles.value}>
+          {averageDrinksPerDayThisMonth(logs).toFixed(2)}
+        </Text>
+      </View>
     </View>
   );
 }
 
-/**
-
- 
- 
- getLogsForLastDays 
- 
- getDrinkingDayCount
- 
- getWhiteDayCount
- 
- getLogsForThisWeek
- 
- getLogsForWeek
- 
- getNotLoggedDayCount
- 
- getDateFromKey
- 
- isWhiteDay
- 
- isDrinkDay
- 
- getTotalDrinks
- */
-
-/**
- *
- * average white days per week
- *
- * drinking days
- *
- * average drinks per week
- */
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.box,
+    borderRadius: theme.borderRadius.medium,
+    padding: theme.spacing.medium,
+    marginHorizontal: theme.spacing.medium,
+    gap: 6,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: theme.colors.text,
+    marginBottom: 2,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.medium,
+  },
+  label: {
+    flex: 1,
+    fontSize: 13,
+    color: theme.colors.darkGrey,
+  },
+  value: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: theme.colors.primary,
+  },
+});

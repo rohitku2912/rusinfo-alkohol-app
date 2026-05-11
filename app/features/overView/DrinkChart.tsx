@@ -204,13 +204,13 @@ export default function DrinkChart({ logs }: Props) {
       <BarChart
         data={chartData}
         barWidth={24}
-        spacing={18}
+        spacing={20}
         roundedTop
         xAxisThickness={0}
         yAxisThickness={0}
-        noOfSections={5}
+        noOfSections={4}
         maxValue={maxValue}
-        height={180}
+        height={140}
       />
     </View>
   );
@@ -220,14 +220,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#ffffff",
     borderRadius: theme.borderRadius.medium,
-    padding: theme.spacing.medium,
-    margin: theme.spacing.medium,
+    padding: theme.spacing.small,
+    marginHorizontal: theme.spacing.medium,
+    marginTop: theme.spacing.small,
   },
   title: {
     fontSize: 20,
     fontWeight: "700",
     color: theme.colors.text,
-    marginBottom: theme.spacing.medium,
   },
   legend: {
     marginTop: theme.spacing.medium,
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   ButtonContainer: {
     flexDirection: "row",
     gap: theme.spacing.small,
-    marginBottom: theme.spacing.medium,
+    marginBottom: 4,
   },
   TimeButton: {
     padding: theme.spacing.small,
