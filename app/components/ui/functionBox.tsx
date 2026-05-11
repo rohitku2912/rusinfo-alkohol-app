@@ -24,12 +24,12 @@ export default function FunctionBox({
       activeOpacity={onPress ? 0.8 : 1} // only act as button if onpress exist
     >
       <View style={styles.header}>
-<View style={{ flex: 1 }}>
-  <Text style={styles.title}>{title}</Text>
-  <Text style={styles.description}>{description}</Text>
-</View>
-{helpBtn && <View style={styles.help}>{helpBtn}</View>}
-</View>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
+        {helpBtn && <View style={styles.help}>{helpBtn}</View>}
+      </View>
       {children && <View>{children}</View>}
     </TouchableOpacity>
   );
@@ -38,7 +38,7 @@ export default function FunctionBox({
 const styles = StyleSheet.create({
   container: {
     width: "95%",
-    backgroundColor: "#d5c2da",
+    backgroundColor: theme.colors.box,
     padding: 20,
     margin: 10,
     borderRadius: theme.borderRadius.large,
@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white",
     marginBottom: 6,
     padding: 10,
+    color: theme.colors.lightText,
   },
 
   description: {
@@ -70,5 +70,6 @@ const styles = StyleSheet.create({
 
   content: {
     marginTop: 15,
+    color: theme.colors.lightGrey,
   },
 });

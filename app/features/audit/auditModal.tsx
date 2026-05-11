@@ -8,6 +8,8 @@ type Props = {
   setIsVisible: (isVisible: boolean) => void;
 };
 
+type Gender = "Mann" | "Dame";
+
 type Option = {
   id: number;
   text: string;
@@ -22,6 +24,8 @@ type Question = {
 type Answers = {
   [questionId: number]: number;
 };
+
+type RiskLevel = "lav" | "okende" | "hoy" | "svaertHoy";
 
 const questions: Question[] = [
   {
@@ -137,7 +141,10 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const currentQuestion = questions[currentQuestionNumber];
-  const [screen, setScreen] = useState<"start" | "quiz" | "result">("start");
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [screen, setScreen] = useState<"start" | "gender" | "quiz" | "result">(
+    "start",
+  );
 
   function closeModal() {
     setIsVisible(false);
@@ -187,23 +194,103 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
     return <Text> score: {calculateScore()}</Text>;
   }
 
-  function scoreToRisk() {
+  function scoreToRisk(): RiskLevel {
     const score = calculateScore();
-    if (score <= 7) {
-      return "Lav risiko";
-    } else if (score >= 8 && score < 16) {
-      return "Økende risiko";
-    } else if (score >= 16 && score < 19) {
-      return "Høy risiko";
-    } else {
-      return "Svært høy risiko";
+
+    if (gender === "Dame") {
+      if (score <= 5) {
+        return "lav";
+      } else if (score < 16) {
+        return "okende";
+      } else if (score < 19) {
+        return "hoy";
+      } else {
+        return "svaertHoy";
+      }
     }
+
+    if (score <= 7) {
+      return "lav";
+    } else if (score < 16) {
+      return "okende";
+    } else if (score < 19) {
+      return "hoy";
+    } else {
+      return "svaertHoy";
+    }
+  }
+
+  function renderRiskResult() {
+    const risk = scoreToRisk();
+
+    if (risk === "lav") {
+      return (
+        <View>
+          <Text>Lav risiko</Text>
+          <Text>
+            Dine svar viser at du aldri eller i blant drikker alkohol, og at du
+            kontrollerer dette på en bra måte.
+          </Text>
+        </View>
+      );
+    }
+
+    if (risk === "okende") {
+      return (
+        <View>
+          <Text>Økende risiko</Text>
+          <Text>
+            Det kan se ut som om du drikker alkohol på en måte hvor det kan være
+            risiko for å utvikle alkoholrelaterte problemer. Du bør tenke
+            igjennom din bruk av alkohol og kanskje vurdere å endre
+            alkoholforbruket ditt.
+          </Text>
+        </View>
+      );
+    }
+
+    if (risk === "hoy") {
+      return (
+        <View>
+          <Text>Høy risiko</Text>
+          <Text>
+            Du drikker alkohol på en måte der det er høy risiko for at du kan
+            utvikle alkoholrelaterte problem. Du bør vurdere å redusere ditt
+            inntak av alkohol. Det kan være lurt å snakke med noen om din bruk
+            av alkohol. F.eks din fastlege, andre i hjelpeapparatet, noen i
+            familien din, en venn eller kollega.
+          </Text>
+        </View>
+      );
+    }
+
+    return (
+      <View>
+        <Text>Svært høy risiko</Text>
+        <Text>
+          Du drikker for mye alkohol og kanskje har du allerede fått et
+          alkoholrelatert problem. Din skåre antyder alkoholavhengighet.
+          Problemene dine er av en sånn art at denne appen alene kanskje ikke
+          vil være tilstrekkelig hjelp. Ta kontakt med din fastlege eller andre
+          i hjelpeapparatet. De kan sammen med deg finne ut hva som trengs for
+          at du eventuelt skal kunne greie å endre din bruk av alkohol. Du bør
+          også snakke med noen andre om din bruk av alkohol, f.eks noen i
+          familien din, en venn, kollega eller andre. Om du ønsker å snakke med
+          noen annonymt kan du ringe eller chatte med rusinfo:
+        </Text>
+        <View style={Styles.callBox}>
+          <Text>Ring rusinfo:</Text>
+          <Text>915 08 588</Text>
+          <Text>(kl 11-18)</Text>
+        </View>
+      </View>
+    );
   }
 
   function startScreen() {
     return (
       <View>
-        <HelpButton helpKey="audit"/>
+        <HelpButton helpKey="audit" />
         <Text>Velkommen til AUDIT-testen</Text>
         <Text>
           Dette er en test som kan hjelpe deg å forstå ditt eget alkoholforbruk
@@ -213,7 +300,42 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
           Du vil få 10 spørsmål om ditt alkoholforbruk, og til slutt vil du få
           en score som indikerer din risiko for alkoholrelaterte problemer
         </Text>
-        <RegularButton title="Start test" onPress={() => setScreen("quiz")} />
+        <RegularButton title="Start test" onPress={() => setScreen("gender")} />
+      </View>
+    );
+  }
+
+  function GenderScreen() {
+    return (
+      <View>
+        <Text>Hva er kjønnet ditt?</Text>
+        <Text>
+          Dette blir du spurt om fordi det påvirker resultatet til slutt
+        </Text>
+
+        <Pressable
+          onPress={() => setGender("Dame")}
+          style={
+            gender === "Dame" ? Styles.selectedOption : Styles.notSelectedOption
+          }
+        >
+          <Text>Dame</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => setGender("Mann")}
+          style={
+            gender === "Mann" ? Styles.selectedOption : Styles.notSelectedOption
+          }
+        >
+          <Text>Mann</Text>
+        </Pressable>
+        <RegularButton
+          title="Neste"
+          onPress={() => {
+            if (!gender) return;
+            setScreen("quiz");
+          }}
+        />
       </View>
     );
   }
@@ -232,13 +354,13 @@ export default function AuditModal({ isVisible, setIsVisible }: Props) {
     return (
       <View>
         <Text>Score: {calculateScore()}</Text>
-        <Text>Risiko: {scoreToRisk()}</Text>
       </View>
     );
   }
 
   function controllScreen() {
     if (screen === "start") return startScreen();
+    if (screen === "gender") return GenderScreen();
     if (screen === "quiz") return QuizScreen();
     return ResultScreen();
   }
@@ -270,5 +392,10 @@ const Styles = {
   },
   notSelectedOption: {
     backgroundColor: "white",
+  },
+  callBox: {
+    backgroundColor: "lightgray",
+    padding: 10,
+    margin: 10,
   },
 };

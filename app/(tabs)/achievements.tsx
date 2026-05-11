@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button } from "@react-navigation/elements";
-import { View } from "react-native";
+import { Button, View } from "react-native";
 import ShowAchievements from "../features/achievements/ShowAchievements";
 
 export default function Achievements() {
@@ -20,7 +19,10 @@ export default function Achievements() {
   return (
     <View>
       <Button title="reset achievement" onPress={resetAchievements} />
-      <Button title="reset logs and diary" onPress={resetAchievementTestData} />
+      <Button
+        title="reset achievement test data"
+        onPress={resetAchievementTestData}
+      />
       <ShowAchievements />
     </View>
   );
