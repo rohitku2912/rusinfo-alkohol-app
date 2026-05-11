@@ -3,14 +3,7 @@ import type { OnboardingDraft } from "@/types/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
 import CalorieCalcModal from "../features/calorieCalculator/CalorieCalcModal";
@@ -154,42 +147,8 @@ export default function Dashboard() {
             />
           </View>
         </FunctionBox>
-
-        <View style={styles.resetButton}>
-          <View style={styles.debugCard}>
-            <Text style={styles.debugTitle}>Lokal onboardingdata</Text>
-            <Text style={styles.debugText}>
-              Deler anonym statistikk:{" "}
-              {onboardingData.shareAnonymousStats ? "Ja" : "Nei"}
-            </Text>
-            <Text style={styles.debugText}>
-              Alder: {onboardingData.age || "Ikke satt"}
-            </Text>
-            <Text style={styles.debugText}>
-              Kjønn: {onboardingData.gender || "Ikke satt"}
-            </Text>
-            <Text style={styles.debugText}>
-              Fylke: {onboardingData.county || "Ikke satt"}
-            </Text>
-            <Text style={styles.debugText}>
-              Mål: {onboardingData.goal || "Ikke satt"}
-            </Text>
-            <Text style={styles.debugText}>
-              Inspirasjon:{" "}
-              {onboardingData.inspiration?.length
-                ? onboardingData.inspiration.join(", ")
-                : "Ikke satt"}
-            </Text>
-          </View>
-          <Button
-            title="Reset onboarding"
-            onPress={async () => {
-              await AsyncStorage.clear();
-              router.replace("/onboarding" as any);
-            }}
-          />
-        </View>
       </ScrollView>
+
       <View style={styles.EmergencyButton}>
         <Pressable
           onPress={() => setIsEmergencyVisible(true)}
@@ -259,7 +218,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingTop: theme.spacing.small,
-    paddingBottom: 40,
+    paddingBottom: 100,
     alignItems: "center",
   },
   header: {

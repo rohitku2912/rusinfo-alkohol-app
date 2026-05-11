@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
 
   list: {
-    paddingBottom: 30,
+    paddingBottom: 100,
   },
 
   entry: {

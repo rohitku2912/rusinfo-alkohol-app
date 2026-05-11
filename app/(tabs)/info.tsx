@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingBottom: 160,
+    paddingBottom: 100,
     gap: theme.spacing.small,
   },
   categoriesTitle: {
