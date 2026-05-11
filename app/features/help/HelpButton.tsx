@@ -2,6 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { helpContent } from "./helpContent";
+import theme from "@/app/theme/constantStyling";
 
 type Props = {
   helpKey: string;
@@ -39,8 +40,8 @@ const styles = StyleSheet.create({
   },
 
   icon: {
-    fontSize: 50,
-    color: "#0369a1"
+    fontSize: 30,
+    color: theme.colors.lightGrey,
   },
 
   overlay: {

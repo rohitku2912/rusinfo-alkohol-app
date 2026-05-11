@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type FunctionBoxProps = {
   title: string;
-  description: string;
+  description?: string;
   onPress?: () => void;
   children?: React.ReactNode;
   helpBtn?: React.ReactNode;
@@ -26,7 +26,9 @@ export default function FunctionBox({
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
+          {description && (
+<Text style={styles.description}>{description}</Text>
+)}
         </View>
         {helpBtn && <View style={styles.help}>{helpBtn}</View>}
       </View>
@@ -53,22 +55,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 6,
-    padding: 10,
+    marginTop: 5,
+    marginBottom: 10,
+    color: theme.colors.text,
   },
 
   description: {
     fontSize: 14,
-    color: theme.colors.text,
-    padding: 10,
+    color: theme.colors.darkGrey,
+    marginTop: 5,
+    marginBottom: 10
   },
 
   help: {
-    marginRight: 40,
+    marginRight: 30,
   },
 
   content: {
-    marginTop: 15,
+    marginTop: 10,
     color: theme.colors.lightGrey,
   },
 });

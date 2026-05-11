@@ -15,8 +15,8 @@ import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
 import CalorieCalcModal from "../features/calorieCalculator/CalorieCalcModal";
 import ProgramTimer from "../features/programTimer/ProgramTimer";
-import { SavedEntry } from "../features/savingsCalculator/config";
 import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
+import { SavedEntry } from "../features/savingsCalculator/config";
 import theme from "../theme/constantStyling";
 
 import AuditModal from "../features/audit/auditModal";
@@ -88,11 +88,11 @@ export default function Dashboard() {
 
         <FunctionBox
           title="DRIKKELOGG"
-          description="logg her når du har drukket"
+          description="Her kan du logge ditt alkoholforbruk."
           helpBtn={<HelpButton helpKey="drinklog" />}
         >
           <RegularButton
-            title="regn ut"
+            title="Registrer drikke"
             onPress={() => setIsDrinkLoggerVisible(true)}
           />
         </FunctionBox>
@@ -100,28 +100,31 @@ export default function Dashboard() {
         <PartyPlanner />
 
         <FunctionBox
-          title="SPAREKALKULATOR"
-          description="du har spart så langt"
-          helpBtn={<HelpButton helpKey="savingcalculator" />}
-        >
-          <View style={styles.functionContent}>
-            <RegularButton
-              title="regn ut"
-              onPress={() => setIsSavingsVisible(true)}
-            />
-            <Text style={styles.functionText}>
-              {formatNumber(savedTotal)} kr spart
-            </Text>
-          </View>
-        </FunctionBox>
+  title="SPAREKALKULATOR"
+  helpBtn={<HelpButton helpKey="savingcalculator" />}
+>
+  <View style={styles.functionContent}>
+    <Text style={styles.functionText}>
+      <Text style={styles.smallText}>Du har spart: </Text>
+      <Text style={styles.bigText}>
+        {formatNumber(savedTotal)} kr
+      </Text>
+    </Text>
+
+    <RegularButton
+      title="Regn ut"
+      onPress={() => setIsSavingsVisible(true)}
+    />
+  </View>
+</FunctionBox>
 
         <FunctionBox
           title="AUDIT"
-          description="ta en test"
+          description="Ta AUDIT-testen for å kartlegge ditt alkoholforbruk."
           helpBtn={<HelpButton helpKey="audit" />}
         >
           <RegularButton
-            title="open the AUDIT"
+            title="Åpne AUDIT"
             onPress={() => setIsAuditVisible(true)}
           ></RegularButton>
           <AuditModal
@@ -132,17 +135,19 @@ export default function Dashboard() {
 
         <FunctionBox
           title="KALORIKALKULATOR"
-          description="du har unngått så langt"
           helpBtn={<HelpButton helpKey="caloriecalculator" />}
         >
           <View style={styles.functionContent}>
+         <Text style={styles.functionText}>
+      <Text style={styles.smallText}>Du har spart: </Text>
+      <Text style={styles.bigText}>
+        {formatNumber(totalCalories)} kcal
+      </Text>
+    </Text>
             <RegularButton
-              title="se kalorier"
+              title="Regn ut"
               onPress={() => setIsCaloriesVisible(true)}
             />
-            <Text style={styles.functionText}>
-              {formatNumber(totalCalories)} kcal unngått
-            </Text>
           </View>
         </FunctionBox>
 
@@ -237,12 +242,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   functionContent: {
-    marginTop: 12,
+    marginTop: 5,
+    marginBottom: 5,
     gap: 12,
   },
   functionText: {
-    fontSize: 16,
-    color: "#f6ede4",
+    fontSize: 28,
+    color: theme.colors.text,
+    textAlign: "center",
+    marginTop: 5,
+    marginBottom: 5,
   },
   resetButton: {
     width: "95%",
@@ -266,5 +275,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: theme.colors.lightText,
     marginBottom: 6,
+  },
+  smallText: {
+    fontSize: 14,
+    color: theme.colors.darkGrey,
+  },
+  
+  bigText: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: theme.colors.text,
   },
 });

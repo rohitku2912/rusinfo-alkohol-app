@@ -1,5 +1,6 @@
 import RegularButton from "@/app/components/ui/button";
 import FunctionBox from "@/app/components/ui/functionBox";
+import theme from "@/app/theme/constantStyling";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import HelpButton from "../help/HelpButton";
@@ -20,23 +21,23 @@ type PartyState = {
 
 function Ring({ value, label }: { value: number; label: string }) {
   return (
-    <View style={{ alignItems: "center", gap: 8 }}>
+    <View style={{ alignItems: "center", gap: 8, marginBottom: 10 }}>
       <View
         style={{
           width: 76,
           height: 76,
           borderRadius: 38,
           borderWidth: 2.5,
-          borderColor: "#E0A458",
+          borderColor: theme.colors.accent,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontSize: 26, fontWeight: "800", color: "#fff" }}>
+        <Text style={{ fontSize: 26, fontWeight: "800", color: theme.colors.text }}>
           {value}
         </Text>
       </View>
-      <Text style={{ fontSize: 12, color: "#f0f0f0" }}>{label}</Text>
+      <Text style={{ fontSize: 12, color: theme.colors.text }}>{label}</Text>
     </View>
   );
 }
@@ -146,7 +147,7 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
   return (
     <>
-      <FunctionBox title="PLANLEGG FESTEN" description="" helpBtn={<HelpButton helpKey="partyplanner"/>}>
+      <FunctionBox title="PLANLEGG FESTEN" description="Skal du på fest? Legg en plan for hvor mye du skal drikke." helpBtn={<HelpButton helpKey="partyplanner"/>}>
         <View style={{ alignItems: "center", marginTop: 16}}>
         
 
@@ -197,8 +198,10 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
               {!feedback ? (
   <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
+    
     <RegularButton title="ja" onPress={answerYes} />
-    <RegularButton title="nei" onPress={answerNo} />
+     <RegularButton title="nei" onPress={answerNo}/> 
+   
   </View>
 ) : (
   <Text style={styles.feedbackText}>
@@ -214,9 +217,9 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
         
 
           {/* knapp */}
-          <View style={{ marginTop: 16 }}>
+          <View style={{ width: "100%" }}>
             <RegularButton
-              title={party.status === "active" ? "stopp festen" : "start ny fest"}
+              title={party.status === "active" ? "Stopp festen" : "Start ny fest"}
               onPress={() =>
                 party.status === "active" ? finishParty() : setShowModal(true)
               }
@@ -242,41 +245,41 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 18,
     marginTop: 12,
+    marginBottom: 10
   },
   drinkItem: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#f6ede4",
+    color: theme.colors.text,
+    marginBottom: 10
   },
   finishedContainer: {
-    alignItems: "center",
     width: "100%",
   },
   
   finishedTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "800",
-    color: "#fff",
+    color: theme.colors.text,
     marginBottom: 8,
   },
   
   finishedSubtitle: {
-    fontSize: 16,
-    color: "#f0f0f0",
+    fontSize: 14,
+    color: theme.colors.text,
     marginBottom: 20,
-    textAlign: "center",
+
   },
   
   goalBox: {
     width: "100%",
-    borderRadius: 18,
+    marginBottom: 10,
     alignItems: "center",
   },
   
   goalLabel: {
-    color: "#f0f0f0",
+    color: theme.colors.text,
     fontSize: 14,
-    marginBottom: 14,
   },
   
   drinkBadge: {
@@ -297,11 +300,11 @@ const styles = StyleSheet.create({
   drinkValue: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#fff",
+    color: theme.colors.text,
   },
   feedbackText: {
     marginTop: 18,
-    color: "#f5f5f5",
+    color: theme.colors.text,
     fontSize: 15,
     lineHeight: 24,
     textAlign: "center",
@@ -310,6 +313,5 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
   },
-  
  
 });

@@ -33,7 +33,7 @@ export default function RegularButton({
 const styles = StyleSheet.create({
   button: {
     backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.large,
+    borderRadius: theme.borderRadius.medium,
     alignItems: "center",
     justifyContent: "center",
     height: 50,
