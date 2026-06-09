@@ -1,5 +1,18 @@
-import { DrinkLogEntry, getWhiteDayCount } from "@/lib/storage/drinkLogs";
+import {
+  DrinkLogEntry,
+  getDrinkingDayCount,
+  getWhiteDayCount,
+} from "@/lib/storage/drinkLogs";
 import { Achievement } from "./AchievementCard";
+
+export const TIME_IN_PROGRAM_ACHIEVEMENT_IDS = [
+  "24-timer-edru",
+  "7-dager-edru",
+  "30-dager-edru",
+  "3-mnd-edru",
+  "6-mnd-edru",
+  "12-mnd-edru",
+];
 
 export type DiaryEntry = {
   id: string;
@@ -64,12 +77,14 @@ export function getDiaryAchievements(entries: DiaryEntry[]) {
 
 //achievements med logging som input
 export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
+  const drinkingDayCount = getDrinkingDayCount(logs);
+
   return [
     {
       id: "first-log",
       title: "Første logg",
-      description: "Logg din første dag",
-      currentProgress: Math.min(logs.length, 1),
+      description: "Logg din første dag med alkohol",
+      currentProgress: Math.min(drinkingDayCount, 1),
       goal: 1,
       unitOfMeasurement: "logg",
     },
@@ -156,18 +171,86 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
   ];
 }
 
+//achievements for hvor lenge du har vert uten alkohol
+export function getSoberDaysAchievements(daysInProgram: number) {
+  const safeDays = Number.isFinite(daysInProgram) ? daysInProgram : 0;
+  return [
+    {
+      id: "24-timer-edru",
+      title: "24 timer uten alkohol",
+      description: "Ha 24 timer uten alkohol.",
+      currentProgress: Math.min(safeDays, 1),
+      goal: 1,
+      unitOfMeasurement: "dag",
+    },
+    {
+      id: "7-dager-edru",
+      title: "7 dager uten alkohol",
+      description: "Ha 7 dager uten alkohol.",
+      currentProgress: Math.min(safeDays, 7),
+      goal: 7,
+      unitOfMeasurement: "dager",
+    },
+    {
+      id: "30-dager-edru",
+      title: "1 måned uten alkohol",
+      description: "Ha 1 måned uten alkohol.",
+      currentProgress: Math.min(safeDays, 30),
+      goal: 30,
+      unitOfMeasurement: "dager",
+    },
+    {
+      id: "3-mnd-edru",
+      title: "3 måneder uten alkohol",
+      description: "Ha 3 måneder uten alkohol.",
+      currentProgress: Math.min(safeDays, 90),
+      goal: 90,
+      unitOfMeasurement: "dager",
+    },
+    {
+      id: "6-mnd-edru",
+      title: "6 måneder uten alkohol",
+      description: "Ha 6 måneder uten alkohol.",
+      currentProgress: Math.min(safeDays, 180),
+      goal: 180,
+      unitOfMeasurement: "dager",
+    },
+    {
+      id: "12-mnd-edru",
+      title: "1 år uten alkohol",
+      description: "Ha 1 år uten alkohol.",
+      currentProgress: Math.min(safeDays, 365),
+      goal: 365,
+      unitOfMeasurement: "dager",
+    },
+  ];
+}
+
 //samle alle achievements i en funksjon
 export function getAllAchievements(
   logs: DrinkLogEntry[],
   diaryEntries: DiaryEntry[],
+  daysInProgram: number,
 ) {
   return [
     ...getDrinkLogAchievements(logs),
     ...getDiaryAchievements(diaryEntries),
+    ...getSoberDaysAchievements(daysInProgram),
   ];
 }
 
 //sjekk om achievement er fullført
 export function isAchievementCompleted(achievement: Achievement) {
   return achievement.currentProgress >= achievement.goal;
+}
+
+export function keepUnlockedAchievementsCompleted(
+  achievements: Achievement[],
+  unlockedIds: string[],
+) {
+  return achievements.map((achievement) =>
+    unlockedIds.includes(achievement.id)
+      ? { ...achievement, currentProgress: achievement.goal }
+      : achievement,
+  );
 }

@@ -46,3 +46,20 @@ export async function getProgramStartDate(): Promise<Date | null> {
   const ts = Number(raw);
   return Number.isNaN(ts) ? null : new Date(ts);
 }
+
+export async function setProgramStartDate(date: Date) {
+  await AsyncStorage.setItem(
+    STORAGE_KEYS.programStartDate,
+    String(date.getTime()),
+  );
+}
+
+export function getProgramDays(start: Date): number {
+  const time = start?.getTime?.();
+
+  if (!Number.isFinite(time)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.floor((Date.now() - time) / 86_400_000));
+}

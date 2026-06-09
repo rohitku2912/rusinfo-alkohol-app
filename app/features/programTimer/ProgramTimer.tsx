@@ -1,17 +1,14 @@
-import { getProgramStartDate } from "@/lib/storage/onboarding";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  getProgramDays,
+  getProgramStartDate,
+  setProgramStartDate,
+} from "@/lib/storage/onboarding";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FunctionBox from "../../components/ui/functionBox";
 import HelpButton from "../help/HelpButton";
 import theme from "@/app/theme/constantStyling";
-
-const START_KEY = "program_start_date";
-
-
-function getDays(start: Date): number {
-  return Math.floor((Date.now() - start.getTime()) / 86_400_000);
-}
+import { useAchievements } from "../achievements/AchievementProvider";
 
 function Ring({ value, label }: { value: number; label: string }) {
   return (
@@ -25,29 +22,31 @@ function Ring({ value, label }: { value: number; label: string }) {
 }
 
 export default function ProgramTimer() {
+  const { checkAchievements } = useAchievements();
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [days, setDays] = useState(0);
 
   const resetProgram = async () => {
     const now = new Date();
   
-    await AsyncStorage.setItem(START_KEY, now.toISOString());
+    await setProgramStartDate(now);
   
     setStartDate(now);
     setDays(0);
+    await checkAchievements();
   };
 
   useEffect(() => {
     getProgramStartDate().then((date) => {
       if (!date) return;
       setStartDate(date);
-      setDays(getDays(date));
+      setDays(getProgramDays(date));
     });
   }, []);
 
   useEffect(() => {
     if (!startDate) return;
-    const id = setInterval(() => setDays(getDays(startDate)), 60_000);
+    const id = setInterval(() => setDays(getProgramDays(startDate)), 60_000);
     return () => clearInterval(id);
   }, [startDate]);
 

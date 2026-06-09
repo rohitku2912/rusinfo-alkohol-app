@@ -24,6 +24,7 @@ import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 import HelpButton from "../features/help/HelpButton";
 import PartyPlanner from "../features/partyPlanner/partyPlanner";
+import AvatarButton from "../components/ui/avatarButton";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -71,6 +72,21 @@ export default function Dashboard() {
       ),
     );
   }
+  async function resetOnboarding() {
+    try {
+      await AsyncStorage.removeItem("onboardingCompleted");
+      await AsyncStorage.removeItem("onboardingData");
+  
+      router.replace("/onboarding" as any);
+    } catch (error) {
+      console.error("Feil ved reset av onboarding:", error);
+    }
+  }
+
+async function resetAll() {
+  await AsyncStorage.clear();
+  console.log("Alt er sletta");
+}
 
   return (
     <View style={styles.outerContainer}>
@@ -80,11 +96,13 @@ export default function Dashboard() {
       >
         <View style={styles.header}>
           <Text style={styles.title}>Hjem</Text>
-          <HelpButton helpKey="home" />
+          <AvatarButton/>
         </View>
-
+        <Pressable onPress={resetAll}>
+  <Text>Reset alt</Text>
+</Pressable>
         <ProgramTimer />
-
+       
         <FunctionBox
           title="DRIKKELOGG"
           description="Her kan du logge ditt alkoholforbruk."

@@ -19,7 +19,7 @@ export const helpContent: Record<string, { title: string; description: string }>
   partyplanner: {
     title: "Planlegg festen",
     description:
-      "Dette verktøyet hjelper deg å planlegge en fest ved å sette tidspunkt og planlagt mengde alkohol. Underveis får du oversikt i sanntid, og etterpå kan du se hvordan planen stemte. Det gjør det enklere å reflektere over egne valg.",
+    "Før festen starter, velger du hvor mye alkohol du ønsker å drikke og når festen skal vare. Når festen er i gang, får du en nedtelling og oversikt over målet ditt. Etter festen kan du reflektere over om du klarte å holde deg til planen.",
   },
 
   drinklog: {
@@ -60,6 +60,12 @@ export const helpContent: Record<string, { title: string; description: string }>
     title: "Prestasjoner",
     description:
       "Her ser du mål du jobber mot og prestasjoner du har fullført. Dette gir deg oversikt over fremgang og små milepæler underveis. Målet er å motivere deg og synliggjøre utviklingen din over tid.",
+  },
+
+  avatar: {
+    title: "Avatar",
+    description:
+      "Her kan du velge avataren din og tilbehøret du har låst opp. Tilbehør som fortsatt er låst vises med hengelås og kan låses opp gjennom prestasjoner.",
   },
 
   info: {

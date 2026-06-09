@@ -1,17 +1,28 @@
 import { getDrinkLogs } from "@/lib/storage/drinkLogs";
+import {
+  getProgramDays,
+  getProgramStartDate,
+} from "@/lib/storage/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useState,
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
+import {
+  getUnlockedAccessories,
+  unlockAccessory,
+} from "../avatar/accessoriesStorage";
 import { Achievement } from "./AchievementCard";
 import AchievementNotification from "./AchievementNotification";
+import { achievementRewards } from "./achievementRewards";
+import {
+  getUnlockedAchievementIds,
+  saveUnlockedAchievementIds,
+} from "./achievementStorage";
 import { getAllAchievements, isAchievementCompleted } from "./achievementRules";
-
-const UNLOCKED_ACHIEVEMENTS_KEY = "unlockedAchievements";
 
 type Props = {
   children: ReactNode;
@@ -19,6 +30,7 @@ type Props = {
 
 type AchievementContextValue = {
   checkAchievements: () => Promise<void>;
+  accessoryVersion: number;
 };
 
 // bruk context for å dele achievement state
@@ -39,24 +51,12 @@ export function useAchievements() {
 export default function AchievementProvider({ children }: Props) {
   const [visibleAchievement, setVisibleAchievement] =
     useState<Achievement | null>(null);
+  const [visibleRewardId, setVisibleRewardId] = useState<string | null>(null);
+  const [accessoryVersion, setAccessoryVersion] = useState(0);
 
   useEffect(() => {
     checkAchievements();
   }, []);
-
-  async function getUnlockedAchievementIds() {
-    const storedIds = await AsyncStorage.getItem(UNLOCKED_ACHIEVEMENTS_KEY);
-
-    if (!storedIds) {
-      return [];
-    }
-
-    return JSON.parse(storedIds) as string[];
-  }
-
-  async function saveUnlockedAchievementIds(ids: string[]) {
-    await AsyncStorage.setItem(UNLOCKED_ACHIEVEMENTS_KEY, JSON.stringify(ids));
-  }
 
   function findNewAchievement(
     achievements: Achievement[],
@@ -69,11 +69,16 @@ export default function AchievementProvider({ children }: Props) {
     );
   }
 
-  function showAchievement(achievement: Achievement) {
+  function showAchievement(
+    achievement: Achievement,
+    rewardId: string | null,
+  ) {
     setVisibleAchievement(achievement);
+    setVisibleRewardId(rewardId);
 
     setTimeout(() => {
       setVisibleAchievement(null);
+      setVisibleRewardId(null);
     }, 3000);
   }
 
@@ -81,11 +86,15 @@ export default function AchievementProvider({ children }: Props) {
     const logs = await getDrinkLogs();
     const storedDiaryEntries = await AsyncStorage.getItem("diary_entries");
 
+    const programStartDate = await getProgramStartDate();
+    const daysInProgram = programStartDate
+      ? getProgramDays(programStartDate)
+      : 0;
+
     const diaryEntries = storedDiaryEntries
       ? JSON.parse(storedDiaryEntries)
       : [];
-
-    const achievements = getAllAchievements(logs, diaryEntries);
+    const achievements = getAllAchievements(logs, diaryEntries, daysInProgram);
     const unlockedIds = await getUnlockedAchievementIds();
     const newAchievement = findNewAchievement(achievements, unlockedIds);
 
@@ -93,14 +102,29 @@ export default function AchievementProvider({ children }: Props) {
       return;
     }
 
-    showAchievement(newAchievement);
+    //lås opp accessories
+    const rewardId = achievementRewards[newAchievement.id];
+
+    if (rewardId) {
+      const unlockedAccessories = await getUnlockedAccessories();
+
+      if (!unlockedAccessories.includes(rewardId)) {
+        await unlockAccessory(rewardId);
+        setAccessoryVersion((version) => version + 1);
+      }
+    }
+
+    showAchievement(newAchievement, rewardId ?? null);
     await saveUnlockedAchievementIds([...unlockedIds, newAchievement.id]);
   }
 
   return (
-    <AchievementContext value={{ checkAchievements }}>
+    <AchievementContext value={{ checkAchievements, accessoryVersion }}>
       {children}
-      <AchievementNotification achievement={visibleAchievement} />
+      <AchievementNotification
+        achievement={visibleAchievement}
+        rewardAccessoryId={visibleRewardId}
+      />
     </AchievementContext>
   );
 }

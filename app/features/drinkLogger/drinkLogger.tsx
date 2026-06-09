@@ -102,13 +102,12 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
 
   async function saveWhiteDay() {
     await saveDrinkLog(date, 0, 0, 0, "hvitDag");
-    await checkAchievements();
 
     setBeerCount(0);
     setWineCount(0);
     setDrinksCount(0);
     setIsVisible(false);
-    checkAchievements();
+    await checkAchievements();
   }
 
   function DrinkCounter({

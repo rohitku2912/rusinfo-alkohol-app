@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import InputBox from "../../components/ui/inputBox";
 import HelpButton from "../help/HelpButton";
+import theme from "@/app/theme/constantStyling";
 
 interface DiaryEntryModalProps {
   visible: boolean;
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#2f3e4f",
+    color: theme.colors.text,
     textAlign: "center",
     flex: 1,
   },
@@ -214,11 +215,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  
-
   closeText: {
     fontSize: 22,
     fontWeight: "600",
-    color: "#3b4a5a",
+    color: theme.colors.text,
   },
 });

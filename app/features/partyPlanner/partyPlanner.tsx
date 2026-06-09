@@ -2,7 +2,7 @@ import RegularButton from "@/app/components/ui/button";
 import FunctionBox from "@/app/components/ui/functionBox";
 import theme from "@/app/theme/constantStyling";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import HelpButton from "../help/HelpButton";
 import PartyPlannerModal from "./PartyPlannerModal";
 
@@ -21,14 +21,20 @@ type PartyState = {
 
 function Ring({ value, label }: { value: number; label: string }) {
   return (
-    <View style={{ alignItems: "center", gap: 8, marginBottom: 10 }}>
+    <View
+  style={{
+    flex: 1,
+    alignItems: "center",
+    gap: 8,
+  }}
+>
       <View
         style={{
           width: 76,
           height: 76,
           borderRadius: 38,
           borderWidth: 2.5,
-          borderColor: theme.colors.accent,
+          borderColor: theme.colors.primary,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -147,40 +153,52 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
   return (
     <>
-      <FunctionBox title="PLANLEGG FESTEN" description="Skal du på fest? Legg en plan for hvor mye du skal drikke." helpBtn={<HelpButton helpKey="partyplanner"/>}>
+      <FunctionBox title="PLANLEGG FESTEN" helpBtn={<HelpButton helpKey="partyplanner"/>}>
         <View style={{ alignItems: "center", marginTop: 16}}>
         
 
           {/* før partystart */}
           {party.status === "scheduled" && (
             <Text style={{ color: theme.colors.text, marginBottom: 12 }}>
-              Starter om {Math.floor(timeUntilStart / 60000)} min
+              Starter om {Math.floor(timeUntilStart / 60000)} minutter
             </Text>
           )}
 
           {/* aktiv fest */}
           {party.status === "active" && (
             <View style={{ alignItems: "center" }}>
-              <View style={{ flexDirection: "row", gap: 20 }}>
-                <Ring value={hours} label="timer" />
-                <Ring value={minutes} label="minutt" />
-                <Ring value={seconds} label="sekund" />
-              </View>
+              <View style={styles.timerCards}>
+  <Ring value={hours} label="Timer" />
+  <Ring value={minutes} label="Minutter" />
+  <Ring value={seconds} label="Sekunder" />
+</View>
 
-              <View style={styles.drinkRow}>
-                <Text style={styles.drinkItem}>🍺 {party.beer}</Text>
-                <Text style={styles.drinkItem}>🍷 {party.wine}</Text>
-                <Text style={styles.drinkItem}>🍸 {party.drinks}</Text>
-              </View>
+              <View style={styles.drinkCards}>
+  <View style={styles.drinkCard}>
+    <Text style={styles.cardEmoji}>🍺</Text>
+    <Text style={styles.cardValue}>{party.beer}</Text>
+    <Text style={styles.cardLabel}>Øl</Text>
+  </View>
+
+  <View style={styles.drinkCard}>
+    <Text style={styles.cardEmoji}>🍷</Text>
+    <Text style={styles.cardValue}>{party.wine}</Text>
+    <Text style={styles.cardLabel}>Vin</Text>
+  </View>
+
+  <View style={styles.drinkCard}>
+    <Text style={styles.cardEmoji}>🍸</Text>
+    <Text style={styles.cardValue}>{party.drinks}</Text>
+    <Text style={styles.cardLabel}>Drinker</Text>
+  </View>
+</View>
             </View>
           )}
 
           {/* ferdig (timer går ut eller bruker trykker stopp)*/}
           {party.status === "finished" && (
             <View style={styles.finishedContainer}>
-
-            <Text style={styles.finishedTitle}>Festen er over!</Text>
-        
+            
             <Text style={styles.finishedSubtitle}>
         
               Nådde du målet du satte deg?
@@ -189,24 +207,40 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
         
             <View style={styles.goalBox}>
         
-              <Text style={styles.goalLabel}>Du planla å drikke maks:</Text>
-              <View style={styles.drinkRow}>
-                <Text style={styles.drinkItem}>🍺 {party.beer}</Text>
-                <Text style={styles.drinkItem}>🍷 {party.wine}</Text>
-                <Text style={styles.drinkItem}>🍸 {party.drinks}</Text>
-              </View>
+              <View style={styles.drinkCards}>
+  <View style={styles.drinkCard}>
+    <Text style={styles.cardEmoji}>🍺</Text>
+    <Text style={styles.cardValue}>{party.beer}</Text>
+    <Text style={styles.cardLabel}>Øl</Text>
+  </View>
 
-              {!feedback ? (
-  <View style={{ flexDirection: "row", gap: 12, marginTop: 12 }}>
-    
-    <RegularButton title="ja" onPress={answerYes} />
-     <RegularButton title="nei" onPress={answerNo}/> 
-   
+  <View style={styles.drinkCard}>
+    <Text style={styles.cardEmoji}>🍷</Text>
+    <Text style={styles.cardValue}>{party.wine}</Text>
+    <Text style={styles.cardLabel}>Vin</Text>
+  </View>
+
+  <View style={styles.drinkCard}>
+    <Text style={styles.cardEmoji}>🍸</Text>
+    <Text style={styles.cardValue}>{party.drinks}</Text>
+    <Text style={styles.cardLabel}>Drinker</Text>
+  </View>
+</View>
+
+{!feedback ? (
+  <View style={styles.answerContainer}>
+    <Pressable style={styles.yesButton} onPress={answerYes}>
+      <Text style={styles.answerText}>Ja</Text>
+    </Pressable>
+
+    <Pressable style={styles.noButton} onPress={answerNo}>
+      <Text style={styles.answerText}>Nei</Text>
+    </Pressable>
   </View>
 ) : (
   <Text style={styles.feedbackText}>
-  {feedback}
-</Text>
+    {feedback}
+  </Text>
 )}
              
              </View>
@@ -215,7 +249,6 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
 )}
         
-
           {/* knapp */}
           <View style={{ width: "100%" }}>
             <RegularButton
@@ -244,7 +277,6 @@ const styles = StyleSheet.create({
   drinkRow: {
     flexDirection: "row",
     gap: 18,
-    marginTop: 12,
     marginBottom: 10
   },
   drinkItem: {
@@ -252,23 +284,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: theme.colors.text,
     marginBottom: 10
-  },
-  finishedContainer: {
-    width: "100%",
-  },
-  
-  finishedTitle: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: theme.colors.text,
-    marginBottom: 8,
-  },
-  
-  finishedSubtitle: {
-    fontSize: 14,
-    color: theme.colors.text,
-    marginBottom: 20,
-
   },
   
   goalBox: {
@@ -285,16 +300,11 @@ const styles = StyleSheet.create({
   drinkBadge: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: theme.colors.background,
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderRadius: 18,
     minWidth: 72,
-  },
-  
-  drinkEmoji: {
-    fontSize: 24,
-    marginBottom: 6,
   },
   
   drinkValue: {
@@ -302,16 +312,96 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: theme.colors.text,
   },
-  feedbackText: {
-    marginTop: 18,
+  drinkCards: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 10,
+    marginBottom: 20,
+    width: "100%",
+  },
+  
+  drinkCard: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  
+  cardEmoji: {
+    fontSize: 24,
+  },
+  
+  cardValue: {
+    fontSize: 22,
+    fontWeight: "bold",
     color: theme.colors.text,
-    fontSize: 15,
-    lineHeight: 24,
-    textAlign: "center",
-    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+  
+  cardLabel: {
+    fontSize: 12,
+    marginTop: 4,
+    color: "#666",
+  },
+  
+  finishedContainer: {
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  
+  finishedSubtitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: theme.colors.text,
+  },
+  feedbackText: {
+    marginTop: 10,
     padding: 16,
     borderRadius: 16,
-    overflow: "hidden",
+    backgroundColor: theme.colors.background,
+    textAlign: "center",
+    lineHeight: 22,
+    fontSize: 15,
+    width: "100%",
   },
- 
+  answerContainer: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 10,
+    width: "100%",
+  },
+  
+  yesButton: {
+    flex: 1,
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.medium,
+    height: 50,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  
+  noButton: {
+    flex: 1,
+    backgroundColor: theme.colors.emergency,
+    borderRadius: theme.borderRadius.medium,
+    height: 50,
+    paddingHorizontal: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  
+  answerText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: theme.colors.lightText,
+  },
+  timerCards: {
+    flexDirection: "row",
+    gap: 12,
+    width: "100%",
+    marginBottom: 10,
+  },
 });

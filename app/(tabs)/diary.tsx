@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import DiaryDisplay from "../features/diary/DiaryDisplay";
 import TriggerDisplay from "../features/diary/TriggerDisplay";
+import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
 
 export default function Diary() {
@@ -19,19 +20,25 @@ export default function Diary() {
       >
         {/* tabs */}
         <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, styles.diaryTab]}
-            onPress={() => setActiveTab("diary")}
-          >
-            <Text style={styles.tabText}>Dagbok</Text>
-          </TouchableOpacity>
+          <View style={styles.tabRow}>
+            <TouchableOpacity
+              style={[styles.tab, styles.diaryTab]}
+              onPress={() => setActiveTab("diary")}
+            >
+              <Text style={styles.tabText}>Dagbok</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.tab, styles.triggerTab]}
-            onPress={() => setActiveTab("trigger")}
-          >
-            <Text style={styles.tabText}>Trigger</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, styles.triggerTab]}
+              onPress={() => setActiveTab("trigger")}
+            >
+              <Text style={styles.tabText}>Trigger</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.helpButton}>
+            <HelpButton helpKey={isDiary ? "diary" : "trigger"} />
+          </View>
         </View>
 
         {/* innhold */}
@@ -53,15 +60,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   diaryTheme: {
-    backgroundColor: "#78a6b3"
+    backgroundColor: "#78a6b3",
   },
   triggerTheme: {
     backgroundColor: "#eef1ec",
   },
   tabContainer: {
     flexDirection: "row",
+    alignItems: "center",
     padding: 0,
-    backgroundColor: theme.colors.background
+    backgroundColor: theme.colors.background,
+  },
+  tabRow: {
+    flex: 1,
+    flexDirection: "row",
   },
   tab: {
     flex: 1,
@@ -82,8 +94,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: theme.colors.text,
   },
+  helpButton: {
+    width: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "stretch",
+  },
   content: {
     flex: 1,
-    padding: 12,
   },
 });

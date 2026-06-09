@@ -62,37 +62,52 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
           <Text style={styles.subtitle}>Drikke</Text>
 
           <View style={styles.row}>
-            <Text>Øl</Text>
-            <Pressable onPress={() => setBeer(Math.max(0, beer - 1))}>
-              <Text style={styles.btn}>-</Text>
-            </Pressable>
-            <Text>{beer}</Text>
-            <Pressable onPress={() => setBeer(beer + 1)}>
-              <Text style={styles.btn}>+</Text>
-            </Pressable>
-          </View>
+  <Text style={styles.drinkLabel}>Øl</Text>
 
-          <View style={styles.row}>
-            <Text>Vin</Text>
-            <Pressable onPress={() => setWine(Math.max(0, wine - 1))}>
-              <Text style={styles.btn}>-</Text>
-            </Pressable>
-            <Text>{wine}</Text>
-            <Pressable onPress={() => setWine(wine + 1)}>
-              <Text style={styles.btn}>+</Text>
-            </Pressable>
-          </View>
+  <View style={styles.counter}>
+    <Pressable onPress={() => setBeer(Math.max(0, beer - 1))}>
+      <Text style={styles.btn}>-</Text>
+    </Pressable>
 
-          <View style={styles.row}>
-            <Text>Drinker</Text>
-            <Pressable onPress={() => setDrinks(Math.max(0, drinks - 1))}>
-              <Text style={styles.btn}>-</Text>
-            </Pressable>
-            <Text>{drinks}</Text>
-            <Pressable onPress={() => setDrinks(drinks + 1)}>
-              <Text style={styles.btn}>+</Text>
-            </Pressable>
-          </View>
+    <Text style={styles.count}>{beer}</Text>
+
+    <Pressable onPress={() => setBeer(beer + 1)}>
+      <Text style={styles.btn}>+</Text>
+    </Pressable>
+  </View>
+</View>
+
+<View style={styles.row}>
+  <Text style={styles.drinkLabel}>Vin</Text>
+
+  <View style={styles.counter}>
+    <Pressable onPress={() => setWine(Math.max(0, wine - 1))}>
+      <Text style={styles.btn}>-</Text>
+    </Pressable>
+
+    <Text style={styles.count}>{wine}</Text>
+
+    <Pressable onPress={() => setWine(wine + 1)}>
+      <Text style={styles.btn}>+</Text>
+    </Pressable>
+  </View>
+</View>
+
+<View style={styles.row}>
+  <Text style={styles.drinkLabel}>Drinker</Text>
+
+  <View style={styles.counter}>
+    <Pressable onPress={() => setDrinks(Math.max(0, drinks - 1))}>
+      <Text style={styles.btn}>-</Text>
+    </Pressable>
+
+    <Text style={styles.count}>{drinks}</Text>
+
+    <Pressable onPress={() => setDrinks(drinks + 1)}>
+      <Text style={styles.btn}>+</Text>
+    </Pressable>
+  </View>
+</View>
 
           {/* start-tid */}
           <Text style={styles.subtitle}>Start</Text>
@@ -103,11 +118,14 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
               style={styles.timeButton}
             >
               <Text>
-                {start.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Text>
+  {start.toLocaleString("nb-NO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</Text>
             </Pressable>
           ) : (
             <View style={styles.pickerBox}>
@@ -135,11 +153,14 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
               style={styles.timeButton}
             >
               <Text>
-                {end.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Text>
+  {end.toLocaleString("nb-NO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</Text>
             </Pressable>
           ) : (
             <View style={styles.pickerBox}>
@@ -219,9 +240,25 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: 10,
-    marginTop: 10,
+    marginTop: 12,
+  },
+  
+  drinkLabel: {
+    fontSize: 16,
+  },
+  
+  counter: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  
+  count: {
+    minWidth: 20,
+    textAlign: "center",
+    fontWeight: "bold",
   },
 
   btn: {
