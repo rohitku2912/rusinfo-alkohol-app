@@ -88,6 +88,11 @@ async function resetAll() {
   console.log("Alt er sletta");
 }
 
+  async function handleResetOnboarding() {
+    await resetOnboarding();
+    router.replace("/onboarding" as any);
+  }
+
   return (
     <View style={styles.outerContainer}>
       <ScrollView
@@ -165,6 +170,15 @@ async function resetAll() {
             />
           </View>
         </FunctionBox>
+
+        <Pressable
+          onPress={handleResetOnboarding}
+          style={styles.onboardingResetButton}
+        >
+          <Text style={styles.onboardingResetText}>
+            Start onboarding på nytt
+          </Text>
+        </Pressable>
       </ScrollView>
 
       <View style={styles.EmergencyButton}>
@@ -235,17 +249,16 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   scrollContent: {
-    paddingTop: theme.spacing.small,
-    paddingBottom: 100,
-    alignItems: "center",
+    marginHorizontal: theme.spacing.medium,
+    marginBottom: theme.spacing.small,
+    gap: theme.spacing.small,
   },
   header: {
     alignItems: "center",
     alignSelf: "stretch",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: theme.spacing.medium,
-    marginBottom: theme.spacing.small,
+    marginTop: theme.spacing.small,
   },
   title: {
     fontSize: 24,
@@ -264,10 +277,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
-  resetButton: {
-    width: "95%",
-    marginTop: 8,
+  onboardingResetButton: {
+    alignSelf: "center",
+    marginTop: theme.spacing.small,
     marginBottom: theme.spacing.large,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  onboardingResetText: {
+    color: theme.colors.darkGrey,
+    fontSize: 12,
+    fontWeight: "600",
+    textDecorationLine: "underline",
   },
   debugCard: {
     width: "100%",

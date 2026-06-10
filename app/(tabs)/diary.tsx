@@ -102,5 +102,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingHorizontal: theme.spacing.medium,
+    paddingTop: theme.spacing.medium,
   },
 });

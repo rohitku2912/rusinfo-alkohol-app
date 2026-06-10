@@ -23,6 +23,15 @@ export async function clearOnboardingData() {
   await AsyncStorage.removeItem(STORAGE_KEYS.onboardingData);
 }
 
+export async function resetOnboarding() {
+  await AsyncStorage.multiRemove([
+    STORAGE_KEYS.onboardingCompleted,
+    STORAGE_KEYS.onboardingData,
+    STORAGE_KEYS.pendingDemographics,
+    STORAGE_KEYS.programStartDate,
+  ]);
+}
+
 export async function mergeOnboardingData(data: OnboardingDraft) {
   const existingData = await getOnboardingData();
   const nextData = { ...existingData, ...data };
