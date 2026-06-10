@@ -1,3 +1,4 @@
+import theme from "@/app/theme/constantStyling";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -222,8 +223,7 @@ export default function DiaryDisplay() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+
     backgroundColor: "#78a6b3",
     position: "relative",
   },
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
 
   entry: {
     padding: 18,
-    borderRadius: 22,
-    marginBottom: 14,
+    borderRadius: theme.borderRadius.medium,
+    marginBottom: theme.spacing.small,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.06,

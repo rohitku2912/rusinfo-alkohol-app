@@ -329,7 +329,7 @@ export default function TriggerDisplay() {
           ListEmptyComponent={
             <Text style={styles.empty}>Ingen valgte triggere</Text>
           }
-          contentContainerStyle={{ gap: 10, marginTop: 10 }}
+          contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
         />
       )}
@@ -374,7 +374,6 @@ export default function TriggerDisplay() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
     flex: 1,
     position: "relative",
   },
@@ -396,7 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#6f8f84",
     borderColor: "#6f8f84",
   },
-  
+
   filterButton: {
     padding: 8,
     borderWidth: 1,
@@ -405,11 +404,11 @@ const styles = StyleSheet.create({
     borderColor: "#c9d6e0",
     backgroundColor: "#f2f6f9",
   },
-  
+
   filterText: {
     color: "#2f3b44",
   },
-  
+
   selectedFilterText: {
     color: "#ffffff",
   },
@@ -422,7 +421,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f6f9",
     paddingVertical: 10,
     paddingHorizontal: 14,
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     borderColor: "#c9d6e0",
   },

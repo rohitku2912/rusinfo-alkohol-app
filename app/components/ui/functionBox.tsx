@@ -37,11 +37,10 @@ export default function FunctionBox({
 
 const styles = StyleSheet.create({
   container: {
-    width: "95%",
+    width: "100%",
     backgroundColor: theme.colors.box,
-    padding: 20,
-    margin: 10,
-    borderRadius: theme.borderRadius.large,
+    padding: theme.spacing.medium,
+    borderRadius: theme.borderRadius.medium,
   },
 
   header: {
@@ -53,24 +52,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    marginTop: 5,
-    marginBottom: 10,
+    marginTop: theme.spacing.small,
+    marginBottom: theme.spacing.small,
     color: theme.colors.text,
   },
 
   description: {
     fontSize: 14,
     color: theme.colors.darkGrey,
-    marginTop: 5,
-    marginBottom: 10,
+    marginTop: theme.spacing.small,
+    marginBottom: theme.spacing.small,
   },
 
   help: {
-    marginLeft: 12,
+    marginLeft: theme.spacing.small,
   },
 
   content: {
-    marginTop: 10,
+    marginTop: theme.spacing.small,
     color: theme.colors.lightGrey,
   },
 });

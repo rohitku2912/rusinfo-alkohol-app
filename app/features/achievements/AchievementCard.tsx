@@ -37,7 +37,9 @@ export default function AchievementCard({ achievement }: Props) {
       <View style={styles.titleLine}>
         <Text style={styles.title}>{achievement.title}</Text>
         <View style={completed ? styles.completedPill : styles.lockedPill}>
-          <Text style={styles.pillText}>{completed ? "Fullført" : "Pågår"}</Text>
+          <Text style={styles.pillText}>
+            {completed ? "Fullført" : "Pågår"}
+          </Text>
         </View>
       </View>
 
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing.medium,
     marginBottom: theme.spacing.small,
     borderRadius: theme.borderRadius.medium,
-    gap: 8,
+    gap: theme.spacing.small,
   },
   completedAchievementCard: {
     borderColor: theme.colors.primary,

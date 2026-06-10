@@ -1,4 +1,5 @@
 import RegularButton from "@/app/components/ui/button";
+import PlusButton from "@/app/components/ui/plusbutton";
 import theme from "@/app/theme/constantStyling";
 import { clearDrinkLogs, saveDrinkLog } from "@/lib/storage/drinkLogs";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -127,9 +128,7 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
         </View>
         <View style={styles.counterControls}>
           <Text style={styles.counterValue}>{count}</Text>
-          <Pressable onPress={onAdd} style={styles.addButton}>
-            <Text style={styles.addButtonText}>+1</Text>
-          </Pressable>
+          <PlusButton label="1" onPress={onAdd} />
         </View>
       </View>
     );

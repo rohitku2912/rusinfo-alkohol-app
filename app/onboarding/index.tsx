@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
     justifyContent: "space-between",
-    paddingHorizontal: theme.spacing.large,
     paddingTop: 96,
     paddingBottom: 48,
   },

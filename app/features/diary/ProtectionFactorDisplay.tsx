@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#e2e8f0",
-    marginBottom: 8,
   },
   protectionFactorText: {
     fontSize: 16,
