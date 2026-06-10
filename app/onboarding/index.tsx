@@ -16,14 +16,14 @@ export default function Welcome() {
       <View style={styles.content}>
         <Text style={styles.eyebrow}>RUSinfo</Text>
         <Text style={styles.title}>
-          En trygg app for å få oversikt over alkoholbruk
+          En selvhjelps-app for å få oversikt over alkoholbruk
         </Text>
         <Text style={styles.body}>
           Du kan bruke appen anonymt, og de fleste opplysningene lagres bare på
           telefonen din.
         </Text>
         <Text style={styles.body}>
-          Det er frivillig om du vil dele noen få opplysninger anonymt for
+          Det er frivillig om du vil dele anonyme data for
           statistikk.
         </Text>
       </View>

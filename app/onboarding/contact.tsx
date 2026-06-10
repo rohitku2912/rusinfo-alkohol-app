@@ -3,8 +3,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  KeyboardAvoidingView,
-  Platform,
+  InputAccessoryView,
+  Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -13,6 +14,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import theme from "../theme/constantStyling";
+
+const PHONE_INPUT_ACCESSORY_ID = "phone-input-accessory";
 
 function isValidPhone(value: string) {
   const cleaned = value.replace(/\s/g, "");
@@ -48,25 +51,27 @@ export default function Contact() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="chevron-back" size={18} color={theme.colors.primary} />
-            <Text style={styles.backButtonText}>Tilbake</Text>
-          </TouchableOpacity>
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="chevron-back" size={18} color={theme.colors.primary} />
+          <Text style={styles.backButtonText}>Tilbake</Text>
+        </TouchableOpacity>
 
-          <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.formGroup}>
             <Text style={styles.title}>
-              Legg til et nummer du kan ringe
+              Legg til nummeret til en kontaktperson
             </Text>
             <Text style={styles.subtitle}>
-              Når ting er vanskelig kan det hjelpe å ha et nummer klart. Dette lagres kun på telefonen din og dukker opp i kriseplanen din.
+              Når ting er vanskelig kan det hjelpe å ha et nummer du kan ringe. Avtal med noen du stoler på om de kan være kontakten din dersom du trenger noen å snakke med. Dette lagres kun på telefonen din og dukker opp i kriseplanen din.
             </Text>
 
             <TextInput
@@ -77,6 +82,8 @@ export default function Contact() {
               value={phoneNumber}
               onChangeText={handleChangePhone}
               returnKeyType="done"
+              returnKeyLabel="Ferdig"
+              inputAccessoryViewID={PHONE_INPUT_ACCESSORY_ID}
               autoFocus
             />
             {error !== "" && (
@@ -97,8 +104,19 @@ export default function Contact() {
               <Text style={styles.secondaryButtonText}>Hopp over</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </ScrollView>
+
+        <InputAccessoryView nativeID={PHONE_INPUT_ACCESSORY_ID}>
+          <View style={styles.keyboardAccessory}>
+            <TouchableOpacity
+              style={styles.keyboardDoneButton}
+              onPress={Keyboard.dismiss}
+            >
+              <Text style={styles.keyboardDoneText}>Ferdig</Text>
+            </TouchableOpacity>
+          </View>
+        </InputAccessoryView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -107,9 +125,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
-  },
-  flex: {
-    flex: 1,
   },
   container: {
     flex: 1,
@@ -129,7 +144,11 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingBottom: theme.spacing.medium,
+  },
+  formGroup: {
     gap: theme.spacing.medium,
   },
   title: {
@@ -155,7 +174,8 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: theme.spacing.small,
-    paddingBottom: theme.spacing.medium,
+    paddingBottom: 0,
+    paddingTop: theme.spacing.large,
   },
   button: {
     backgroundColor: theme.colors.primary,
@@ -190,5 +210,22 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: theme.colors.attention,
     marginTop: 4,
+  },
+  keyboardAccessory: {
+    alignItems: "flex-end",
+    backgroundColor: "#f2f2ed",
+    borderTopWidth: 1,
+    borderTopColor: "#c8c8c1",
+    paddingHorizontal: theme.spacing.medium,
+    paddingVertical: theme.spacing.small,
+  },
+  keyboardDoneButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  keyboardDoneText: {
+    color: theme.colors.primary,
+    fontSize: 16,
+    fontWeight: "700",
   },
 });
