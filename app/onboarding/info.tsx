@@ -1,14 +1,7 @@
 import {
-  clearPendingDemographics,
-  flushPendingDemographics,
-  queueDemographicsSync,
-} from "@/lib/firestore/demographics";
-import {
-  completeOnboarding,
   getOnboardingData,
   mergeOnboardingData,
 } from "@/lib/storage/onboarding";
-import type { OnboardingData } from "@/types/onboarding";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -47,7 +40,9 @@ export default function Info() {
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [county, setCounty] = useState("");
-  const [shareAnonymousStats, setShareAnonymousStats] = useState<boolean | null>(null);
+  const [shareAnonymousStats, setShareAnonymousStats] = useState<
+    boolean | null
+  >(null);
   const [showAge, setShowAge] = useState(false);
   const [showGender, setShowGender] = useState(false);
   const [showCounty, setShowCounty] = useState(false);
@@ -66,36 +61,31 @@ export default function Info() {
   const canContinue = age !== "" && gender !== "" && county !== "";
 
   const handleContinue = async () => {
-    const draft = await mergeOnboardingData({ shareAnonymousStats: true, age, gender, county });
-    const onboardingData: OnboardingData = {
+    await mergeOnboardingData({
       shareAnonymousStats: true,
-      age: draft.age ?? "",
-      gender: draft.gender ?? "",
-      county: draft.county ?? "",
-      goal: draft.goal ?? "",
-      inspiration: draft.inspiration ?? [],
-    };
-    await completeOnboarding(onboardingData);
-    await queueDemographicsSync();
-    router.replace("/(tabs)" as any);
-    void flushPendingDemographics();
+      age,
+      gender,
+      county,
+    });
+    router.push("/onboarding/terms" as any);
   };
 
   const handleSkip = async () => {
-    setAge(""); setGender(""); setCounty("");
+    setAge("");
+    setGender("");
+    setCounty("");
     setShareAnonymousStats(false);
-    setShowAge(false); setShowGender(false); setShowCounty(false);
+    setShowAge(false);
+    setShowGender(false);
+    setShowCounty(false);
 
-    const draft = await mergeOnboardingData({ shareAnonymousStats: false, age: "", gender: "", county: "" });
-    const onboardingData: OnboardingData = {
+    await mergeOnboardingData({
       shareAnonymousStats: false,
-      age: "", gender: "", county: "",
-      goal: draft.goal ?? "",
-      inspiration: draft.inspiration ?? [],
-    };
-    await completeOnboarding(onboardingData);
-    await clearPendingDemographics();
-    router.replace("/(tabs)" as any);
+      age: "",
+      gender: "",
+      county: "",
+    });
+    router.push("/onboarding/terms" as any);
   };
 
   return (
@@ -106,51 +96,95 @@ export default function Info() {
         alwaysBounceVertical={false}
         overScrollMode="never"
       >
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={18} color={theme.colors.primary} />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons
+            name="chevron-back"
+            size={18}
+            color={theme.colors.primary}
+          />
           <Text style={styles.backButtonText}>Tilbake</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>Vil du dele litt anonym informasjon?</Text>
+        <Text style={styles.title}>Vil du bidra til å forbedre appen?</Text>
         <Text style={styles.subtitle}>
-          Dette er frivillig. Opplysningene brukes bare til anonym statistikk
-          for å forbedre tilbudet. Du kan hoppe over og fortsatt bruke appen fullt ut.
+          Ved å gi noen opplysninger om deg selv bidrar du til at vi kan
+          forbedre dette hjelpetilbudet. Denne informasjonen er frivillig å
+          oppgi, og du vil fortsatt være anonym. Hopp over hvis du ikke ønsker å
+          dele.
         </Text>
 
         <View style={styles.infoCard}>
           <Text style={styles.infoCardTitle}>Hva deles?</Text>
-          <Text style={styles.infoCardText}>Alder, kjønn, fylke og valgt mål.</Text>
+          <Text style={styles.infoCardText}>
+            Alder, kjønn, fylke og valgt mål.
+          </Text>
         </View>
 
-        <TouchableOpacity style={styles.row} onPress={() => setShowAge(!showAge)}>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={() => setShowAge(!showAge)}
+        >
           <Text style={styles.label}>Alder</Text>
           <Text style={styles.select}>{age || "Velg ▾"}</Text>
         </TouchableOpacity>
-        {showAge && ageGroups.map((a) => (
-          <TouchableOpacity key={a} style={styles.option} onPress={() => { setAge(a); setShowAge(false); }}>
-            <Text style={styles.optionText}>{a}</Text>
-          </TouchableOpacity>
-        ))}
+        {showAge &&
+          ageGroups.map((a) => (
+            <TouchableOpacity
+              key={a}
+              style={styles.option}
+              onPress={() => {
+                setAge(a);
+                setShowAge(false);
+              }}
+            >
+              <Text style={styles.optionText}>{a}</Text>
+            </TouchableOpacity>
+          ))}
 
-        <TouchableOpacity style={styles.row} onPress={() => setShowGender(!showGender)}>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={() => setShowGender(!showGender)}
+        >
           <Text style={styles.label}>Kjønn</Text>
           <Text style={styles.select}>{gender || "Velg ▾"}</Text>
         </TouchableOpacity>
-        {showGender && genders.map((g) => (
-          <TouchableOpacity key={g} style={styles.option} onPress={() => { setGender(g); setShowGender(false); }}>
-            <Text style={styles.optionText}>{g}</Text>
-          </TouchableOpacity>
-        ))}
+        {showGender &&
+          genders.map((g) => (
+            <TouchableOpacity
+              key={g}
+              style={styles.option}
+              onPress={() => {
+                setGender(g);
+                setShowGender(false);
+              }}
+            >
+              <Text style={styles.optionText}>{g}</Text>
+            </TouchableOpacity>
+          ))}
 
-        <TouchableOpacity style={styles.row} onPress={() => setShowCounty(!showCounty)}>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={() => setShowCounty(!showCounty)}
+        >
           <Text style={styles.label}>Fylke</Text>
           <Text style={styles.select}>{county || "Velg ▾"}</Text>
         </TouchableOpacity>
-        {showCounty && counties.map((c) => (
-          <TouchableOpacity key={c} style={styles.option} onPress={() => { setCounty(c); setShowCounty(false); }}>
-            <Text style={styles.optionText}>{c}</Text>
-          </TouchableOpacity>
-        ))}
+        {showCounty &&
+          counties.map((c) => (
+            <TouchableOpacity
+              key={c}
+              style={styles.option}
+              onPress={() => {
+                setCounty(c);
+                setShowCounty(false);
+              }}
+            >
+              <Text style={styles.optionText}>{c}</Text>
+            </TouchableOpacity>
+          ))}
 
         <View style={styles.actions}>
           <TouchableOpacity
@@ -162,7 +196,10 @@ export default function Info() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.secondaryButton, shareAnonymousStats === false && styles.secondaryButtonSelected]}
+            style={[
+              styles.secondaryButton,
+              shareAnonymousStats === false && styles.secondaryButtonSelected,
+            ]}
             onPress={handleSkip}
           >
             <Text style={styles.secondaryButtonText}>Hopp over</Text>

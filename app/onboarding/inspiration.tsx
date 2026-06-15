@@ -19,11 +19,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import theme from "../theme/constantStyling";
 
 const options = [
-  "Helsen min",
-  "Familien min",
+  "Styrke relasjoner med familie og venner",
   "Økonomi",
   "Jobbe bedre",
-  "Trene mer",
+  "Studere bedre",
+  "Forbedre treningsutbytte",
+  "Forbedre mental helse",
+  "Styrke selvbildet",
 ];
 
 export default function Inspiration() {
@@ -150,7 +152,7 @@ export default function Inspiration() {
             <Text style={styles.backButtonText}>Tilbake</Text>
           </TouchableOpacity>
 
-          <Text style={styles.title}>Hva er din inspirasjon?</Text>
+          <Text style={styles.title}>Hva er din motivasjon?</Text>
           <Text style={styles.subtitle}>
             Dette lagres lokalt og kan endres senere.
           </Text>

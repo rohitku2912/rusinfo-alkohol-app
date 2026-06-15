@@ -19,6 +19,33 @@ import TriggerStats from "./TriggerStats";
 const TRIGGERS_STORAGE_KEY = "trigger_display_all_triggers";
 const TRIGGER_ENTRIES_STORAGE_KEY = "trigger_display_entries";
 
+const oldDefaultTriggers = [
+  "Stress",
+  "Sosiale situasjoner",
+  "Kjedsomhet",
+  "Ensomhet",
+  "Bursdager",
+  "Fester",
+  "Tankekjør",
+];
+
+const defaultTriggers = [
+  "Stress",
+  "Sug etter alkohol",
+  "Sosialt press",
+  "Fest eller feiring",
+  "Konflikt eller krangling",
+  "Vanskelige følelser",
+  "Kjedsomhet",
+  "Ensomhet",
+  "Sliten eller lite søvn",
+  "Etter jobb",
+  "Helg",
+  "Lønn eller penger tilgjengelig",
+  "Steder eller personer forbundet med drikking",
+  "Ingenting",
+];
+
 type TriggerEntry = {
   trigger: string;
   protectionFactors: string[];
@@ -31,15 +58,7 @@ export default function TriggerDisplay() {
   const [protectionText, setProtectionText] = useState("");
   const [selectedTrigger, setSelectedTrigger] = useState<string | null>(null);
 
-  const [allTriggers, setAllTriggers] = useState<string[]>([
-    "Stress",
-    "Sosiale situasjoner",
-    "Kjedsomhet",
-    "Ensomhet",
-    "Bursdager",
-    "Fester",
-    "Tankekjør",
-  ]);
+  const [allTriggers, setAllTriggers] = useState<string[]>(defaultTriggers);
 
   const [triggerEntries, setTriggerEntries] = useState<TriggerEntry[]>([]);
 
@@ -56,7 +75,14 @@ export default function TriggerDisplay() {
         );
 
         if (storedTriggers) {
-          setAllTriggers(JSON.parse(storedTriggers));
+          const savedTriggers = JSON.parse(storedTriggers) as string[];
+          const customTriggers = savedTriggers.filter(
+            (trigger) =>
+              !defaultTriggers.includes(trigger) &&
+              !oldDefaultTriggers.includes(trigger),
+          );
+
+          setAllTriggers([...defaultTriggers, ...customTriggers]);
         }
 
         if (storedEntries) {
@@ -228,15 +254,7 @@ export default function TriggerDisplay() {
           await AsyncStorage.removeItem(TRIGGERS_STORAGE_KEY);
           await AsyncStorage.removeItem(TRIGGER_ENTRIES_STORAGE_KEY);
 
-          setAllTriggers([
-            "Stress",
-            "Sosiale situasjoner",
-            "Kjedsomhet",
-            "Ensomhet",
-            "Bursdager",
-            "Fester",
-            "Tankekjør",
-          ]);
+          setAllTriggers(defaultTriggers);
 
           setTriggerEntries([]);
         }}
@@ -327,7 +345,7 @@ export default function TriggerDisplay() {
           keyExtractor={(item) => item.trigger}
           renderItem={renderItem}
           ListEmptyComponent={
-            <Text style={styles.empty}>Ingen valgte triggere</Text>
+            <Text style={styles.empty}>Du har ikke registrert noen triggere enda. Trykk på "+Registrer" for å legge til en ny trigger.</Text>
           }
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}

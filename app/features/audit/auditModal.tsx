@@ -76,7 +76,7 @@ const questions: Question[] = [
     text: "Hvor ofte i løpet av det siste året var du ikke i stand til å stoppe å drikke etter at du hadde begynt?",
     options: [
       { id: 0, text: "Aldri" },
-      { id: 1, text: "sjelden" },
+      { id: 1, text: "Sjelden" },
       { id: 2, text: "Noen ganger i måneden" },
       { id: 3, text: "Noen ganger i uken" },
       { id: 4, text: "Nesten daglig" },

@@ -19,12 +19,18 @@ export default function Welcome() {
           En selvhjelps-app for å få oversikt over alkoholbruk
         </Text>
         <Text style={styles.body}>
-          Du kan bruke appen anonymt, og de fleste opplysningene lagres bare på
-          telefonen din.
+          Denne appen er laget for å hjelpe de som ønsker å få bedre kontroll
+          over eget alkoholforbruk. Det kan være om du slutter helt, ønsker å
+          trappe ned, eller bare vil kartlegge vanene dine.
         </Text>
         <Text style={styles.body}>
-          Det er frivillig om du vil dele anonyme data for
-          statistikk.
+          Applikasjonen er utviklet av studenter fra Høyskolen Kristiania i
+          samarbeid med RUSinfo. Innholdet i appen er basert på forskning om
+          alkoholbruk og erfaringsbasert kunnskap fra brukere og fagpersoner.
+        </Text>
+        <Text style={styles.body}>
+          All informasjon du legger inn i appen lagres kun på telefonen din, og
+          deles ikke med noen andre.
         </Text>
       </View>
 
@@ -43,8 +49,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
     justifyContent: "space-between",
-    paddingTop: 96,
-    paddingBottom: 48,
+    padding: 20,
+    paddingTop: 60,
   },
   content: {
     gap: theme.spacing.medium,

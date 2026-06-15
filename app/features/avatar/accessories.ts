@@ -44,6 +44,7 @@ export const accessories: Accessory[] = [
     name: "Hatt",
     image: require("../../../assets/images/avatarAccessories/hat.png"),
     position: "head",
+    size: 220,
   },
   {
     id: "hat-6",
@@ -60,12 +61,12 @@ export const accessories: Accessory[] = [
     offsetTop: 25,
   },
   {
-    id: "necklace-2",
-    name: "Slips",
-    image: require("../../../assets/images/avatarAccessories/tie.png"),
-    position: "body",
+    id: "hat-7",
+    name: "Pirathatt",
+    image: require("../../../assets/images/avatarAccessories/pirates.png"),
+    position: "head",
     size: 118,
-    offsetTop: 50,
+    offsetTop: -5,
   },
   {
     id: "necklace-3",
@@ -76,12 +77,11 @@ export const accessories: Accessory[] = [
     offsetTop: 10,
   },
   {
-    id: "necklace-4",
-    name: "Skjerf",
-    image: require("../../../assets/images/avatarAccessories/scarf.png"),
+    id: "badge-1",
+    name: "Diplom",
+    image: require("../../../assets/images/avatarAccessories/badge.png"),
     position: "body",
-    size: 114,
-    offsetTop: 2,
+    offsetLeft: 30,
   },
   {
     id: "necklace-5",

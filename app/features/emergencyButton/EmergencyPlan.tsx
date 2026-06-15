@@ -118,7 +118,7 @@ export default function EmergencyPlan({ onEditingChange }: Props) {
 
       {triggers.length === 0 ? (
         <Text style={{ marginTop: 10, color: "#777", fontStyle: "italic" }}>
-          Du har ikke registrert noen triggere.
+          Du har ikke registrert noen triggere. Legg til i Triggerdagboken.
         </Text>
       ) : (
         <View style={styles.triggerWrap}>

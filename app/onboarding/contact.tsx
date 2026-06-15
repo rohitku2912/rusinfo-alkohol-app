@@ -129,14 +129,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: theme.spacing.large,
-    paddingTop: theme.spacing.medium,
+    paddingTop: 0,
   },
   backButton: {
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "flex-start",
     gap: 6,
-    marginBottom: theme.spacing.medium,
+    marginBottom: theme.spacing.small,
   },
   backButtonText: {
     fontSize: 15,
@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: theme.spacing.small,
     paddingBottom: theme.spacing.medium,
   },
   formGroup: {

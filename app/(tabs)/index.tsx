@@ -139,21 +139,6 @@ async function resetAll() {
         </FunctionBox>
 
         <FunctionBox
-          title="AUDIT"
-          description="Ta AUDIT-testen for å kartlegge ditt alkoholforbruk."
-          helpBtn={<HelpButton helpKey="audit" />}
-        >
-          <RegularButton
-            title="Åpne AUDIT"
-            onPress={() => setIsAuditVisible(true)}
-          ></RegularButton>
-          <AuditModal
-            isVisible={isAuditVisible}
-            setIsVisible={setIsAuditVisible}
-          ></AuditModal>
-        </FunctionBox>
-
-        <FunctionBox
           title="KALORIKALKULATOR"
           helpBtn={<HelpButton helpKey="caloriecalculator" />}
         >
@@ -169,6 +154,21 @@ async function resetAll() {
               onPress={() => setIsCaloriesVisible(true)}
             />
           </View>
+        </FunctionBox>
+        
+        <FunctionBox
+          title="AUDIT"
+          description="Ta AUDIT-testen for å kartlegge ditt alkoholforbruk."
+          helpBtn={<HelpButton helpKey="audit" />}
+        >
+          <RegularButton
+            title="Åpne AUDIT"
+            onPress={() => setIsAuditVisible(true)}
+          ></RegularButton>
+          <AuditModal
+            isVisible={isAuditVisible}
+            setIsVisible={setIsAuditVisible}
+          ></AuditModal>
         </FunctionBox>
 
         <Pressable

@@ -34,12 +34,12 @@ export const avatars: Avatar[] = [
   },
   {
     id: "avatar-2",
-    name: "Sjiraff",
-    image: require("../../../assets/images/avatars/002-giraffe.png"),
+    name: "Sebra",
+    image: require("../../../assets/images/avatars/020-zebra.png"),
     anchors: {
-      head: { top: 25, left: 110, scale: 0.75 },
-      face: { top: 86, left: 110, scale: 0.9 },
-      body: { top: 168, left: 110, scale: 0.75 },
+      head: { top: 20, left: 110, scale: 0.75 },
+      face: { top: 100, left: 110, scale: 0.9 },
+      body: { top: 210, left: 110, scale: 0.75 },
     },
   },
   {

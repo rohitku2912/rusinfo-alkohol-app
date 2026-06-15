@@ -37,12 +37,20 @@ type Props = {
 };
 
 const presetProtectionFactors = [
-  "Snakket med en venn",
+  "Ringte eller sendte melding til noen",
+  "Dro bort fra situasjonen",
   "Gikk en tur",
+  "Spiste eller drakk noe alkoholfritt",
+  "Ventet 20 minutter",
   "Pusteteknikk",
-  "Tok pause",
-  "Fokuserte på pusten",
+  "Minnet meg selv på målet mitt",
   "Skrev ned følelsene mine",
+  "Gjorde noe fysisk",
+  "Tok en dusj",
+  "La meg tidlig",
+  "Gikk på møte eller snakket med hjelper",
+  "Unngikk personer eller steder knyttet til drikking",
+  "Ingenting",
 ];
 
 export default function RegisterTriggerModal({

@@ -12,6 +12,7 @@ import {
 
 import BackButton from "@/app/components/ui/backButton";
 import theme from "@/app/theme/constantStyling";
+import HelpButton from "../help/HelpButton";
 import { accessories, lockedAccessoryImage } from "./accessories";
 import {
   getSelectedAccessories,
@@ -21,7 +22,6 @@ import {
 import { avatars } from "./avatar";
 import AvatarRenderer from "./avatarRenderer";
 import { getSelectedAvatar, saveSelectedAvatar } from "./avatarStorage";
-import HelpButton from "../help/HelpButton";
 
 type PickerMode = "avatar" | "accessory";
 
@@ -138,7 +138,10 @@ export default function AvatarScreen() {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.grid}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.grid}
+      >
         {pickerMode === "avatar"
           ? avatars.map((avatar) => {
               const isSelected = selectedAvatar === avatar.id;
@@ -226,11 +229,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: theme.colors.background,
-  
+
     paddingVertical: 18,
     marginBottom: 16,
-  
-   
   },
 
   modeRow: {
