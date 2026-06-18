@@ -1,5 +1,3 @@
-import { getOnboardingData } from "@/lib/storage/onboarding";
-import type { OnboardingDraft } from "@/types/onboarding";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -20,15 +18,28 @@ import {
 } from "../features/savingsCalculator/utils";
 
 import { Ionicons } from "@expo/vector-icons";
+import AvatarButton from "../components/ui/avatarButton";
 import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 import HelpButton from "../features/help/HelpButton";
 import PartyPlanner from "../features/partyPlanner/partyPlanner";
-import AvatarButton from "../components/ui/avatarButton";
+
+const auditRiskColors: Record<string, string> = {
+  "Lav risiko": "#5E9C76",
+  "Økende risiko": "#D6A53A",
+  "Høy risiko": "#D97845",
+  "Svært høy risiko": "#C74747",
+};
+
+const auditRiskBackgroundColors: Record<string, string> = {
+  "Lav risiko": "#EAF4EE",
+  "Økende risiko": "#FFF5D8",
+  "Høy risiko": "#FFF0E8",
+  "Svært høy risiko": "#FDECEC",
+};
 
 export default function Dashboard() {
   const router = useRouter();
-  const [onboardingData, setOnboardingData] = useState<OnboardingDraft>({});
 
   const [isDrinkLoggerVisible, setIsDrinkLoggerVisible] = useState(false);
 
@@ -38,6 +49,8 @@ export default function Dashboard() {
   const savedTotal = calculateTotalSavings(savedEntries);
   const totalCalories = calculateTotalAvoidedCalories(savedEntries);
   const [isAuditVisible, setIsAuditVisible] = useState(false);
+  const [auditScore, setAuditScore] = useState<number | null>(null);
+  const [auditRiskGroup, setAuditRiskGroup] = useState<string | null>(null);
   const [isEmergencyVisible, setIsEmergencyVisible] = useState(false);
 
   useEffect(() => {
@@ -48,8 +61,15 @@ export default function Dashboard() {
         return;
       }
 
-      const storedData = await getOnboardingData();
-      setOnboardingData(storedData);
+      const savedAuditScore = await AsyncStorage.getItem("auditScore");
+      if (savedAuditScore !== null) {
+        setAuditScore(Number(savedAuditScore));
+      }
+
+      const savedAuditRiskGroup = await AsyncStorage.getItem("auditRiskGroup");
+      if (savedAuditRiskGroup !== null) {
+        setAuditRiskGroup(savedAuditRiskGroup);
+      }
     };
 
     loadDashboardState();
@@ -76,22 +96,40 @@ export default function Dashboard() {
     try {
       await AsyncStorage.removeItem("onboardingCompleted");
       await AsyncStorage.removeItem("onboardingData");
-  
+
       router.replace("/onboarding" as any);
     } catch (error) {
       console.error("Feil ved reset av onboarding:", error);
     }
   }
 
-async function resetAll() {
-  await AsyncStorage.clear();
-  console.log("Alt er sletta");
-}
+  async function resetAll() {
+    await AsyncStorage.clear();
+    setAuditScore(null);
+    setAuditRiskGroup(null);
+    console.log("Alt er sletta");
+  }
 
   async function handleResetOnboarding() {
     await resetOnboarding();
     router.replace("/onboarding" as any);
   }
+
+  async function handleAuditScoreChange(score: number, riskGroup: string) {
+    setAuditScore(score);
+    setAuditRiskGroup(riskGroup);
+    await AsyncStorage.setItem("auditScore", String(score));
+    await AsyncStorage.setItem("auditRiskGroup", riskGroup);
+  }
+
+  const auditResultColor =
+    auditRiskGroup === null
+      ? theme.colors.primary
+      : auditRiskColors[auditRiskGroup];
+  const auditResultBackground =
+    auditRiskGroup === null
+      ? "#EAF4EE"
+      : auditRiskBackgroundColors[auditRiskGroup];
 
   return (
     <View style={styles.outerContainer}>
@@ -101,13 +139,13 @@ async function resetAll() {
       >
         <View style={styles.header}>
           <Text style={styles.title}>Hjem</Text>
-          <AvatarButton/>
+          <AvatarButton />
         </View>
         <Pressable onPress={resetAll}>
-  <Text>Reset alt</Text>
-</Pressable>
+          <Text>Reset alt</Text>
+        </Pressable>
         <ProgramTimer />
-       
+
         <FunctionBox
           title="DRIKKELOGG"
           description="Her kan du logge ditt alkoholforbruk."
@@ -155,19 +193,45 @@ async function resetAll() {
             />
           </View>
         </FunctionBox>
-        
+
         <FunctionBox
           title="AUDIT"
           description="Ta AUDIT-testen for å kartlegge ditt alkoholforbruk."
           helpBtn={<HelpButton helpKey="audit" />}
         >
-          <RegularButton
-            title="Åpne AUDIT"
-            onPress={() => setIsAuditVisible(true)}
-          ></RegularButton>
+          <View style={styles.functionContent}>
+            <View
+              style={[
+                styles.auditResultCard,
+                {
+                  backgroundColor: auditResultBackground,
+                  borderColor: auditResultColor,
+                },
+              ]}
+            >
+              <Text style={styles.auditScoreLabel}>Din siste score:</Text>
+              <Text
+                style={[styles.auditScoreValue, { color: auditResultColor }]}
+              >
+                {auditScore === null ? "-" : auditScore}
+              </Text>
+              <Text style={styles.auditRiskText}>
+                <Text
+                  style={[styles.auditRiskValue, { color: auditResultColor }]}
+                >
+                  {auditRiskGroup ?? "-"}
+                </Text>
+              </Text>
+            </View>
+            <RegularButton
+              title="Åpne AUDIT"
+              onPress={() => setIsAuditVisible(true)}
+            ></RegularButton>
+          </View>
           <AuditModal
             isVisible={isAuditVisible}
             setIsVisible={setIsAuditVisible}
+            onScoreChange={handleAuditScoreChange}
           ></AuditModal>
         </FunctionBox>
 
@@ -276,6 +340,32 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 5,
     marginBottom: 5,
+  },
+  auditResultCard: {
+    alignItems: "center",
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    padding: 16,
+  },
+  auditScoreLabel: {
+    color: theme.colors.darkGrey,
+    fontSize: 14,
+  },
+  auditScoreValue: {
+    fontFamily: theme.fonts.heading,
+    fontSize: 42,
+    fontWeight: "700",
+  },
+  auditRiskText: {
+    color: theme.colors.text,
+    fontSize: 18,
+    marginTop: -4,
+    textAlign: "center",
+  },
+  auditRiskValue: {
+    color: theme.colors.text,
+    fontSize: 18,
+    fontWeight: "700",
   },
   onboardingResetButton: {
     alignSelf: "center",
