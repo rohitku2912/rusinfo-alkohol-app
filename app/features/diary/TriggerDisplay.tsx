@@ -345,7 +345,10 @@ export default function TriggerDisplay() {
           keyExtractor={(item) => item.trigger}
           renderItem={renderItem}
           ListEmptyComponent={
-            <Text style={styles.empty}>Du har ikke registrert noen triggere enda. Trykk på "+Registrer" for å legge til en ny trigger.</Text>
+            <Text style={styles.empty}>
+              Du har ikke registrert noen triggere enda. Trykk på +Registrer
+              for å legge til en ny trigger.
+            </Text>
           }
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}

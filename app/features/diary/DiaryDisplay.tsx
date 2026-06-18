@@ -198,8 +198,11 @@ export default function DiaryDisplay() {
         renderItem={renderEntry}
         contentContainerStyle={styles.list}
         ListEmptyComponent={
-                    <Text style={styles.empty}>Du har ikke registrert noen dagbokinnlegg enda. Trykk på "+Nytt innlegg" for å legge til et nytt dagbokinnlegg.</Text>
-                  }
+          <Text style={styles.empty}>
+            Du har ikke registrert noen dagbokinnlegg enda. Trykk på +Nytt
+            innlegg for å legge til et nytt dagbokinnlegg.
+          </Text>
+        }
         showsVerticalScrollIndicator={false}
       />
 
