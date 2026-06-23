@@ -2,14 +2,7 @@ import BackButton from "@/app/components/ui/backButton";
 import RegularButton from "@/app/components/ui/button";
 import theme from "@/app/theme/constantStyling";
 import { useState } from "react";
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import HelpButton from "../help/HelpButton";
 
 type Props = {
@@ -597,23 +590,17 @@ export default function AuditModal({
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <ScrollView
-        style={styles.modalContainer}
-        contentContainerStyle={styles.modalContent}
-      >
+      <View style={styles.modalContent}>
         <BackButton onPress={closeModal} style={styles.backButton} />
         {controllScreen()}
-      </ScrollView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   modalContent: {
+    backgroundColor: theme.colors.background,
     flexGrow: 1,
     padding: 20,
     paddingTop: 56,

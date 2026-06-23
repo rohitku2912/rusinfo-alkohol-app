@@ -12,6 +12,7 @@ const theme = {
     secondary: "rgb(162, 109, 109)",
     box: "#FFFFFF",
     background: "#dce0d4",
+    backgroundSecondary: "#dce0d478",
     accent: "#FFC107",
     attention: "#E53935",
     lightText: "#FFFFFF",
@@ -21,6 +22,8 @@ const theme = {
     emergency: "#EF4444",
     buttonText: "#fffaf3",
     button: "#529255",
+    no: "#ea6648",
+    yes: "#3dc15e",
   },
   fonts: {
     main: "Arial",

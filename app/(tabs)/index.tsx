@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
 import CalorieCalcModal from "../features/calorieCalculator/CalorieCalcModal";
@@ -18,6 +18,10 @@ import {
 } from "../features/savingsCalculator/utils";
 
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AnimatedTabHeader, {
+  getAnimatedTabHeaderTopPadding,
+} from "../components/ui/AnimatedTabHeader";
 import AvatarButton from "../components/ui/avatarButton";
 import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
@@ -40,6 +44,7 @@ const auditRiskBackgroundColors: Record<string, string> = {
 
 export default function Dashboard() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const [isDrinkLoggerVisible, setIsDrinkLoggerVisible] = useState(false);
 
@@ -52,6 +57,8 @@ export default function Dashboard() {
   const [auditScore, setAuditScore] = useState<number | null>(null);
   const [auditRiskGroup, setAuditRiskGroup] = useState<string | null>(null);
   const [isEmergencyVisible, setIsEmergencyVisible] = useState(false);
+
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const loadDashboardState = async () => {
@@ -133,17 +140,24 @@ export default function Dashboard() {
 
   return (
     <View style={styles.outerContainer}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
+      <AnimatedTabHeader
+        title="Hjem"
+        scrollY={scrollY}
+        rightSlot={<AvatarButton />}
+      />
+
+      <Animated.ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: getAnimatedTabHeaderTopPadding(insets.top) },
+        ]}
         showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false },
+        )}
+        scrollEventThrottle={16}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Hjem</Text>
-          <AvatarButton />
-        </View>
-        <Pressable onPress={resetAll}>
-          <Text>Reset alt</Text>
-        </Pressable>
         <ProgramTimer />
 
         <FunctionBox
@@ -156,6 +170,9 @@ export default function Dashboard() {
             onPress={() => setIsDrinkLoggerVisible(true)}
           />
         </FunctionBox>
+        <Pressable onPress={resetAll}>
+          <Text>Reset alt</Text>
+        </Pressable>
 
         <PartyPlanner />
 
@@ -243,8 +260,7 @@ export default function Dashboard() {
             Start onboarding på nytt
           </Text>
         </Pressable>
-      </ScrollView>
-
+      </Animated.ScrollView>
       <View style={styles.EmergencyButton}>
         <Pressable
           onPress={() => setIsEmergencyVisible(true)}
@@ -316,18 +332,6 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing.medium,
     marginBottom: theme.spacing.small,
     gap: theme.spacing.small,
-  },
-  header: {
-    alignItems: "center",
-    alignSelf: "stretch",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: theme.spacing.small,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: theme.colors.text,
   },
   functionContent: {
     marginTop: 5,

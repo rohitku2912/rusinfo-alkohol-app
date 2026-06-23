@@ -10,8 +10,13 @@ import {
   WeeklyGoalsResult,
 } from "@/lib/storage/goals";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useCallback, useRef, useState } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AnimatedTabHeader, {
+  getAnimatedTabHeaderTopPadding,
+} from "../components/ui/AnimatedTabHeader";
+import AvatarButton from "../components/ui/avatarButton";
 import HelpButton from "../features/help/HelpButton";
 import DrinkChart from "../features/overView/DrinkChart";
 import Goals from "../features/overView/Goals";
@@ -20,6 +25,8 @@ import theme from "../theme/constantStyling";
 import { getPreviousWeek } from "../utils/weekHelpers";
 
 export default function OverView() {
+  const insets = useSafeAreaInsets();
+  const headerScrollY = useRef(new Animated.Value(0)).current;
   const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
   const [lastWeekResult, setLastWeekResult] =
     useState<WeeklyGoalsResult | null>(null);
@@ -110,16 +117,27 @@ export default function OverView() {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.pageTitle}>Oversikt</Text>
-        </View>
-        <HelpButton helpKey="overview" />
+      <AnimatedTabHeader
+        title="Oversikt"
+        scrollY={headerScrollY}
+        rightSlot={
+          <View style={styles.headerActions}>
+            <HelpButton helpKey="overview" />
+            <AvatarButton />
+          </View>
+        }
+      />
+      <View
+        style={[
+          styles.content,
+          { paddingTop: getAnimatedTabHeaderTopPadding(insets.top) },
+        ]}
+      >
+        <Goals logs={logs} />
+        {showLastWeekResult()}
+        <Stats logs={logs} />
+        <DrinkChart logs={logs} />
       </View>
-      <Goals logs={logs} />
-      {showLastWeekResult()}
-      <Stats logs={logs} />
-      <DrinkChart logs={logs} />
     </View>
   );
 }
@@ -129,18 +147,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  header: {
+  content: {
+    flex: 1,
+  },
+  headerActions: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: theme.spacing.medium,
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.small,
-  },
-  pageTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#1F2A24",
+    gap: 8,
   },
   lastWeekCard: {
     backgroundColor: "#ffffff",

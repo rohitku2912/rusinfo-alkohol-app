@@ -1,6 +1,6 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Image, Pressable } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 
 import { useAchievements } from "@/app/features/achievements/AchievementProvider";
 import { avatars } from "@/app/features/avatar/avatar";
@@ -39,15 +39,15 @@ export default function AvatarButton() {
           size={60}
         />
       ) : (
-        <Image
-          source={displayAvatar.image}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 20,
-          }}
-        />
+        <Image source={displayAvatar.image} style={styles.fallbackAvatar} />
       )}
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  fallbackAvatar: {
+    height: 60,
+    width: 60,
+  },
+});

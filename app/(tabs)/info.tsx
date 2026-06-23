@@ -5,10 +5,11 @@ import { fetchArticles, type Article } from "@/lib/firestore/articles";
 import { submitFeedback } from "@/lib/firestore/feedback";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Keyboard,
   Linking,
   Modal,
@@ -19,7 +20,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import AnimatedTabHeader, {
+  getAnimatedTabHeaderTopPadding,
+} from "../components/ui/AnimatedTabHeader";
+import AvatarButton from "../components/ui/avatarButton";
 import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
 
@@ -27,6 +32,9 @@ const PREVIOUS_QUESTIONS_URL = "https://rusinfo.no/2018/12/chat-apningstid/";
 const RUSINFO_PHONE_URL = "tel:+4791508588";
 
 export default function Info() {
+  const insets = useSafeAreaInsets();
+  const headerScrollY = useRef(new Animated.Value(0)).current;
+
   // --- State ---
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,12 +115,22 @@ export default function Info() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Informasjon</Text>
-          <HelpButton helpKey="info" />
-        </View>
-
+      <AnimatedTabHeader
+        title="Informasjon"
+        scrollY={headerScrollY}
+        rightSlot={
+          <View style={styles.headerActions}>
+            <HelpButton helpKey="info" />
+            <AvatarButton />
+          </View>
+        }
+      />
+      <View
+        style={[
+          styles.container,
+          { paddingTop: getAnimatedTabHeaderTopPadding(insets.top) },
+        ]}
+      >
         {/* Søkefelt — filtrerer på tvers av alle artikler */}
         <View style={styles.searchRow}>
           <TextInput
@@ -394,18 +412,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: theme.spacing.medium,
-    paddingTop: theme.spacing.small,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#1F2A24",
-  },
-  header: {
+  headerActions: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: theme.spacing.small,
+    gap: 8,
   },
   searchRow: {
     position: "relative",

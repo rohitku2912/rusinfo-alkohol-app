@@ -1,21 +1,41 @@
-import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useRef, useState } from "react";
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AnimatedTabHeader, {
+  getAnimatedTabHeaderTopPadding,
+} from "../components/ui/AnimatedTabHeader";
+import AvatarButton from "../components/ui/avatarButton";
 import DiaryDisplay from "../features/diary/DiaryDisplay";
 import TriggerDisplay from "../features/diary/TriggerDisplay";
 import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
 
 export default function Diary() {
+  const insets = useSafeAreaInsets();
+  const headerScrollY = useRef(new Animated.Value(0)).current;
   const [activeTab, setActiveTab] = useState<"diary" | "trigger">("diary");
 
   const isDiary = activeTab === "diary";
 
   return (
     <View style={styles.container}>
+      <AnimatedTabHeader
+        title={isDiary ? "Dagbok" : "Trigger"}
+        scrollY={headerScrollY}
+        rightSlot={
+          <View style={styles.headerActions}>
+            <HelpButton helpKey={isDiary ? "diary" : "trigger"} />
+            <AvatarButton />
+          </View>
+        }
+      />
       <View
         style={[
           styles.folder,
           isDiary ? styles.diaryTheme : styles.triggerTheme,
+          {
+            marginTop: getAnimatedTabHeaderTopPadding(insets.top),
+          },
         ]}
       >
         {/* tabs */}
@@ -34,10 +54,6 @@ export default function Diary() {
             >
               <Text style={styles.tabText}>Trigger</Text>
             </TouchableOpacity>
-          </View>
-
-          <View style={styles.helpButton}>
-            <HelpButton helpKey={isDiary ? "diary" : "trigger"} />
           </View>
         </View>
 
@@ -94,11 +110,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: theme.colors.text,
   },
-  helpButton: {
-    width: 48,
+  headerActions: {
     alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "stretch",
+    flexDirection: "row",
+    gap: 8,
   },
   content: {
     flex: 1,

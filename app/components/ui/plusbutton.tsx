@@ -1,10 +1,10 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
-    StyleProp,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    ViewStyle,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 import theme from "../../theme/constantStyling";
 
@@ -28,14 +28,14 @@ export default function PlusButton({
       activeOpacity={0.7}
       disabled={disabled}
     >
-      <Text style={styles.text}>+ 1</Text>
+      <Ionicons name="add" size={18} color={theme.colors.buttonText} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.yes,
     alignItems: "center",
     borderRadius: 999,
     justifyContent: "center",

@@ -43,7 +43,6 @@ export default function TabsLayout() {
           },
 
           sceneStyle: {
-            paddingTop: insets.top,
             backgroundColor: theme.colors.background,
           },
         }}

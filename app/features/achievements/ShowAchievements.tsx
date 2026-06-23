@@ -6,7 +6,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ScrollView } from "react-native";
+import { Animated, StyleProp, ViewStyle } from "react-native";
 import AchievementCard from "./AchievementCard";
 import {
   DiaryEntry,
@@ -15,7 +15,15 @@ import {
 } from "./achievementRules";
 import { getUnlockedAchievementIds } from "./achievementStorage";
 
-export default function ShowAchievements() {
+type ShowAchievementsProps = {
+  contentContainerStyle?: StyleProp<ViewStyle>;
+  scrollY?: Animated.Value;
+};
+
+export default function ShowAchievements({
+  contentContainerStyle,
+  scrollY,
+}: ShowAchievementsProps) {
   const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
   const [daysInProgram, setDaysInProgram] = useState(0);
@@ -49,10 +57,22 @@ export default function ShowAchievements() {
   );
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+    <Animated.ScrollView
+      contentContainerStyle={[{ paddingBottom: 100 }, contentContainerStyle]}
+      onScroll={
+        scrollY
+          ? Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false },
+            )
+          : undefined
+      }
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+    >
       {achievements.map((achievement) => (
         <AchievementCard key={achievement.id} achievement={achievement} />
       ))}
-    </ScrollView>
+    </Animated.ScrollView>
   );
 }

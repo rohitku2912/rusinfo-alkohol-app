@@ -1,16 +1,36 @@
 import theme from "@/app/theme/constantStyling";
-import { StyleSheet, Text, View } from "react-native";
+import { useRef } from "react";
+import { Animated, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AnimatedTabHeader, {
+  getAnimatedTabHeaderTopPadding,
+} from "../components/ui/AnimatedTabHeader";
+import AvatarButton from "../components/ui/avatarButton";
 import ShowAchievements from "../features/achievements/ShowAchievements";
 import HelpButton from "../features/help/HelpButton";
 
 export default function Achievements() {
+  const insets = useSafeAreaInsets();
+  const scrollY = useRef(new Animated.Value(0)).current;
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Prestasjoner</Text>
-        <HelpButton helpKey="achievements" />
-      </View>
-      <ShowAchievements />
+      <AnimatedTabHeader
+        title="Prestasjoner"
+        scrollY={scrollY}
+        rightSlot={
+          <View style={styles.headerActions}>
+            <HelpButton helpKey="achievements" />
+            <AvatarButton />
+          </View>
+        }
+      />
+      <ShowAchievements
+        scrollY={scrollY}
+        contentContainerStyle={{
+          paddingTop: getAnimatedTabHeaderTopPadding(insets.top),
+        }}
+      />
     </View>
   );
 }
@@ -20,22 +40,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#1F2A24",
-  },
-  header: {
+  headerActions: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: theme.spacing.medium,
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.small,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: theme.colors.darkGrey,
-    marginTop: 2,
+    gap: 8,
   },
 });

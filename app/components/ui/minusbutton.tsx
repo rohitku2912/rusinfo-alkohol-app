@@ -1,8 +1,8 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
   StyleProp,
   StyleSheet,
-  Text,
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
@@ -26,14 +26,14 @@ export default function MinusButton({
       activeOpacity={0.7}
       disabled={disabled}
     >
-      <Text style={styles.text}>- 1</Text>
+      <Ionicons name="remove" size={18} color={theme.colors.buttonText} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.no,
     alignItems: "center",
     borderRadius: 999,
     justifyContent: "center",

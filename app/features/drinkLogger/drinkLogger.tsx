@@ -1,4 +1,5 @@
 import RegularButton from "@/app/components/ui/button";
+import MinusButton from "@/app/components/ui/minusbutton";
 import PlusButton from "@/app/components/ui/plusbutton";
 import theme from "@/app/theme/constantStyling";
 import { clearDrinkLogs, saveDrinkLog } from "@/lib/storage/drinkLogs";
@@ -115,10 +116,12 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
     title,
     count,
     onAdd,
+    onSubtract,
   }: {
     title: string;
     count: number;
     onAdd: () => void;
+    onSubtract: () => void;
   }) {
     return (
       <View style={styles.addDrinkContainer}>
@@ -127,8 +130,9 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
           <Text style={styles.drinkMeta}>Antall registrert</Text>
         </View>
         <View style={styles.counterControls}>
+          <MinusButton onPress={onSubtract} />
           <Text style={styles.counterValue}>{count}</Text>
-          <PlusButton label="1" onPress={onAdd} />
+          <PlusButton onPress={onAdd} />
         </View>
       </View>
     );
@@ -202,16 +206,19 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
               title="Øl"
               count={beerCount}
               onAdd={() => setBeerCount(beerCount + 1)}
+              onSubtract={() => setBeerCount(Math.max(0, beerCount - 1))}
             />
             <DrinkCounter
               title="Glass med vin"
               count={wineCount}
               onAdd={() => setWineCount(wineCount + 1)}
+              onSubtract={() => setWineCount(Math.max(0, wineCount - 1))}
             />
             <DrinkCounter
               title="Drinker"
               count={drinksCount}
               onAdd={() => setDrinksCount(drinksCount + 1)}
+              onSubtract={() => setDrinksCount(Math.max(0, drinksCount - 1))}
             />
           </View>
 
