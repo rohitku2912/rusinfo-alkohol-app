@@ -23,6 +23,7 @@ import {
   saveUnlockedAchievementIds,
 } from "./achievementStorage";
 import { getAllAchievements, isAchievementCompleted } from "./achievementRules";
+import { getWhitePartyCount } from "./whitePartyStorage";
 
 type Props = {
   children: ReactNode;
@@ -94,7 +95,13 @@ export default function AchievementProvider({ children }: Props) {
     const diaryEntries = storedDiaryEntries
       ? JSON.parse(storedDiaryEntries)
       : [];
-    const achievements = getAllAchievements(logs, diaryEntries, daysInProgram);
+    const whitePartyCount = await getWhitePartyCount();
+    const achievements = getAllAchievements(
+      logs,
+      diaryEntries,
+      daysInProgram,
+      whitePartyCount,
+    );
     const unlockedIds = await getUnlockedAchievementIds();
     const newAchievement = findNewAchievement(achievements, unlockedIds);
 

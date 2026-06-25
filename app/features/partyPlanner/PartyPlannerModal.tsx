@@ -4,6 +4,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import HelpButton from "../help/HelpButton";
+import theme from "@/app/theme/constantStyling";
 
 /*typer*/
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
     beer: number;
     wine: number;
     drinks: number;
+    soberParty: boolean;
   }) => void;
 };
 
@@ -25,9 +27,35 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
   const [beer, setBeer] = useState(0);
   const [wine, setWine] = useState(0);
   const [drinks, setDrinks] = useState(0);
+  const [soberParty, setSoberParty] = useState(false);
 
   const [editingStart, setEditingStart] = useState(false);
   const [editingEnd, setEditingEnd] = useState(false);
+
+  function renderDrinkCounter(
+    label: string,
+    value: number,
+    setValue: (value: number) => void,
+  ) {
+    return (
+      <View style={styles.drinkCounterGroup}>
+        <Text style={styles.drinkLabel}>{label}</Text>
+        <View style={styles.amountCard}>
+          <RegularButton
+            title="-"
+            onPress={() => setValue(Math.max(0, value - 1))}
+            style={styles.amountButton}
+          />
+          <Text style={styles.amountValue}>{value}</Text>
+          <RegularButton
+            title="+"
+            onPress={() => setValue(value + 1)}
+            style={styles.amountButton}
+          />
+        </View>
+      </View>
+    );
+  }
 
   useEffect(() => {
     if (visible) {
@@ -39,10 +67,23 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
       setBeer(0);
       setWine(0);
       setDrinks(0);
+      setSoberParty(false);
       setEditingStart(false);
       setEditingEnd(false);
     }
   }, [visible]);
+
+  function chooseSoberParty() {
+    setSoberParty((previousValue) => {
+      const nextValue = !previousValue;
+      if (nextValue) {
+        setBeer(0);
+        setWine(0);
+        setDrinks(0);
+      }
+      return nextValue;
+    });
+  }
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -61,53 +102,33 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
           {/* drikke */}
           <Text style={styles.subtitle}>Drikke</Text>
 
-          <View style={styles.row}>
-  <Text style={styles.drinkLabel}>Øl</Text>
+          <Pressable
+            onPress={chooseSoberParty}
+            style={[
+              styles.soberButton,
+              soberParty && styles.soberButtonSelected,
+            ]}
+          >
+            <Text
+              style={[
+                styles.soberButtonTitle,
+                soberParty && styles.soberButtonTitleSelected,
+              ]}
+            >
+              Hvit fest
+            </Text>
+            <Text style={styles.soberButtonText}>
+              Planlegg en fest eller tur uten alkohol.
+            </Text>
+          </Pressable>
 
-  <View style={styles.counter}>
-    <Pressable onPress={() => setBeer(Math.max(0, beer - 1))}>
-      <Text style={styles.btn}>-</Text>
-    </Pressable>
-
-    <Text style={styles.count}>{beer}</Text>
-
-    <Pressable onPress={() => setBeer(beer + 1)}>
-      <Text style={styles.btn}>+</Text>
-    </Pressable>
-  </View>
-</View>
-
-<View style={styles.row}>
-  <Text style={styles.drinkLabel}>Vin</Text>
-
-  <View style={styles.counter}>
-    <Pressable onPress={() => setWine(Math.max(0, wine - 1))}>
-      <Text style={styles.btn}>-</Text>
-    </Pressable>
-
-    <Text style={styles.count}>{wine}</Text>
-
-    <Pressable onPress={() => setWine(wine + 1)}>
-      <Text style={styles.btn}>+</Text>
-    </Pressable>
-  </View>
-</View>
-
-<View style={styles.row}>
-  <Text style={styles.drinkLabel}>Drinker</Text>
-
-  <View style={styles.counter}>
-    <Pressable onPress={() => setDrinks(Math.max(0, drinks - 1))}>
-      <Text style={styles.btn}>-</Text>
-    </Pressable>
-
-    <Text style={styles.count}>{drinks}</Text>
-
-    <Pressable onPress={() => setDrinks(drinks + 1)}>
-      <Text style={styles.btn}>+</Text>
-    </Pressable>
-  </View>
-</View>
+          {!soberParty && (
+            <View style={styles.drinkCounterList}>
+              {renderDrinkCounter("Øl", beer, setBeer)}
+              {renderDrinkCounter("Vin", wine, setWine)}
+              {renderDrinkCounter("Drinker", drinks, setDrinks)}
+            </View>
+          )}
 
           {/* start-tid */}
           <Text style={styles.subtitle}>Start</Text>
@@ -190,6 +211,7 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
                   beer,
                   wine,
                   drinks,
+                  soberParty,
                 })
               }
             />
@@ -238,32 +260,61 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  soberButton: {
+    backgroundColor: theme.colors.box,
+    borderColor: theme.colors.lightGrey,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    gap: 4,
+    marginTop: 10,
+    padding: 14,
+  },
+  soberButtonSelected: {
+    backgroundColor: "#EAF4EE",
+    borderColor: theme.colors.primary,
+  },
+  soberButtonTitle: {
+    color: theme.colors.text,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  soberButtonTitleSelected: {
+    color: theme.colors.primary,
+  },
+  soberButtonText: {
+    color: theme.colors.darkGrey,
+    fontSize: 13,
+  },
+  drinkCounterList: {
+    gap: 12,
     marginTop: 12,
   },
-  
-  drinkLabel: {
-    fontSize: 16,
+  drinkCounterGroup: {
+    gap: 6,
   },
-  
-  counter: {
+  drinkLabel: {
+    color: theme.colors.text,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  amountCard: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    justifyContent: "space-between",
+    backgroundColor: "#EAF4EE",
+    borderRadius: theme.borderRadius.medium,
+    padding: 10,
   },
-  
-  count: {
-    minWidth: 20,
+  amountButton: {
+    width: 56,
+    borderRadius: theme.borderRadius.small,
+  },
+  amountValue: {
+    color: theme.colors.text,
+    fontSize: 28,
+    fontWeight: "700",
+    minWidth: 36,
     textAlign: "center",
-    fontWeight: "bold",
-  },
-
-  btn: {
-    fontSize: 20,
-    paddingHorizontal: 8,
   },
 
   timeButton: {

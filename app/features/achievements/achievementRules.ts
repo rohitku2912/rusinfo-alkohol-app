@@ -83,7 +83,7 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
     {
       id: "first-log",
       title: "Første logg",
-      description: "Logg din første dag med alkohol",
+      description: "Logg din første dag med alkohol.",
       currentProgress: Math.min(drinkingDayCount, 1),
       goal: 1,
       unitOfMeasurement: "logg",
@@ -91,7 +91,7 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
     {
       id: "aerlig-oversikt",
       title: "Ærlig oversikt",
-      description: "Logg 7 dager totalt",
+      description: "Logg 7 dager totalt.",
       currentProgress: Math.min(logs.length, 7),
       goal: 7,
       unitOfMeasurement: "logg",
@@ -99,7 +99,7 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
     {
       id: "god-rytme",
       title: "God rytme",
-      description: "Logg 14 dager totalt",
+      description: "Logg 14 dager totalt.",
       currentProgress: Math.min(logs.length, 14),
       goal: 14,
       unitOfMeasurement: "logg",
@@ -107,7 +107,7 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
     {
       id: "30-dager",
       title: "30 dager",
-      description: "Logg 30 dager totalt",
+      description: "Logg 30 dager totalt.",
       currentProgress: Math.min(logs.length, 30),
       goal: 30,
       unitOfMeasurement: "logg",
@@ -115,7 +115,7 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
     {
       id: "60-dager",
       title: "60 dager",
-      description: "Logg 60 dager totalt",
+      description: "Logg 60 dager totalt.",
       currentProgress: Math.min(logs.length, 60),
       goal: 60,
       unitOfMeasurement: "logg",
@@ -123,7 +123,7 @@ export function getDrinkLogAchievements(logs: DrinkLogEntry[]) {
     {
       id: "90-dager",
       title: "90 dager",
-      description: "Logg 90 dager totalt",
+      description: "Logg 90 dager totalt.",
       currentProgress: Math.min(logs.length, 90),
       goal: 90,
       unitOfMeasurement: "logg",
@@ -178,7 +178,7 @@ export function getSoberDaysAchievements(daysInProgram: number) {
     {
       id: "24-timer-edru",
       title: "24 timer uten alkohol",
-      description: "Ha 24 timer uten alkohol.",
+      description: "Vær alkoholfri i 24 timer.",
       currentProgress: Math.min(safeDays, 1),
       goal: 1,
       unitOfMeasurement: "dag",
@@ -186,7 +186,7 @@ export function getSoberDaysAchievements(daysInProgram: number) {
     {
       id: "7-dager-edru",
       title: "7 dager uten alkohol",
-      description: "Ha 7 dager uten alkohol.",
+      description: "Vær alkoholfri i 7 dager.",
       currentProgress: Math.min(safeDays, 7),
       goal: 7,
       unitOfMeasurement: "dager",
@@ -194,7 +194,7 @@ export function getSoberDaysAchievements(daysInProgram: number) {
     {
       id: "30-dager-edru",
       title: "1 måned uten alkohol",
-      description: "Ha 1 måned uten alkohol.",
+      description: "Vær alkoholfri i 1 måned.",
       currentProgress: Math.min(safeDays, 30),
       goal: 30,
       unitOfMeasurement: "dager",
@@ -202,7 +202,7 @@ export function getSoberDaysAchievements(daysInProgram: number) {
     {
       id: "3-mnd-edru",
       title: "3 måneder uten alkohol",
-      description: "Ha 3 måneder uten alkohol.",
+      description: "Vær alkoholfri i 3 måneder.",
       currentProgress: Math.min(safeDays, 90),
       goal: 90,
       unitOfMeasurement: "dager",
@@ -210,7 +210,7 @@ export function getSoberDaysAchievements(daysInProgram: number) {
     {
       id: "6-mnd-edru",
       title: "6 måneder uten alkohol",
-      description: "Ha 6 måneder uten alkohol.",
+      description: "Vær alkoholfri i 6 måneder.",
       currentProgress: Math.min(safeDays, 180),
       goal: 180,
       unitOfMeasurement: "dager",
@@ -218,10 +218,39 @@ export function getSoberDaysAchievements(daysInProgram: number) {
     {
       id: "12-mnd-edru",
       title: "1 år uten alkohol",
-      description: "Ha 1 år uten alkohol.",
+      description: "Vær alkoholfri i 1 år.",
       currentProgress: Math.min(safeDays, 365),
       goal: 365,
       unitOfMeasurement: "dager",
+    },
+  ];
+}
+
+export function getWhitePartyAchievements(whitePartyCount: number) {
+  return [
+    {
+      id: "forste-hvite-fest",
+      title: "Første hvite fest",
+      description: "Fullfør din første hvite fest.",
+      currentProgress: Math.min(whitePartyCount, 1),
+      goal: 1,
+      unitOfMeasurement: "fest",
+    },
+    {
+      id: "fem-hvite-fester",
+      title: "Fem hvite fester",
+      description: "Fullfør 5 hvite fester.",
+      currentProgress: Math.min(whitePartyCount, 5),
+      goal: 5,
+      unitOfMeasurement: "fester",
+    },
+    {
+      id: "ti-hvite-fester",
+      title: "Ti hvite fester",
+      description: "Fullfør 10 hvite fester.",
+      currentProgress: Math.min(whitePartyCount, 10),
+      goal: 10,
+      unitOfMeasurement: "fester",
     },
   ];
 }
@@ -231,11 +260,13 @@ export function getAllAchievements(
   logs: DrinkLogEntry[],
   diaryEntries: DiaryEntry[],
   daysInProgram: number,
+  whitePartyCount = 0,
 ) {
   return [
     ...getDrinkLogAchievements(logs),
     ...getDiaryAchievements(diaryEntries),
     ...getSoberDaysAchievements(daysInProgram),
+    ...getWhitePartyAchievements(whitePartyCount),
   ];
 }
 

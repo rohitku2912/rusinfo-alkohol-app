@@ -18,7 +18,7 @@ type Props = {
 
 export default function Goals(props: Props) {
   const [showModal, setShowModal] = useState(false);
-  const [maxDrinkUnitsGoal, setMaxDrinkUnitsGoal] = useState(10);
+  const [maxDrinkUnitsGoal, setMaxDrinkUnitsGoal] = useState(5);
   const [whiteDaysGoal, setWhiteDaysGoal] = useState(5);
 
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function Goals(props: Props) {
         />
 
         <ProgressBar
-          title="Drikkegrense"
+          title="Alkoholgrense"
           current={maxDrinkUnitsCurrent}
           goal={maxDrinkUnitsGoal}
         />
@@ -146,7 +146,7 @@ export default function Goals(props: Props) {
         onClose={() => setShowModal(false)}
       >
         <View style={styles.editOuterView}>
-          <Text>Ukentlig maxgrense</Text>
+          <Text>Ukentlig maksgrense</Text>
           <View style={styles.editInnerView}>
             <Pressable onPress={() => decreaseDrinkUnitsGoal()}>
               <Text>

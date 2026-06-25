@@ -14,6 +14,7 @@ import {
   keepUnlockedAchievementsCompleted,
 } from "./achievementRules";
 import { getUnlockedAchievementIds } from "./achievementStorage";
+import { getWhitePartyCount } from "./whitePartyStorage";
 
 type ShowAchievementsProps = {
   contentContainerStyle?: StyleProp<ViewStyle>;
@@ -27,6 +28,7 @@ export default function ShowAchievements({
   const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
   const [diaryEntries, setDiaryEntries] = useState<DiaryEntry[]>([]);
   const [daysInProgram, setDaysInProgram] = useState(0);
+  const [whitePartyCount, setWhitePartyCount] = useState(0);
   const [unlockedIds, setUnlockedIds] = useState<string[]>([]);
 
   useFocusEffect(
@@ -44,6 +46,7 @@ export default function ShowAchievements({
         const days = startDate ? getProgramDays(startDate) : 0;
         setDaysInProgram(days);
 
+        setWhitePartyCount(await getWhitePartyCount());
         setUnlockedIds(await getUnlockedAchievementIds());
       }
 
@@ -52,7 +55,7 @@ export default function ShowAchievements({
   );
 
   const achievements = keepUnlockedAchievementsCompleted(
-    getAllAchievements(logs, diaryEntries, daysInProgram),
+    getAllAchievements(logs, diaryEntries, daysInProgram, whitePartyCount),
     unlockedIds,
   );
 

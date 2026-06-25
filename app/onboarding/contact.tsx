@@ -71,7 +71,7 @@ export default function Contact() {
               Legg til nummeret til en kontaktperson
             </Text>
             <Text style={styles.subtitle}>
-              Når ting er vanskelig kan det hjelpe å ha et nummer du kan ringe. Avtal med noen du stoler på om de kan være kontakten din dersom du trenger noen å snakke med. Dette lagres kun på telefonen din og dukker opp i kriseplanen din.
+              Når ting er vanskelig kan det hjelpe å ha et nummer du kan ringe. Avtal med noen du stoler på om de kan være kontakten din dersom du trenger noen å snakke med. Dette lagres kun på telefonen din og dukker opp i trygghetsplanen din.
             </Text>
 
             <TextInput

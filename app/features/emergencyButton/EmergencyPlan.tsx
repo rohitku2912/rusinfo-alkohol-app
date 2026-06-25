@@ -75,7 +75,7 @@ export default function EmergencyPlan({ onEditingChange }: Props) {
 
   return (
     <FunctionBox
-      title="Din kriseplan"
+      title="Din trygghetsplan"
       description="Dette kan du gjøre om du føler på en trang til å drikke."
     >
      

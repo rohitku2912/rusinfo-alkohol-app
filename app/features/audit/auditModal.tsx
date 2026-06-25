@@ -41,7 +41,7 @@ type RiskGroup = {
 const MAX_AUDIT_SCORE = 40;
 
 const riskDescriptions: Record<RiskLevel, string> = {
-  lav: "Dine svar viser at du aldri eller i blant drikker alkohol, og at du kontrollerer dette på en bra måte.",
+  lav: "Dine svar viser at du aldri eller i blant drikker alkohol, og at du kontrollerer dette på en bra måte. Selv om du ligger på lav risiko, er all alkoholforbruk en risiko for helsen din.",
   okende:
     "Det kan se ut som om du drikker alkohol på en måte hvor det kan være risiko for å utvikle alkoholrelaterte problemer. Du bør tenke igjennom din bruk av alkohol og kanskje vurdere å endre alkoholforbruket ditt.",
   hoy: "Du drikker alkohol på en måte der det er høy risiko for at du kan utvikle alkoholrelaterte problem. Du bør vurdere å redusere ditt inntak av alkohol. Det kan være lurt å snakke med noen om din bruk av alkohol. F.eks din fastlege, andre i hjelpeapparatet, noen i familien din, en venn eller kollega.",

@@ -95,4 +95,12 @@ export const accessories: Accessory[] = [
     image: require("../../../assets/images/avatarAccessories/sunglasses.png"),
     position: "face",
   },
+  {
+    id: "hat-8",
+    name: "Heksehatt",
+    image: require("../../../assets/images/avatarAccessories/witch-hat.png"),
+    position: "head",
+    size: 118,
+    offsetTop: -5,
+  },
 ];

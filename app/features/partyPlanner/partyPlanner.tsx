@@ -3,6 +3,8 @@ import FunctionBox from "@/app/components/ui/functionBox";
 import theme from "@/app/theme/constantStyling";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useAchievements } from "../achievements/AchievementProvider";
+import { incrementWhitePartyCount } from "../achievements/whitePartyStorage";
 import HelpButton from "../help/HelpButton";
 import PartyPlannerModal from "./PartyPlannerModal";
 
@@ -15,6 +17,8 @@ type PartyState = {
   beer: number;
   wine: number;
   drinks: number;
+  soberParty: boolean;
+  whitePartyCounted: boolean;
 };
 
 /*helpers*/
@@ -60,6 +64,7 @@ function format(ms: number) {
 /* main*/
 
 export default function PartyPlanner() {
+  const { checkAchievements } = useAchievements();
   const [showModal, setShowModal] = useState(false);
   const [now, setNow] = useState(new Date());
 
@@ -70,6 +75,8 @@ export default function PartyPlanner() {
     beer: 0,
     wine: 0,
     drinks: 0,
+    soberParty: false,
+    whitePartyCounted: false,
   });
 
   /* klokke */
@@ -99,6 +106,7 @@ export default function PartyPlanner() {
     beer: number;
     wine: number;
     drinks: number;
+    soberParty: boolean;
   }) {
     setFeedback("");
     setParty({
@@ -108,6 +116,8 @@ export default function PartyPlanner() {
       beer: data.beer,
       wine: data.wine,
       drinks: data.drinks,
+      soberParty: data.soberParty,
+      whitePartyCounted: false,
     });
   }
 
@@ -123,8 +133,39 @@ export default function PartyPlanner() {
       beer: 0,
       wine: 0,
       drinks: 0,
+      soberParty: false,
+      whitePartyCounted: false,
     });
   }
+
+  useEffect(() => {
+    if (
+      party.status !== "finished" ||
+      !party.soberParty ||
+      party.whitePartyCounted
+    ) {
+      return;
+    }
+
+    async function recordWhiteParty() {
+      setParty((currentParty) =>
+        currentParty.status === "finished" &&
+        currentParty.soberParty &&
+        !currentParty.whitePartyCounted
+          ? { ...currentParty, whitePartyCounted: true }
+          : currentParty,
+      );
+      await incrementWhitePartyCount();
+      await checkAchievements();
+    }
+
+    recordWhiteParty();
+  }, [
+    checkAchievements,
+    party.soberParty,
+    party.status,
+    party.whitePartyCounted,
+  ]);
 
   /* tid */
 
@@ -173,7 +214,15 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
   <Ring value={seconds} label="Sekunder" />
 </View>
 
-              <View style={styles.drinkCards}>
+              {party.soberParty ? (
+                <View style={styles.soberGoalCard}>
+                  <Text style={styles.soberGoalTitle}>Hvit fest</Text>
+                  <Text style={styles.soberGoalText}>
+                    Du har bestemt deg for å ikke drikke alkohol.
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.drinkCards}>
   <View style={styles.drinkCard}>
     <Text style={styles.cardEmoji}>🍺</Text>
     <Text style={styles.cardValue}>{party.beer}</Text>
@@ -192,6 +241,7 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
     <Text style={styles.cardLabel}>Drinker</Text>
   </View>
 </View>
+              )}
             </View>
           )}
 
@@ -207,7 +257,15 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
         
             <View style={styles.goalBox}>
         
-              <View style={styles.drinkCards}>
+              {party.soberParty ? (
+                <View style={styles.soberGoalCard}>
+                  <Text style={styles.soberGoalTitle}>Hvit fest</Text>
+                  <Text style={styles.soberGoalText}>
+                    Målet ditt var å ikke drikke alkohol.
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.drinkCards}>
   <View style={styles.drinkCard}>
     <Text style={styles.cardEmoji}>🍺</Text>
     <Text style={styles.cardValue}>{party.beer}</Text>
@@ -226,6 +284,7 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
     <Text style={styles.cardLabel}>Drinker</Text>
   </View>
 </View>
+              )}
 
 {!feedback ? (
   <View style={styles.answerContainer}>
@@ -326,6 +385,30 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 14,
     alignItems: "center",
+  },
+  soberGoalCard: {
+    alignItems: "center",
+    backgroundColor: "#EAF4EE",
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    marginBottom: 20,
+    marginTop: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 18,
+    width: "100%",
+  },
+  soberGoalTitle: {
+    color: theme.colors.primary,
+    fontSize: 22,
+    fontWeight: "800",
+  },
+  soberGoalText: {
+    color: theme.colors.darkGrey,
+    fontSize: 15,
+    lineHeight: 21,
+    marginTop: 6,
+    textAlign: "center",
   },
   
   cardEmoji: {

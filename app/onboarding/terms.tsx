@@ -77,7 +77,7 @@ export default function Terms() {
             <Text style={styles.body}>
               Appen hjelper deg med å få oversikt over alkoholbruk gjennom
               drikkelogging, dagbok, triggere, mål, prestasjoner og en
-              personlig kriseplan.
+              personlig trygghetsplan.
             </Text>
           </View>
 

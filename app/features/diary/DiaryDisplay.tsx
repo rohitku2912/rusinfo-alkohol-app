@@ -1,7 +1,9 @@
 import theme from "@/app/theme/constantStyling";
+import { createDateKey } from "@/app/utils/weekHelpers";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -10,6 +12,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  DrinkLogEntry,
+  getDrinkLogs,
+  getTotalDrinks,
+} from "@/lib/storage/drinkLogs";
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
 import { useAchievements } from "../achievements/AchievementProvider";
@@ -28,6 +35,7 @@ const TAGS_KEY = "diary_tags";
 export default function DiaryDisplay() {
   const { checkAchievements } = useAchievements();
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
+  const [drinkLogs, setDrinkLogs] = useState<DrinkLogEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,10 +44,13 @@ export default function DiaryDisplay() {
   const [allTags, setAllTags] = useState(["Motivert", "Glad", "Positiv"]);
   const [newTag, setNewTag] = useState("");
 
-  useEffect(() => {
-    loadEntries();
-    loadTags();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadEntries();
+      loadTags();
+      loadDrinkLogs();
+    }, []),
+  );
 
   const loadEntries = async () => {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
@@ -49,6 +60,10 @@ export default function DiaryDisplay() {
   const loadTags = async () => {
     const stored = await AsyncStorage.getItem(TAGS_KEY);
     if (stored) setAllTags(JSON.parse(stored));
+  };
+
+  const loadDrinkLogs = async () => {
+    setDrinkLogs(await getDrinkLogs());
   };
 
   const saveEntries = async (data: DiaryEntry[]) => {
@@ -107,6 +122,64 @@ export default function DiaryDisplay() {
     ]);
   };
 
+  function getDrinkLogForEntry(entry: DiaryEntry) {
+    const entryDateKey = createDateKey(new Date(entry.date));
+    return drinkLogs.find((log) => log.date === entryDateKey);
+  }
+
+  function renderDrinkSummary(entry: DiaryEntry) {
+    const drinkLog = getDrinkLogForEntry(entry);
+
+    if (!drinkLog) {
+      return (
+        <View style={styles.drinkSummary}>
+          <View style={styles.drinkSummaryHeader}>
+            <Ionicons name="ellipse-outline" size={15} color="#64748b" />
+            <Text style={styles.drinkSummaryMuted}>
+              Ingen drikke registrert denne dagen
+            </Text>
+          </View>
+        </View>
+      );
+    }
+
+    if (drinkLog.status === "hvitDag") {
+      return (
+        <View style={[styles.drinkSummary, styles.whiteDrinkSummary]}>
+          <View style={styles.drinkSummaryHeader}>
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={16}
+              color={theme.colors.primary}
+            />
+            <Text style={styles.whiteDrinkSummaryText}>Hvit dag</Text>
+          </View>
+        </View>
+      );
+    }
+
+    const totalDrinks = getTotalDrinks(drinkLog);
+
+    return (
+      <View style={styles.drinkSummary}>
+        <View style={styles.drinkSummaryHeader}>
+          <Ionicons name="wine-outline" size={16} color="#475569" />
+          <Text style={styles.drinkSummaryMuted}>Drikkelogg:</Text>
+          <Text style={styles.drinkSummaryTotal}>
+            {totalDrinks} {totalDrinks === 1 ? "enhet" : "enheter"}
+          </Text>
+        </View>
+        <View style={styles.drinkBreakdownRow}>
+          <Text style={styles.drinkBreakdownChip}>Øl: {drinkLog.beerCount}</Text>
+          <Text style={styles.drinkBreakdownChip}>Vin: {drinkLog.wineCount}</Text>
+          <Text style={styles.drinkBreakdownChip}>
+            Drinker: {drinkLog.drinksCount}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   const renderEntry = ({ item }: { item: DiaryEntry }) => (
     <View style={styles.entry}>
       <TouchableOpacity
@@ -131,6 +204,8 @@ export default function DiaryDisplay() {
           ))}
         </View>
       )}
+
+      {renderDrinkSummary(item)}
     </View>
   );
 
@@ -321,6 +396,58 @@ const styles = StyleSheet.create({
     color: "#1e293b",
     fontSize: 16,
     lineHeight: 24,
+  },
+  drinkSummary: {
+    alignSelf: "flex-start",
+    backgroundColor: "#eef3f8",
+    borderColor: "#d6e0ea",
+    borderRadius: theme.borderRadius.small,
+    borderWidth: 1,
+    gap: 8,
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  whiteDrinkSummary: {
+    backgroundColor: "#EAF4EE",
+    borderColor: theme.colors.primary,
+  },
+  drinkSummaryHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  drinkSummaryMuted: {
+    color: "#64748b",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  drinkSummaryTotal: {
+    color: "#1e293b",
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  whiteDrinkSummaryText: {
+    color: theme.colors.primary,
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  drinkBreakdownRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  drinkBreakdownChip: {
+    backgroundColor: "#ffffff",
+    borderColor: "#d6e0ea",
+    borderRadius: 999,
+    borderWidth: 1,
+    color: "#475569",
+    fontSize: 11,
+    fontWeight: "700",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
 
   deleteButton: {

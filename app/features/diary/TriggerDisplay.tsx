@@ -30,6 +30,7 @@ const oldDefaultTriggers = [
 ];
 
 const defaultTriggers = [
+  "Ingenting",
   "Stress",
   "Sug etter alkohol",
   "Sosialt press",
@@ -43,8 +44,16 @@ const defaultTriggers = [
   "Helg",
   "Lønn eller penger tilgjengelig",
   "Steder eller personer forbundet med drikking",
-  "Ingenting",
 ];
+
+function putNothingFirst(items: string[]) {
+  return [
+    ...items.filter((item) => item === "Ingenting"),
+    ...items
+      .filter((item) => item !== "Ingenting")
+      .sort((a, b) => a.localeCompare(b, "nb-NO")),
+  ];
+}
 
 type TriggerEntry = {
   trigger: string;
@@ -82,7 +91,7 @@ export default function TriggerDisplay() {
               !oldDefaultTriggers.includes(trigger),
           );
 
-          setAllTriggers([...defaultTriggers, ...customTriggers]);
+          setAllTriggers(putNothingFirst([...defaultTriggers, ...customTriggers]));
         }
 
         if (storedEntries) {
@@ -377,7 +386,9 @@ export default function TriggerDisplay() {
         allTriggers={allTriggers}
         onAddTrigger={(trigger) => {
           setAllTriggers((current) =>
-            current.includes(trigger) ? current : [...current, trigger],
+            current.includes(trigger)
+              ? current
+              : putNothingFirst([...current, trigger]),
           );
         }}
         triggerEntries={triggerEntries}

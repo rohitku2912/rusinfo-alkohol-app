@@ -37,6 +37,7 @@ type Props = {
 };
 
 const presetProtectionFactors = [
+  "Ingenting",
   "Ringte eller sendte melding til noen",
   "Dro bort fra situasjonen",
   "Gikk en tur",
@@ -50,8 +51,16 @@ const presetProtectionFactors = [
   "La meg tidlig",
   "Gikk på møte eller snakket med hjelper",
   "Unngikk personer eller steder knyttet til drikking",
-  "Ingenting",
 ];
+
+function putNothingFirst(items: string[]) {
+  return [
+    ...items.filter((item) => item === "Ingenting"),
+    ...items
+      .filter((item) => item !== "Ingenting")
+      .sort((a, b) => a.localeCompare(b, "nb-NO")),
+  ];
+}
 
 export default function RegisterTriggerModal({
   visible,
@@ -82,13 +91,15 @@ export default function RegisterTriggerModal({
     triggerEntries.find((t) => t.trigger === selectedTrigger)
       ?.protectionFactors || [];
 
-  const suggestedPresetFactors = presetProtectionFactors.filter(
-    (f) => !existingFactors.includes(f),
+  const suggestedPresetFactors = putNothingFirst(
+    presetProtectionFactors.filter((f) => !existingFactors.includes(f)),
   );
 
-  const customFactors = Array.from(
-    new Set(triggerEntries.flatMap((t) => t.protectionFactors)),
-  ).filter((f) => f && !presetProtectionFactors.includes(f));
+  const customFactors = putNothingFirst(
+    Array.from(
+      new Set(triggerEntries.flatMap((t) => t.protectionFactors)),
+    ).filter((f) => f && !presetProtectionFactors.includes(f)),
+  );
 
   return (
     <Modal visible={visible} animationType="fade" transparent>

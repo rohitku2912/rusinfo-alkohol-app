@@ -11,4 +11,5 @@ export const achievementRewards: Record<string, string> = {
   "forste-hvite-dag": "hat-4",
   "24-timer-edru": "hat-5",
   "12-mnd-edru": "hat-6",
+  "7-dager-edru": "hat-8",
 };
