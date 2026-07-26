@@ -57,7 +57,12 @@ export default function ShowAchievements({
   const achievements = keepUnlockedAchievementsCompleted(
     getAllAchievements(logs, diaryEntries, daysInProgram, whitePartyCount),
     unlockedIds,
-  );
+  ).sort((first, second) => {
+    const firstCompleted = first.currentProgress >= first.goal;
+    const secondCompleted = second.currentProgress >= second.goal;
+
+    return Number(secondCompleted) - Number(firstCompleted);
+  });
 
   return (
     <Animated.ScrollView

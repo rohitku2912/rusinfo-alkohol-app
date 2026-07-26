@@ -1,4 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setProgramStartDate } from "@/lib/storage/onboarding";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
@@ -17,7 +19,6 @@ import {
   formatNumber,
 } from "../features/savingsCalculator/utils";
 
-import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AnimatedTabHeader, {
   getAnimatedTabHeaderTopPadding,
@@ -27,6 +28,7 @@ import DrinkLogger from "../features/drinkLogger/drinkLogger";
 import EmergencyModal from "../features/emergencyButton/EmergencyModal";
 import HelpButton from "../features/help/HelpButton";
 import PartyPlanner from "../features/partyPlanner/partyPlanner";
+import SettingsModal from "../features/settings/SettingsModal";
 
 const auditRiskColors: Record<string, string> = {
   "Lav risiko": "#5E9C76",
@@ -57,6 +59,8 @@ export default function Dashboard() {
   const [auditScore, setAuditScore] = useState<number | null>(null);
   const [auditRiskGroup, setAuditRiskGroup] = useState<string | null>(null);
   const [isEmergencyVisible, setIsEmergencyVisible] = useState(false);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [programTimerVersion, setProgramTimerVersion] = useState(0);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -110,11 +114,14 @@ export default function Dashboard() {
     }
   }
 
-  async function resetAll() {
-    await AsyncStorage.clear();
+  function resetAuditResult() {
     setAuditScore(null);
     setAuditRiskGroup(null);
-    console.log("Alt er sletta");
+  }
+
+  async function resetProgramDays() {
+    await setProgramStartDate(new Date());
+    setProgramTimerVersion((version) => version + 1);
   }
 
   async function handleResetOnboarding() {
@@ -158,7 +165,7 @@ export default function Dashboard() {
         )}
         scrollEventThrottle={16}
       >
-        <ProgramTimer />
+        <ProgramTimer key={programTimerVersion} />
 
         <FunctionBox
           title="DRIKKELOGG"
@@ -170,14 +177,11 @@ export default function Dashboard() {
             onPress={() => setIsDrinkLoggerVisible(true)}
           />
         </FunctionBox>
-        <Pressable onPress={resetAll}>
-          <Text>Reset alt</Text>
-        </Pressable>
-
         <PartyPlanner />
 
         <FunctionBox
           title="SPAREKALKULATOR"
+          description="Beregn hvor mye penger du kan spare."
           helpBtn={<HelpButton helpKey="savingcalculator" />}
         >
           <View style={styles.functionContent}>
@@ -195,6 +199,7 @@ export default function Dashboard() {
 
         <FunctionBox
           title="KALORIKALKULATOR"
+          description="Beregn hvor mange kalorier du kan unngå."
           helpBtn={<HelpButton helpKey="caloriecalculator" />}
         >
           <View style={styles.functionContent}>
@@ -217,29 +222,34 @@ export default function Dashboard() {
           helpBtn={<HelpButton helpKey="audit" />}
         >
           <View style={styles.functionContent}>
-            <View
-              style={[
-                styles.auditResultCard,
-                {
-                  backgroundColor: auditResultBackground,
-                  borderColor: auditResultColor,
-                },
-              ]}
-            >
-              <Text style={styles.auditScoreLabel}>Din siste score:</Text>
-              <Text
-                style={[styles.auditScoreValue, { color: auditResultColor }]}
+            {auditScore !== null && auditRiskGroup !== null && (
+              <View
+                style={[
+                  styles.auditResultCard,
+                  {
+                    backgroundColor: auditResultBackground,
+                    borderColor: auditResultColor,
+                  },
+                ]}
               >
-                {auditScore === null ? "-" : auditScore}
-              </Text>
-              <Text style={styles.auditRiskText}>
+                <Text style={styles.auditScoreLabel}>Din siste score:</Text>
                 <Text
-                  style={[styles.auditRiskValue, { color: auditResultColor }]}
+                  style={[styles.auditScoreValue, { color: auditResultColor }]}
                 >
-                  {auditRiskGroup ?? "-"}
+                  {auditScore}
                 </Text>
-              </Text>
-            </View>
+                <Text style={styles.auditRiskText}>
+                  <Text
+                    style={[
+                      styles.auditRiskValue,
+                      { color: auditResultColor },
+                    ]}
+                  >
+                    {auditRiskGroup}
+                  </Text>
+                </Text>
+              </View>
+            )}
             <RegularButton
               title="Åpne AUDIT"
               onPress={() => setIsAuditVisible(true)}
@@ -252,21 +262,24 @@ export default function Dashboard() {
           ></AuditModal>
         </FunctionBox>
 
-        <Pressable
-          onPress={handleResetOnboarding}
-          style={styles.onboardingResetButton}
-        >
-          <Text style={styles.onboardingResetText}>
-            Start onboarding på nytt
-          </Text>
-        </Pressable>
       </Animated.ScrollView>
+      <Pressable
+        accessibilityLabel="Åpne innstillinger"
+        onPress={() => setIsSettingsVisible(true)}
+        style={styles.settingsButton}
+      >
+        <Ionicons
+          name="settings-outline"
+          size={23}
+          color={theme.colors.lightText}
+        />
+      </Pressable>
       <View style={styles.EmergencyButton}>
         <Pressable
           onPress={() => setIsEmergencyVisible(true)}
           style={styles.emergencyPressable}
         >
-          <Ionicons name="warning" size={24} color={theme.colors.text} />
+          <FontAwesome6 name="hand-holding-heart" size={23} color="#FFFFFF" />
         </Pressable>
         <EmergencyModal
           isVisible={isEmergencyVisible}
@@ -294,6 +307,14 @@ export default function Dashboard() {
         onDeleteEntry={deleteSavedEntry}
         onUpdateEntry={updateSavedEntry}
       />
+      <SettingsModal
+        visible={isSettingsVisible}
+        onClose={() => setIsSettingsVisible(false)}
+        onResetAudit={resetAuditResult}
+        onResetCalculators={() => setSavedEntries([])}
+        onResetProgramDays={resetProgramDays}
+        onRestartOnboarding={handleResetOnboarding}
+      />
     </View>
   );
 }
@@ -305,9 +326,8 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 10,
     alignItems: "center",
-    backgroundColor: theme.colors.emergency,
+    backgroundColor: "#2F4FA3",
     borderRadius: 100,
-    borderColor: "red",
     height: 45,
     justifyContent: "center",
     width: 45,
@@ -318,23 +338,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  emergencyText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "700",
-    textAlign: "center",
-  },
   outerContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
   },
+  settingsButton: {
+    alignItems: "center",
+    backgroundColor: theme.colors.darkGrey,
+    borderRadius: 100,
+    bottom: 100,
+    height: 45,
+    justifyContent: "center",
+    left: 20,
+    position: "absolute",
+    width: 45,
+    zIndex: 10,
+  },
   scrollContent: {
     marginHorizontal: theme.spacing.medium,
-    marginBottom: theme.spacing.small,
     gap: theme.spacing.small,
+    paddingBottom: 120,
   },
   functionContent: {
-    marginTop: 5,
     marginBottom: 5,
     gap: 12,
   },
@@ -370,19 +395,6 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontSize: 18,
     fontWeight: "700",
-  },
-  onboardingResetButton: {
-    alignSelf: "center",
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.large,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  onboardingResetText: {
-    color: theme.colors.darkGrey,
-    fontSize: 12,
-    fontWeight: "600",
-    textDecorationLine: "underline",
   },
   debugCard: {
     width: "100%",

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Animated, StyleSheet } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import theme from "../../theme/constantStyling";
 
@@ -27,12 +27,14 @@ export function getAnimatedTabHeaderTopPadding(
 type AnimatedTabHeaderProps = {
   title: string;
   scrollY: Animated.Value;
+  titleAccessory?: ReactNode;
   rightSlot?: ReactNode;
 };
 
 export default function AnimatedTabHeader({
   title,
   scrollY,
+  titleAccessory,
   rightSlot,
 }: AnimatedTabHeaderProps) {
   const insets = useSafeAreaInsets();
@@ -92,9 +94,12 @@ export default function AnimatedTabHeader({
           },
         ]}
       >
-        <Animated.Text style={[styles.title, { fontSize: titleFontSize }]}>
-          {title}
-        </Animated.Text>
+        <View style={styles.titleRow}>
+          <Animated.Text style={[styles.title, { fontSize: titleFontSize }]}>
+            {title}
+          </Animated.Text>
+          {titleAccessory}
+        </View>
         {rightSlot ? (
           <Animated.View style={{ transform: [{ scale: rightSlotScale }] }}>
             {rightSlot}
@@ -125,5 +130,10 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     fontWeight: "800",
     includeFontPadding: false,
+  },
+  titleRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing.small,
   },
 });

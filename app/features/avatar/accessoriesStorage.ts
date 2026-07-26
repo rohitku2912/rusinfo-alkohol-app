@@ -16,7 +16,7 @@ export async function getUnlockedAccessories(): Promise<string[]> {
 export async function unlockAccessory(accessoryId: string) {
   const current = await getUnlockedAccessories();
 
-  // hindrar duplicates
+  // hindrer duplicates
   if (current.includes(accessoryId)) {
     return;
   }

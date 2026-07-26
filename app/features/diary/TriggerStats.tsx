@@ -56,7 +56,11 @@ export default function TriggerStats({ triggerEntries }: Props) {
   }));
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ padding: 8 }}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
       {/* triggere */}
       <View style={styles.card}>
         <Text style={styles.title}>Mest registrerte triggere</Text>
@@ -116,6 +120,10 @@ export default function TriggerStats({ triggerEntries }: Props) {
 
 const styles = StyleSheet.create({
   container: {},
+  content: {
+    padding: 8,
+    paddingBottom: 120,
+  },
 
   card: {
     backgroundColor: "#f6f7f4",

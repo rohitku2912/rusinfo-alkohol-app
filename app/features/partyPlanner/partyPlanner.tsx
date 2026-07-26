@@ -108,11 +108,13 @@ export default function PartyPlanner() {
     drinks: number;
     soberParty: boolean;
   }) {
+    const endTime = data.end < data.start ? data.start : data.end;
+
     setFeedback("");
     setParty({
       status: "scheduled",
       startTime: data.start,
-      endTime: data.end,
+      endTime,
       beer: data.beer,
       wine: data.wine,
       drinks: data.drinks,
@@ -194,8 +196,12 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
   return (
     <>
-      <FunctionBox title="PLANLEGG FESTEN" helpBtn={<HelpButton helpKey="partyplanner"/>}>
-        <View style={{ alignItems: "center", marginTop: 16}}>
+      <FunctionBox
+        title="PLANLEGG FESTEN"
+        description="Lag en plan for en tryggere fest."
+        helpBtn={<HelpButton helpKey="partyplanner" />}
+      >
+        <View style={{ alignItems: "center" }}>
         
 
           {/* før partystart */}
@@ -293,7 +299,7 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
     </Pressable>
 
     <Pressable style={styles.noButton} onPress={answerNo}>
-      <Text style={styles.answerText}>Nei</Text>
+      <Text style={styles.noAnswerText}>Nei</Text>
     </Pressable>
   </View>
 ) : (
@@ -468,7 +474,7 @@ const styles = StyleSheet.create({
   
   noButton: {
     flex: 1,
-    backgroundColor: theme.colors.emergency,
+    backgroundColor: theme.colors.backgroundSecondary,
     borderRadius: theme.borderRadius.medium,
     height: 50,
     paddingHorizontal: 16,
@@ -480,6 +486,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: theme.colors.lightText,
+  },
+  noAnswerText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: theme.colors.text,
   },
   timerCards: {
     flexDirection: "row",

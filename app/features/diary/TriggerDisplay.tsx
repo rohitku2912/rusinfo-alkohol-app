@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -12,7 +13,6 @@ import {
 import RegularButton from "../../components/ui/button";
 import InputBox from "../../components/ui/inputBox";
 import theme from "../../theme/constantStyling";
-import ProtectionFactorList from "./ProtectionFactorDisplay";
 import RegisterTriggerModal from "./RegisterTriggerModal";
 import TriggerStats from "./TriggerStats";
 
@@ -70,13 +70,15 @@ export default function TriggerDisplay() {
   const [allTriggers, setAllTriggers] = useState<string[]>(defaultTriggers);
 
   const [triggerEntries, setTriggerEntries] = useState<TriggerEntry[]>([]);
+  const [hasLoadedTriggerData, setHasLoadedTriggerData] = useState(false);
 
   const [selectedFilter, setSelectedFilter] = useState<
-    "triggere" | "beskyttelsesfaktorer" | "oversikt"
+    "triggere" | "oversikt"
   >("triggere");
 
-  useEffect(() => {
-    const loadTriggerData = async () => {
+  useFocusEffect(
+    useCallback(() => {
+      const loadTriggerData = async () => {
       try {
         const storedTriggers = await AsyncStorage.getItem(TRIGGERS_STORAGE_KEY);
         const storedEntries = await AsyncStorage.getItem(
@@ -92,20 +94,29 @@ export default function TriggerDisplay() {
           );
 
           setAllTriggers(putNothingFirst([...defaultTriggers, ...customTriggers]));
+        } else {
+          setAllTriggers(defaultTriggers);
         }
 
         if (storedEntries) {
           setTriggerEntries(JSON.parse(storedEntries));
+        } else {
+          setTriggerEntries([]);
         }
+
+        setHasLoadedTriggerData(true);
       } catch (error) {
         console.warn("Failed to load trigger data", error);
       }
-    };
+      };
 
-    loadTriggerData();
-  }, []);
+      void loadTriggerData();
+    }, []),
+  );
 
   useEffect(() => {
+    if (!hasLoadedTriggerData) return;
+
     const persistTriggerData = async () => {
       try {
         await AsyncStorage.setItem(
@@ -122,7 +133,7 @@ export default function TriggerDisplay() {
     };
 
     persistTriggerData();
-  }, [allTriggers, triggerEntries]);
+  }, [allTriggers, hasLoadedTriggerData, triggerEntries]);
 
   const handleTriggerSelect = (trigger: string | null) => {
     setSelectedTrigger(trigger);
@@ -207,26 +218,6 @@ export default function TriggerDisplay() {
     entry.trigger.toLowerCase().includes(searchText.toLowerCase()),
   );
 
-  const deleteProtectionFactor = (factor: string) => {
-    Alert.alert("Slett", "Vil du slette denne?", [
-      { text: "Avbryt", style: "cancel" },
-      {
-        text: "Slett",
-        style: "destructive",
-        onPress: () => {
-          setTriggerEntries((prev) =>
-            prev.map((entry) => ({
-              ...entry,
-              protectionFactors: entry.protectionFactors.filter(
-                (f) => f !== factor,
-              ),
-            })),
-          );
-        },
-      },
-    ]);
-  };
-
   const renderItem = ({ item }: { item: TriggerEntry }) => (
     <View style={styles.card}>
       <TouchableOpacity
@@ -258,18 +249,6 @@ export default function TriggerDisplay() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={async () => {
-          await AsyncStorage.removeItem(TRIGGERS_STORAGE_KEY);
-          await AsyncStorage.removeItem(TRIGGER_ENTRIES_STORAGE_KEY);
-
-          setAllTriggers(defaultTriggers);
-
-          setTriggerEntries([]);
-        }}
-        style={{ marginBottom: 10 }}
-      ></TouchableOpacity>
-
       {/* filter */}
       <View style={styles.filterRow}>
         <TouchableOpacity
@@ -279,6 +258,15 @@ export default function TriggerDisplay() {
           ]}
           onPress={() => setSelectedFilter("triggere")}
         >
+          <Ionicons
+            name="flash-outline"
+            size={17}
+            color={
+              selectedFilter === "triggere"
+                ? theme.colors.primary
+                : theme.colors.text
+            }
+          />
           <Text
             style={[
               styles.filterText,
@@ -292,28 +280,19 @@ export default function TriggerDisplay() {
         <TouchableOpacity
           style={[
             styles.filterButton,
-            selectedFilter === "beskyttelsesfaktorer" && styles.selectedFilter,
-          ]}
-          onPress={() => setSelectedFilter("beskyttelsesfaktorer")}
-        >
-          <Text
-            style={[
-              styles.filterText,
-              selectedFilter === "beskyttelsesfaktorer" &&
-                styles.selectedFilterText,
-            ]}
-          >
-            Beskyttelsesfaktorer
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.filterButton,
             selectedFilter === "oversikt" && styles.selectedFilter,
           ]}
           onPress={() => setSelectedFilter("oversikt")}
         >
+          <Ionicons
+            name="pie-chart-outline"
+            size={17}
+            color={
+              selectedFilter === "oversikt"
+                ? theme.colors.primary
+                : theme.colors.text
+            }
+          />
           <Text
             style={[
               styles.filterText,
@@ -327,23 +306,20 @@ export default function TriggerDisplay() {
 
       {/* søk + knapp */}
       {selectedFilter === "triggere" && (
-        <View style={styles.searchRow}>
-          <View style={styles.searchInputWrapper}>
-            <InputBox
-              variant="tag"
-              style={styles.searchInput}
-              placeholder="Søk i triggere..."
-              value={searchText}
-              onChangeText={setSearchText}
-            />
-          </View>
-
-          <View style={styles.addButtonWrapper}>
-            <RegularButton
-              title="+ Registrer"
-              onPress={() => setModalVisible(true)}
-            />
-          </View>
+        <View style={styles.actions}>
+          <RegularButton
+            title="+ Registrer trigger"
+            onPress={() => setModalVisible(true)}
+            style={styles.addButton}
+          />
+          <InputBox
+            variant="tag"
+            style={styles.searchInput}
+            placeholder="Søk i triggere..."
+            value={searchText}
+            onChangeText={setSearchText}
+            returnKeyType="search"
+          />
         </View>
       )}
 
@@ -361,13 +337,6 @@ export default function TriggerDisplay() {
           }
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-        />
-      )}
-
-      {selectedFilter === "beskyttelsesfaktorer" && (
-        <ProtectionFactorList
-          triggerEntries={triggerEntries}
-          onDelete={deleteProtectionFactor}
         />
       )}
 
@@ -418,49 +387,61 @@ const styles = StyleSheet.create({
   },
 
   filterRow: {
+    backgroundColor: theme.colors.backgroundSecondary,
+    borderRadius: theme.borderRadius.medium,
     flexDirection: "row",
-    flexWrap: "wrap",
-    marginBottom: 15,
+    marginBottom: theme.spacing.medium,
+    padding: 4,
   },
 
   selectedFilter: {
-    backgroundColor: "#6f8f84",
-    borderColor: "#6f8f84",
+    backgroundColor: "#EAF4EE",
   },
 
   filterButton: {
-    padding: 8,
-    borderWidth: 1,
-    borderRadius: 20,
-    marginRight: 8,
-    borderColor: "#c9d6e0",
-    backgroundColor: "#f2f6f9",
+    alignItems: "center",
+    flex: 1,
+    flexDirection: "row",
+    gap: 5,
+    justifyContent: "center",
+    minHeight: 44,
+    paddingHorizontal: 6,
+    paddingVertical: 8,
+    borderRadius: theme.borderRadius.small,
   },
 
   filterText: {
     color: "#2f3b44",
+    fontSize: 12,
+    fontWeight: "700",
+    textAlign: "center",
   },
 
   selectedFilterText: {
-    color: "#ffffff",
+    color: theme.colors.primary,
   },
   list: {
-    marginTop: 10,
-    gap: 10,
+    gap: theme.spacing.small,
+    paddingBottom: 100,
+    paddingTop: theme.spacing.small,
   },
 
   card: {
-    backgroundColor: "#f2f6f9",
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    backgroundColor: theme.colors.box,
+    padding: 18,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    borderColor: "#c9d6e0",
+    borderColor: "#d6e0da",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 4,
   },
 
   cardContent: {
     flex: 1,
-    marginRight: 10,
+    paddingRight: 38,
   },
 
   editBtn: {
@@ -474,6 +455,7 @@ const styles = StyleSheet.create({
 
   cardText: {
     fontSize: 16,
+    fontWeight: "700",
     color: "#2f3b44",
   },
 
@@ -487,9 +469,7 @@ const styles = StyleSheet.create({
   countText: {
     fontSize: 12,
     color: "#5c6b76",
-    fontStyle: "italic",
-    top: 2,
-    right: 28,
+    fontWeight: "600",
   },
 
   protectionText: {
@@ -504,35 +484,33 @@ const styles = StyleSheet.create({
   },
 
   empty: {
-    opacity: 0.5,
-    marginTop: 10,
-    fontStyle: "italic",
+    color: theme.colors.darkGrey,
+    lineHeight: 21,
+    paddingHorizontal: theme.spacing.large,
+    paddingVertical: 32,
+    textAlign: "center",
   },
 
-  searchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 15,
+  actions: {
+    gap: 10,
+    marginBottom: theme.spacing.medium,
+  },
+
+  addButton: {
     width: "100%",
-  },
-
-  searchInputWrapper: {
-    flex: 1,
-    marginRight: 10,
   },
 
   searchInput: {
     borderWidth: 1,
-    borderColor: theme.colors.lightText,
-    borderRadius: 20,
-    padding: 8,
-    backgroundColor: theme.colors.background,
-    color: theme.colors.lightText,
+    borderColor: "#d6e0da",
+    borderRadius: theme.borderRadius.medium,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    backgroundColor: theme.colors.box,
+    color: theme.colors.text,
+    fontSize: 15,
   },
 
-  addButtonWrapper: {
-    minWidth: 110,
-  },
   deleteButton: {
     position: "absolute",
     top: 14,

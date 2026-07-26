@@ -1,9 +1,13 @@
 import BackButton from "@/app/components/ui/backButton";
+import theme from "@/app/theme/constantStyling";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-  FlatList,
   Keyboard,
+  KeyboardAvoidingView,
   Modal,
+  Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -83,8 +87,8 @@ export default function RegisterTriggerModal({
     const value = inputText.trim();
 
     onAddTrigger(value);
-
     setInputText("");
+    onSelectTrigger(value);
   };
 
   const existingFactors =
@@ -102,81 +106,128 @@ export default function RegisterTriggerModal({
   );
 
   return (
-    <Modal visible={visible} animationType="fade" transparent>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <Modal
+      visible={visible}
+      animationType="fade"
+      transparent
+      onRequestClose={onClose}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.overlay}>
-          <View style={styles.container}>
-            {/* header */}
-            <View style={styles.header}>
-            <HelpButton helpKey="trigger" />
-              <Text style={styles.title}>
-                {selectedTrigger ? "Beskyttelsesfaktorer" : "Trigger"}
-              </Text>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            style={styles.keyboardView}
+          >
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <View style={styles.headerAction}>
+                  <HelpButton helpKey="trigger" />
+                </View>
+                <Text style={styles.title}>
+                  {selectedTrigger ? "Hva hjalp?" : "Registrer trigger"}
+                </Text>
+                <Pressable
+                  accessibilityLabel="Lukk"
+                  hitSlop={10}
+                  onPress={onClose}
+                  style={[styles.headerAction, styles.closeButton]}
+                >
+                  <Text style={styles.close}>✕</Text>
+                </Pressable>
+              </View>
 
-              <TouchableOpacity onPress={onClose}>
-                <Text style={styles.close}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-            >
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
               {/* triggere */}
               {!selectedTrigger && (
                 <View style={styles.section}>
                   <Text style={styles.subtitle}>
-                    Velg en trigger fra listen eller legg til en ny
+                    Hva utløste situasjonen?
+                  </Text>
+                  <Text style={styles.helper}>
+                    Velg fra listen, eller skriv inn din egen trigger.
                   </Text>
                   <TextInput
-                    placeholder="Ny trigger..."
+                    placeholder="Skriv en annen trigger..."
                     value={inputText}
                     onChangeText={setInputText}
                     style={styles.input}
                     onSubmitEditing={addTrigger}
+                    returnKeyType="next"
                   />
 
-                  <TouchableOpacity onPress={addTrigger} style={styles.button}>
-                    <Text style={styles.buttonText}>+ Legg til trigger</Text>
+                  <TouchableOpacity
+                    disabled={!inputText.trim()}
+                    onPress={addTrigger}
+                    style={[
+                      styles.button,
+                      !inputText.trim() && styles.disabledButton,
+                    ]}
+                  >
+                    <Text style={styles.buttonText}>Bruk denne triggeren</Text>
                   </TouchableOpacity>
 
-                  <FlatList
-                    data={allTriggers}
-                    keyExtractor={(item) => item}
-                    scrollEnabled={false}
-                    renderItem={({ item }) => (
+                  <Text style={styles.listLabel}>Vanlige triggere</Text>
+                  <View style={styles.optionList}>
+                    {allTriggers.map((item) => (
                       <TouchableOpacity
+                        key={item}
                         onPress={() => onSelectTrigger(item)}
                         style={styles.item}
                       >
                         <Text style={styles.itemText}>{item}</Text>
+                        <Ionicons
+                          name="chevron-forward"
+                          size={18}
+                          color={theme.colors.darkGrey}
+                        />
                       </TouchableOpacity>
-                    )}
-                  />
+                    ))}
+                  </View>
                 </View>
               )}
 
               {/* beskyttelsesfaktorer */}
               {selectedTrigger && (
                 <View style={styles.section}>
-                  <BackButton onPress={onBack} />
-                  <Text style={styles.selected}>{selectedTrigger}</Text>
+                  <View style={styles.backRow}>
+                    <BackButton onPress={onBack} />
+                    <Text style={styles.stepText}>Endre trigger</Text>
+                  </View>
+                  <View style={styles.selectedCard}>
+                    <Ionicons
+                      name="flash-outline"
+                      size={18}
+                      color={theme.colors.primary}
+                    />
+                    <Text style={styles.selected}>{selectedTrigger}</Text>
+                  </View>
                   <Text style={styles.subtitle}>
                     Hva hjalp deg i denne situasjonen?
                   </Text>
+                  <Text style={styles.helper}>
+                    Velg et forslag, eller skriv inn din egen
+                    beskyttelsesfaktor.
+                  </Text>
                   <TextInput
-                    placeholder="Legg til ny faktor..."
+                    placeholder="Skriv hva som hjalp..."
                     value={protectionText}
                     onChangeText={onSetProtectionText}
-                    style={styles.input}
+                    style={[styles.input, styles.factorInput]}
                     multiline
                   />
 
                   <TouchableOpacity
+                    disabled={!protectionText.trim()}
                     onPress={onAddProtectionFactor}
-                    style={styles.button}
+                    style={[
+                      styles.button,
+                      !protectionText.trim() && styles.disabledButton,
+                    ]}
                   >
-                    <Text style={styles.buttonText}>+ Legg til</Text>
+                    <Text style={styles.buttonText}>Lagre registrering</Text>
                   </TouchableOpacity>
 
                   {/* egne faktorer*/}
@@ -192,7 +243,7 @@ export default function RegisterTriggerModal({
                           style={styles.chip}
                           onPress={() => onAddProtectionFactorWithText(f)}
                         >
-                          <Text>{f}</Text>
+                          <Text style={styles.chipText}>{f}</Text>
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -209,15 +260,16 @@ export default function RegisterTriggerModal({
                           style={styles.chip}
                           onPress={() => onAddProtectionFactorWithText(f)}
                         >
-                          <Text>{f}</Text>
+                          <Text style={styles.chipText}>{f}</Text>
                         </TouchableOpacity>
                       ))}
                     </View>
                   )}
                 </View>
               )}
-            </ScrollView>
-          </View>
+              </ScrollView>
+            </View>
+          </KeyboardAvoidingView>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -227,112 +279,185 @@ export default function RegisterTriggerModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(60, 70, 60, 0.25)",
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
     justifyContent: "center",
     alignItems: "center",
+    padding: 16,
+  },
+  keyboardView: {
+    maxHeight: "90%",
+    width: "100%",
   },
 
   container: {
-    width: "92%",
-    maxHeight: "85%",
-    backgroundColor: "#f6f7f4",
-    borderRadius: 18,
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 420,
+    maxHeight: "100%",
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadius.large,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#d9ded6",
+    borderColor: "#d6e0da",
   },
 
   header: {
+    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: theme.spacing.medium,
   },
 
   title: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#2f3a2f",
+    flex: 1,
+    fontSize: 20,
+    fontWeight: "700",
+    color: theme.colors.text,
+    textAlign: "center",
+  },
+  headerAction: {
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 40,
+    width: 40,
+  },
+  closeButton: {
+    backgroundColor: theme.colors.box,
+    borderRadius: 20,
   },
   subtitle: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#666",
-    paddingBottom: 10,
+    fontSize: 17,
+    fontWeight: "700",
+    color: theme.colors.text,
+    marginBottom: 4,
   },
 
   close: {
     fontSize: 18,
-    color: "#5c6b5c",
+    fontWeight: "600",
+    color: theme.colors.text,
   },
 
   section: {
-    marginTop: 10,
+    paddingBottom: theme.spacing.small,
   },
 
   input: {
     borderWidth: 1,
-    borderColor: "#d9ded6",
-    borderRadius: 14,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "#ffffff",
-    color: "#2f3a2f",
+    borderColor: "#d6e0da",
+    borderRadius: theme.borderRadius.medium,
+    padding: 12,
+    marginBottom: theme.spacing.small,
+    backgroundColor: theme.colors.box,
+    color: theme.colors.text,
+    minHeight: 50,
+  },
+  factorInput: {
+    minHeight: 90,
+    textAlignVertical: "top",
   },
 
   button: {
-    backgroundColor: "#c9d2c3",
-    padding: 10,
-    borderRadius: 14,
-    marginBottom: 10,
+    backgroundColor: theme.colors.primary,
+    minHeight: 50,
+    padding: 12,
+    borderRadius: theme.borderRadius.medium,
+    marginBottom: theme.spacing.large,
     alignItems: "center",
+    justifyContent: "center",
   },
 
   buttonText: {
-    fontWeight: "600",
-    color: "#2f3a2f",
+    fontWeight: "700",
+    color: theme.colors.buttonText,
+  },
+  disabledButton: {
+    opacity: 0.45,
+  },
+  listLabel: {
+    color: theme.colors.darkGrey,
+    fontSize: 13,
+    fontWeight: "700",
+    marginBottom: theme.spacing.small,
+  },
+  optionList: {
+    gap: theme.spacing.small,
   },
 
   item: {
-    backgroundColor: "#e7ebe3",
-    padding: 10,
-    borderRadius: 14,
-    marginBottom: 6,
+    alignItems: "center",
+    backgroundColor: theme.colors.box,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    minHeight: 48,
+    padding: 12,
+    borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    borderColor: "#d9ded6",
+    borderColor: "#d6e0da",
   },
 
   itemText: {
     fontSize: 15,
+    color: theme.colors.text,
   },
 
   selected: {
-    fontSize: 16,
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "700",
+    color: theme.colors.text,
+  },
+  backRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing.small,
+    marginBottom: theme.spacing.small,
+  },
+  stepText: {
+    color: theme.colors.darkGrey,
+    fontSize: 13,
     fontWeight: "600",
-    marginBottom: 10,
+  },
+  selectedCard: {
+    alignItems: "center",
+    backgroundColor: "#EAF4EE",
+    borderColor: theme.colors.primary,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: theme.spacing.small,
+    marginBottom: theme.spacing.large,
+    padding: 12,
   },
 
   block: {
-    marginBottom: 10,
+    marginBottom: theme.spacing.medium,
   },
 
   subTitle: {
     fontSize: 13,
-    color: "#666",
-    marginBottom: 6,
+    fontWeight: "700",
+    color: theme.colors.darkGrey,
+    marginBottom: theme.spacing.small,
   },
 
   chip: {
-    backgroundColor: "#e7ebe3",
-    padding: 10,
-    borderRadius: 14,
-    marginBottom: 6,
+    backgroundColor: theme.colors.box,
+    padding: 12,
+    borderRadius: theme.borderRadius.medium,
+    marginBottom: theme.spacing.small,
     borderWidth: 1,
-    borderColor: "#d9ded6",
+    borderColor: "#d6e0da",
+  },
+  chipText: {
+    color: theme.colors.text,
+    lineHeight: 20,
   },
 
   helper: {
-    marginTop: 10,
-    color: "#777",
-    fontStyle: "italic",
+    color: theme.colors.darkGrey,
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: theme.spacing.medium,
   },
 });

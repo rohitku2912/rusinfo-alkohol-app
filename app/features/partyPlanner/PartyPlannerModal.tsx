@@ -155,7 +155,15 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
                 mode="datetime"
                 display="spinner"
                 onChange={(e, date) => {
-                  if (date) setStart(date);
+                  if (!date) {
+                    return;
+                  }
+
+                  setStart(date);
+
+                  if (end < date) {
+                    setEnd(date);
+                  }
                 }}
               />
               <EditButton
@@ -189,8 +197,13 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
                 value={end}
                 mode="datetime"
                 display="spinner"
+                minimumDate={start}
                 onChange={(e, date) => {
-                  if (date) setEnd(date);
+                  if (!date) {
+                    return;
+                  }
+
+                  setEnd(date < start ? start : date);
                 }}
               />
               <EditButton

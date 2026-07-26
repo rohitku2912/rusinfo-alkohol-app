@@ -118,12 +118,8 @@ export default function Info() {
       <AnimatedTabHeader
         title="Informasjon"
         scrollY={headerScrollY}
-        rightSlot={
-          <View style={styles.headerActions}>
-            <HelpButton helpKey="info" />
-            <AvatarButton />
-          </View>
-        }
+        titleAccessory={<HelpButton helpKey="info" />}
+        rightSlot={<AvatarButton />}
       />
       <View
         style={[
@@ -412,11 +408,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: theme.spacing.medium,
-  },
-  headerActions: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 8,
   },
   searchRow: {
     position: "relative",

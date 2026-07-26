@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   achievementCard: {
     backgroundColor: theme.colors.box,
     padding: theme.spacing.medium,
-    marginHorizontal: theme.spacing.medium,
     marginBottom: theme.spacing.small,
     borderRadius: theme.borderRadius.medium,
     gap: theme.spacing.small,

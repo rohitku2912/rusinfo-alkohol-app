@@ -54,12 +54,12 @@ export default function DiaryDisplay() {
 
   const loadEntries = async () => {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
-    if (stored) setEntries(JSON.parse(stored));
+    setEntries(stored ? JSON.parse(stored) : []);
   };
 
   const loadTags = async () => {
     const stored = await AsyncStorage.getItem(TAGS_KEY);
-    if (stored) setAllTags(JSON.parse(stored));
+    setAllTags(stored ? JSON.parse(stored) : ["Motivert", "Glad", "Positiv"]);
   };
 
   const loadDrinkLogs = async () => {
@@ -211,45 +211,51 @@ export default function DiaryDisplay() {
 
   return (
     <View style={styles.container}>
-      {/* søk + knapp */}
-      <View style={styles.searchRow}>
-        <View style={styles.searchInputWrapper}>
-          <InputBox
-            variant="tag"
-            style={styles.searchInput}
-            placeholder="Søk på innlegg..."
-            value={searchText}
-            onChangeText={setSearchText}
-          />
-        </View>
-
-        <View style={styles.addButtonWrapper}>
-          <RegularButton
-            title="+ Nytt innlegg"
-            onPress={() => setModalVisible(true)}
-          />
-        </View>
+      <View style={styles.actions}>
+        <RegularButton
+          title="+ Nytt innlegg"
+          onPress={() => setModalVisible(true)}
+          style={styles.addButton}
+        />
+        <InputBox
+          variant="tag"
+          style={styles.searchInput}
+          placeholder="Søk i dagboken..."
+          value={searchText}
+          onChangeText={setSearchText}
+          returnKeyType="search"
+        />
       </View>
       {/* filter og tags*/}
-      <View style={styles.modalTags}>
-        {allTags.map((tag) => (
-          <TouchableOpacity
-            key={tag}
-            style={[
-              styles.tag,
-              filteredEntries.includes(tag) && styles.selectedTag,
-            ]}
-            onPress={() => {
-              if (filteredEntries.includes(tag)) {
-                setFilteredEntries(filteredEntries.filter((t) => t !== tag));
-              } else {
-                setFilteredEntries([...filteredEntries, tag]);
-              }
-            }}
-          >
-            <Text style={styles.tagText}>{tag}</Text>
-          </TouchableOpacity>
-        ))}
+      <View style={styles.filterSection}>
+        <Text style={styles.filterLabel}>Filtrer etter tagg</Text>
+        <View style={styles.modalTags}>
+          {allTags.map((tag) => (
+            <TouchableOpacity
+              key={tag}
+              style={[
+                styles.tag,
+                filteredEntries.includes(tag) && styles.selectedTag,
+              ]}
+              onPress={() => {
+                if (filteredEntries.includes(tag)) {
+                  setFilteredEntries(filteredEntries.filter((t) => t !== tag));
+                } else {
+                  setFilteredEntries([...filteredEntries, tag]);
+                }
+              }}
+            >
+              <Text
+                style={[
+                  styles.tagText,
+                  filteredEntries.includes(tag) && styles.selectedTagText,
+                ]}
+              >
+                {tag}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
       {/* liste */}
@@ -304,41 +310,42 @@ export default function DiaryDisplay() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-    backgroundColor: "#78a6b3",
     position: "relative",
   },
 
-  searchRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 14,
-    gap: 10,
+  actions: {
+    marginBottom: theme.spacing.medium,
+    gap: theme.spacing.small,
   },
 
-  searchInputWrapper: {
-    flex: 1,
+  addButton: {
+    width: "100%",
   },
 
   searchInput: {
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: theme.borderRadius.medium,
     paddingHorizontal: 14,
     paddingVertical: 10,
     backgroundColor: "#ffffff",
-    borderColor: "#c5d6e6",
+    borderColor: "#d6e0da",
     color: "#2f3b44",
     fontSize: 15,
   },
 
-  addButtonWrapper: {
-    minWidth: 120,
+  filterSection: {
+    marginBottom: theme.spacing.small,
   },
-
+  filterLabel: {
+    color: theme.colors.darkGrey,
+    fontSize: 12,
+    fontWeight: "700",
+    marginBottom: theme.spacing.small,
+  },
   modalTags: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 10,
+    gap: theme.spacing.small,
   },
 
   tag: {
@@ -346,25 +353,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderWidth: 1,
     borderRadius: 999,
-    marginRight: 8,
-    marginBottom: 8,
-    backgroundColor: "#f2e8d5",
-    borderColor: "#e3d6bf",
+    backgroundColor: theme.colors.box,
+    borderColor: "#d6e0da",
   },
 
   selectedTag: {
-    backgroundColor: "#d9c7a6",
-    borderColor: "#c4b08a",
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
   },
 
   tagText: {
     color: "#2e3a33",
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
+  },
+  selectedTagText: {
+    color: theme.colors.lightText,
   },
 
   list: {
     paddingBottom: 100,
+    paddingTop: theme.spacing.small,
   },
 
   entry: {
@@ -377,13 +386,15 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 4,
     borderWidth: 1,
-    backgroundColor: "#f7f9fb",
-    borderColor: "#d6e0ea",
+    backgroundColor: theme.colors.box,
+    borderColor: "#d6e0da",
   },
   empty: {
-    opacity: 0.5,
-    marginTop: 10,
-    fontStyle: "italic",
+    color: theme.colors.darkGrey,
+    lineHeight: 21,
+    paddingHorizontal: theme.spacing.large,
+    paddingVertical: 32,
+    textAlign: "center",
   },
 
   date: {

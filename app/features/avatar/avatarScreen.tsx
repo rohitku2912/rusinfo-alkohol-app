@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   Image,
   Pressable,
   ScrollView,
@@ -12,7 +13,7 @@ import {
 
 import BackButton from "@/app/components/ui/backButton";
 import theme from "@/app/theme/constantStyling";
-import HelpButton from "../help/HelpButton";
+import ShowAchievements from "../achievements/ShowAchievements";
 import { accessories, lockedAccessoryImage } from "./accessories";
 import {
   getSelectedAccessories,
@@ -23,7 +24,7 @@ import { avatars } from "./avatar";
 import AvatarRenderer from "./avatarRenderer";
 import { getSelectedAvatar, saveSelectedAvatar } from "./avatarStorage";
 
-type PickerMode = "avatar" | "accessory";
+type PickerMode = "avatar" | "accessory" | "achievements";
 
 export default function AvatarScreen() {
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
@@ -31,7 +32,14 @@ export default function AvatarScreen() {
   const [unlockedAccessories, setUnlockedAccessories] = useState<string[]>([]);
   const [pickerMode, setPickerMode] = useState<PickerMode>("avatar");
   const router = useRouter();
+  const scrollY = useRef(new Animated.Value(0)).current;
   const previewAvatarId = selectedAvatar ?? avatars[0]?.id;
+  const sortedAccessories = [...accessories].sort((a, b) => {
+    const aIsUnlocked = unlockedAccessories.includes(a.id);
+    const bIsUnlocked = unlockedAccessories.includes(b.id);
+
+    return Number(bIsUnlocked) - Number(aIsUnlocked);
+  });
 
   useEffect(() => {
     loadAvatarData();
@@ -84,111 +92,148 @@ export default function AvatarScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.backButton}>
-          <BackButton onPress={() => router.back()} />
-        </View>
-        <Text style={styles.title}>Avatar</Text>
-        <View style={styles.helpButton}>
-          <HelpButton helpKey="avatar" />
-        </View>
-      </View>
-
-      <View style={styles.currentAvatarSection}>
-        {previewAvatarId && (
-          <AvatarRenderer
-            avatarId={previewAvatarId}
-            accessoryIds={selectedAccessories}
-            size={180}
+          <BackButton
+            onPress={() =>
+              pickerMode === "achievements"
+                ? setPickerMode("avatar")
+                : router.back()
+            }
           />
+        </View>
+        <Text style={styles.title}>
+          {pickerMode === "achievements" ? "Prestasjoner" : "Avatar"}
+        </Text>
+        {pickerMode !== "achievements" && (
+          <View style={styles.achievementsButton}>
+            <Pressable onPress={() => setPickerMode("achievements")}>
+              <Text style={styles.achievementsButtonText}>Prestasjoner</Text>
+            </Pressable>
+          </View>
         )}
       </View>
 
-      <View style={styles.modeRow}>
-        <Pressable
-          onPress={() => setPickerMode("avatar")}
-          style={[
-            styles.modeButton,
-            pickerMode === "avatar" && styles.modeButtonActive,
-          ]}
-        >
-          <Text
-            style={[
-              styles.modeButtonText,
-              pickerMode === "avatar" && styles.modeButtonTextActive,
-            ]}
+      {pickerMode === "achievements" ? (
+        <ShowAchievements scrollY={scrollY} />
+      ) : (
+        <>
+          <View style={styles.currentAvatarSection}>
+            {previewAvatarId && (
+              <AvatarRenderer
+                avatarId={previewAvatarId}
+                accessoryIds={selectedAccessories}
+                size={180}
+              />
+            )}
+          </View>
+
+          <View style={styles.modeRow}>
+            <Pressable
+              onPress={() => setPickerMode("avatar")}
+              style={[
+                styles.modeButton,
+                pickerMode === "avatar" && styles.modeButtonActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.modeButtonText,
+                  pickerMode === "avatar" && styles.modeButtonTextActive,
+                ]}
+              >
+                Velg avatar
+              </Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => setPickerMode("accessory")}
+              style={[
+                styles.modeButton,
+                pickerMode === "accessory" && styles.modeButtonActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.modeButtonText,
+                  pickerMode === "accessory" && styles.modeButtonTextActive,
+                ]}
+              >
+                Velg tilbehør
+              </Text>
+            </Pressable>
+          </View>
+
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.grid}
           >
-            Velg avatar
-          </Text>
-        </Pressable>
+            {pickerMode === "avatar"
+              ? avatars.map((avatar) => {
+                  const isSelected = selectedAvatar === avatar.id;
 
-        <Pressable
-          onPress={() => setPickerMode("accessory")}
-          style={[
-            styles.modeButton,
-            pickerMode === "accessory" && styles.modeButtonActive,
-          ]}
-        >
-          <Text
-            style={[
-              styles.modeButtonText,
-              pickerMode === "accessory" && styles.modeButtonTextActive,
-            ]}
-          >
-            Velg tilbehør
-          </Text>
-        </Pressable>
-      </View>
+                  return (
+                    <TouchableOpacity
+                      key={avatar.id}
+                      onPress={() => handleSelectAvatar(avatar.id)}
+                      style={[styles.card, isSelected && styles.cardSelected]}
+                    >
+                      <Image source={avatar.image} style={styles.image} />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.grid}
-      >
-        {pickerMode === "avatar"
-          ? avatars.map((avatar) => {
-              const isSelected = selectedAvatar === avatar.id;
+                      <Text style={styles.name}>{avatar.name}</Text>
 
-              return (
-                <TouchableOpacity
-                  key={avatar.id}
-                  onPress={() => handleSelectAvatar(avatar.id)}
-                  style={[styles.card, isSelected && styles.cardSelected]}
-                >
-                  <Image source={avatar.image} style={styles.image} />
+                      {isSelected && (
+                        <Text style={styles.selectedText}>Valgt</Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })
+              : sortedAccessories.map((accessory) => {
+                  const isSelected = selectedAccessories.includes(accessory.id);
+                  const isUnlocked = unlockedAccessories.includes(accessory.id);
 
-                  <Text style={styles.name}>{avatar.name}</Text>
+                  return (
+                    <TouchableOpacity
+                      key={accessory.id}
+                      onPress={() => handleSelectAccessory(accessory.id)}
+                      disabled={!isUnlocked}
+                      style={[
+                        styles.card,
+                        !isUnlocked && styles.cardLocked,
+                        isSelected && styles.cardSelected,
+                      ]}
+                    >
+                      <View style={styles.accessoryImageWrap}>
+                        <Image
+                          source={accessory.image}
+                          style={[
+                            styles.image,
+                            styles.accessoryImage,
+                            !isUnlocked && styles.lockedAccessoryImage,
+                          ]}
+                        />
 
-                  {isSelected && <Text style={styles.selectedText}>Valgt</Text>}
-                </TouchableOpacity>
-              );
-            })
-          : accessories.map((accessory) => {
-              const isSelected = selectedAccessories.includes(accessory.id);
-              const isUnlocked = unlockedAccessories.includes(accessory.id);
+                        {!isUnlocked && (
+                          <Image
+                            source={lockedAccessoryImage}
+                            style={styles.lockOverlay}
+                          />
+                        )}
+                      </View>
 
-              return (
-                <TouchableOpacity
-                  key={accessory.id}
-                  onPress={() => handleSelectAccessory(accessory.id)}
-                  disabled={!isUnlocked}
-                  style={[
-                    styles.card,
-                    !isUnlocked && styles.cardLocked,
-                    isSelected && styles.cardSelected,
-                  ]}
-                >
-                  <Image
-                    source={isUnlocked ? accessory.image : lockedAccessoryImage}
-                    style={[styles.image, !isUnlocked && styles.lockImage]}
-                  />
+                      <Text
+                        style={[styles.name, !isUnlocked && styles.lockedName]}
+                      >
+                        {accessory.name}
+                      </Text>
 
-                  <Text style={[styles.name, !isUnlocked && styles.lockedName]}>
-                    {isUnlocked ? accessory.name : "Låst"}
-                  </Text>
-
-                  {isSelected && <Text style={styles.selectedText}>Valgt</Text>}
-                </TouchableOpacity>
-              );
-            })}
-      </ScrollView>
+                      {isSelected && (
+                        <Text style={styles.selectedText}>Valgt</Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+          </ScrollView>
+        </>
+      )}
     </View>
   );
 }
@@ -288,8 +333,7 @@ const styles = StyleSheet.create({
   },
 
   cardLocked: {
-    backgroundColor: theme.colors.lightGrey,
-    opacity: 0.75,
+    backgroundColor: theme.colors.box,
   },
 
   image: {
@@ -298,8 +342,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  lockImage: {
-    opacity: 0.85,
+  accessoryImageWrap: {
+    width: 90,
+    height: 90,
+    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+
+  accessoryImage: {
+    marginBottom: 0,
+  },
+
+  lockedAccessoryImage: {
+    opacity: 0.35,
+  },
+
+  lockOverlay: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    opacity: 0.9,
   },
 
   name: {
@@ -315,6 +379,20 @@ const styles = StyleSheet.create({
   selectedText: {
     marginTop: 6,
     color: theme.colors.primary,
+    fontWeight: "700",
+  },
+  achievementsButton: {
+    position: "absolute",
+    right: 0,
+    padding: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    backgroundColor: theme.colors.box,
+    borderWidth: 1,
+    borderColor: "#DCE2D4"
+  },
+  achievementsButtonText: {
+    color: theme.colors.text,
     fontWeight: "700",
   },
 });

@@ -120,12 +120,8 @@ export default function OverView() {
       <AnimatedTabHeader
         title="Oversikt"
         scrollY={headerScrollY}
-        rightSlot={
-          <View style={styles.headerActions}>
-            <HelpButton helpKey="overview" />
-            <AvatarButton />
-          </View>
-        }
+        titleAccessory={<HelpButton helpKey="overview" />}
+        rightSlot={<AvatarButton />}
       />
       <View
         style={[
@@ -149,11 +145,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  headerActions: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 8,
   },
   lastWeekCard: {
     backgroundColor: "#ffffff",

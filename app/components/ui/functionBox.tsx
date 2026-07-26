@@ -24,13 +24,13 @@ export default function FunctionBox({
       activeOpacity={onPress ? 0.8 : 1} // only act as button if onpress exist
     >
       <View style={styles.header}>
-        <View style={{ flex: 1 }}>
+        <View style={styles.headerText}>
           <Text style={styles.title}>{title}</Text>
           {description && <Text style={styles.description}>{description}</Text>}
         </View>
         {helpBtn && <View style={styles.help}>{helpBtn}</View>}
       </View>
-      {children && <View>{children}</View>}
+      {children && <View style={styles.content}>{children}</View>}
     </TouchableOpacity>
   );
 }
@@ -41,27 +41,38 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.box,
     padding: theme.spacing.medium,
     borderRadius: theme.borderRadius.medium,
+    borderColor: "#d6e0da",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
 
   header: {
+    alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    minHeight: 40,
+  },
+  headerText: {
+    flex: 1,
+    justifyContent: "center",
   },
 
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.small,
     color: theme.colors.text,
+    fontSize: 17,
+    fontWeight: "800",
+    letterSpacing: 0.2,
   },
 
   description: {
-    fontSize: 14,
     color: theme.colors.darkGrey,
-    marginTop: theme.spacing.small,
-    marginBottom: theme.spacing.small,
+    fontSize: 13,
+    lineHeight: 19,
+    marginTop: 4,
   },
 
   help: {
@@ -69,7 +80,6 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    marginTop: theme.spacing.small,
-    color: theme.colors.lightGrey,
+    marginTop: theme.spacing.medium,
   },
 });

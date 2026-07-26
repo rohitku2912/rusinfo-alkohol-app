@@ -77,9 +77,9 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="achievements"
           options={{
-            title: "Prestasjoner",
+            title: "Trigger",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="trophy" size={24} color={color} />
+              <Ionicons name="flash" size={24} color={color} />
             ),
           }}
         />

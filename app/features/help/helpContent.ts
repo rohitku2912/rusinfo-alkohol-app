@@ -75,6 +75,6 @@ export const helpContent: Record<string, { title: string; description: string }>
   },
   daycounter: {
     title: "Teller",
-    description: "Her ser du hvor lenge det er siden du startet programmet. Tallet oppdateres automatisk og viser antall dager som har gått siden startdatoen din ble registrert. Trykker du på «Nullstill», starter tellingen på nytt fra i dag. Dette gir deg oversikt over utviklingen din over tid."
+    description: "Her ser du hvor lenge det er siden du startet programmet. Tallet oppdateres automatisk og viser antall dager som har gått siden startdatoen din ble registrert. Du kan starte tellingen på nytt fra innstillingene på startsiden."
   }
 }; 

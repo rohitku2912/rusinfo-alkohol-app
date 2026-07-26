@@ -6,31 +6,29 @@ import AnimatedTabHeader, {
   getAnimatedTabHeaderTopPadding,
 } from "../components/ui/AnimatedTabHeader";
 import AvatarButton from "../components/ui/avatarButton";
-import ShowAchievements from "../features/achievements/ShowAchievements";
+import TriggerDisplay from "../features/diary/TriggerDisplay";
 import HelpButton from "../features/help/HelpButton";
 
-export default function Achievements() {
+export default function Trigger() {
   const insets = useSafeAreaInsets();
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const headerScrollY = useRef(new Animated.Value(0)).current;
 
   return (
     <View style={styles.container}>
       <AnimatedTabHeader
-        title="Prestasjoner"
-        scrollY={scrollY}
-        rightSlot={
-          <View style={styles.headerActions}>
-            <HelpButton helpKey="achievements" />
-            <AvatarButton />
-          </View>
-        }
+        title="Trigger"
+        scrollY={headerScrollY}
+        titleAccessory={<HelpButton helpKey="trigger" />}
+        rightSlot={<AvatarButton />}
       />
-      <ShowAchievements
-        scrollY={scrollY}
-        contentContainerStyle={{
-          paddingTop: getAnimatedTabHeaderTopPadding(insets.top),
-        }}
-      />
+      <View
+        style={[
+          styles.content,
+          { marginTop: getAnimatedTabHeaderTopPadding(insets.top) },
+        ]}
+      >
+        <TriggerDisplay />
+      </View>
     </View>
   );
 }
@@ -40,9 +38,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  headerActions: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 8,
+  content: {
+    flex: 1,
+    paddingHorizontal: theme.spacing.medium,
+    paddingTop: theme.spacing.medium,
   },
 });
