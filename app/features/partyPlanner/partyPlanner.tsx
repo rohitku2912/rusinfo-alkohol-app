@@ -178,6 +178,7 @@ export default function PartyPlanner() {
     party.endTime ? Math.max(0, party.endTime.getTime() - now.getTime()) : 0;
 
   const { hours, minutes, seconds } = format(timeLeft);
+  const startCountdown = format(timeUntilStart);
 
   /* tilbakemelding */
   const [feedback, setFeedback] = useState("");
@@ -206,9 +207,14 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
 
           {/* før partystart */}
           {party.status === "scheduled" && (
-            <Text style={{ color: theme.colors.text, marginBottom: 12 }}>
-              Starter om {Math.floor(timeUntilStart / 60000)} minutter
-            </Text>
+            <View style={styles.scheduledContainer}>
+              <Text style={styles.countdownLabel}>Festen starter om</Text>
+              <View style={styles.timerCards}>
+                <Ring value={startCountdown.hours} label="Timer" />
+                <Ring value={startCountdown.minutes} label="Minutter" />
+                <Ring value={startCountdown.seconds} label="Sekunder" />
+              </View>
+            </View>
           )}
 
           {/* aktiv fest */}
@@ -497,5 +503,15 @@ const styles = StyleSheet.create({
     gap: 12,
     width: "100%",
     marginBottom: 10,
+  },
+  scheduledContainer: {
+    alignItems: "center",
+    width: "100%",
+  },
+  countdownLabel: {
+    color: theme.colors.darkGrey,
+    fontSize: 13,
+    fontWeight: "700",
+    marginBottom: 12,
   },
 });

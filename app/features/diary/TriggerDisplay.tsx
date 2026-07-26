@@ -1,18 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   FlatList,
+  LayoutChangeEvent,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import RegularButton from "../../components/ui/button";
-import InputBox from "../../components/ui/inputBox";
+import DateFilter from "../../components/ui/DateFilter";
+import SearchInput from "../../components/ui/SearchInput";
 import theme from "../../theme/constantStyling";
+import { createDateKey } from "../../utils/weekHelpers";
 import RegisterTriggerModal from "./RegisterTriggerModal";
 import TriggerStats from "./TriggerStats";
 
@@ -59,11 +63,13 @@ type TriggerEntry = {
   trigger: string;
   protectionFactors: string[];
   count: number;
+  dates?: string[];
 };
 
 export default function TriggerDisplay() {
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [protectionText, setProtectionText] = useState("");
   const [selectedTrigger, setSelectedTrigger] = useState<string | null>(null);
 
@@ -75,6 +81,23 @@ export default function TriggerDisplay() {
   const [selectedFilter, setSelectedFilter] = useState<
     "triggere" | "oversikt"
   >("triggere");
+  const [pickerWidth, setPickerWidth] = useState(0);
+  const pickerPosition = useRef(new Animated.Value(0)).current;
+
+  const selectFilter = (filter: "triggere" | "oversikt") => {
+    setSelectedFilter(filter);
+    Animated.spring(pickerPosition, {
+      toValue: filter === "triggere" ? 0 : 1,
+      damping: 18,
+      stiffness: 180,
+      mass: 0.8,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const measurePicker = (event: LayoutChangeEvent) => {
+    setPickerWidth(event.nativeEvent.layout.width);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -162,6 +185,8 @@ export default function TriggerDisplay() {
   };
 
   const ensureEntry = (trigger: string, value: string) => {
+    const registrationDate = new Date().toISOString();
+
     setTriggerEntries((current) => {
       const exists = current.some((t) => t.trigger === trigger);
 
@@ -172,6 +197,7 @@ export default function TriggerDisplay() {
             trigger,
             protectionFactors: [value],
             count: 1,
+            dates: [registrationDate],
           },
         ];
       }
@@ -184,6 +210,7 @@ export default function TriggerDisplay() {
                 ? entry.protectionFactors
                 : [...entry.protectionFactors, value],
               count: entry.count + 1,
+              dates: [...(entry.dates ?? []), registrationDate],
             }
           : entry,
       );
@@ -214,9 +241,21 @@ export default function TriggerDisplay() {
     setModalVisible(false);
   };
 
-  const filteredTriggers = triggerEntries.filter((entry) =>
-    entry.trigger.toLowerCase().includes(searchText.toLowerCase()),
-  );
+  const filteredTriggers = triggerEntries.filter((entry) => {
+    const matchesText =
+      entry.trigger.toLowerCase().includes(searchText.toLowerCase()) ||
+      (entry.dates ?? []).some((date) =>
+        new Date(date).toLocaleDateString("nb-NO").includes(searchText),
+      );
+    const matchesDate =
+      !selectedDate ||
+      (entry.dates ?? []).some(
+        (date) =>
+          createDateKey(new Date(date)) === createDateKey(selectedDate),
+      );
+
+    return matchesText && matchesDate;
+  });
 
   const renderItem = ({ item }: { item: TriggerEntry }) => (
     <View style={styles.card}>
@@ -250,13 +289,31 @@ export default function TriggerDisplay() {
   return (
     <View style={styles.container}>
       {/* filter */}
-      <View style={styles.filterRow}>
+      <View onLayout={measurePicker} style={styles.filterRow}>
+        {pickerWidth > 0 && (
+          <Animated.View
+            pointerEvents="none"
+            style={[
+              styles.pickerSlider,
+              {
+                width: (pickerWidth - 8) / 2,
+                transform: [
+                  {
+                    translateX: pickerPosition.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, (pickerWidth - 8) / 2],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
+        )}
         <TouchableOpacity
-          style={[
-            styles.filterButton,
-            selectedFilter === "triggere" && styles.selectedFilter,
-          ]}
-          onPress={() => setSelectedFilter("triggere")}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: selectedFilter === "triggere" }}
+          style={styles.filterButton}
+          onPress={() => selectFilter("triggere")}
         >
           <Ionicons
             name="flash-outline"
@@ -278,11 +335,10 @@ export default function TriggerDisplay() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[
-            styles.filterButton,
-            selectedFilter === "oversikt" && styles.selectedFilter,
-          ]}
-          onPress={() => setSelectedFilter("oversikt")}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: selectedFilter === "oversikt" }}
+          style={styles.filterButton}
+          onPress={() => selectFilter("oversikt")}
         >
           <Ionicons
             name="pie-chart-outline"
@@ -312,14 +368,12 @@ export default function TriggerDisplay() {
             onPress={() => setModalVisible(true)}
             style={styles.addButton}
           />
-          <InputBox
-            variant="tag"
-            style={styles.searchInput}
+          <SearchInput
             placeholder="Søk i triggere..."
             value={searchText}
             onChangeText={setSearchText}
-            returnKeyType="search"
           />
+          <DateFilter value={selectedDate} onChange={setSelectedDate} />
         </View>
       )}
 
@@ -391,11 +445,24 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.medium,
     flexDirection: "row",
     marginBottom: theme.spacing.medium,
+    overflow: "hidden",
     padding: 4,
+    position: "relative",
   },
 
-  selectedFilter: {
+  pickerSlider: {
+    bottom: 4,
     backgroundColor: "#EAF4EE",
+    borderColor: "rgba(94, 156, 118, 0.22)",
+    borderRadius: theme.borderRadius.small,
+    borderWidth: 1,
+    left: 4,
+    position: "absolute",
+    shadowColor: theme.colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+    top: 4,
   },
 
   filterButton: {
@@ -408,6 +475,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 8,
     borderRadius: theme.borderRadius.small,
+    zIndex: 1,
   },
 
   filterText: {
@@ -498,17 +566,6 @@ const styles = StyleSheet.create({
 
   addButton: {
     width: "100%",
-  },
-
-  searchInput: {
-    borderWidth: 1,
-    borderColor: "#d6e0da",
-    borderRadius: theme.borderRadius.medium,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    backgroundColor: theme.colors.box,
-    color: theme.colors.text,
-    fontSize: 15,
   },
 
   deleteButton: {

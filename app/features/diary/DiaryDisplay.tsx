@@ -18,7 +18,8 @@ import {
   getTotalDrinks,
 } from "@/lib/storage/drinkLogs";
 import RegularButton from "../../components/ui/button";
-import InputBox from "../../components/ui/inputBox";
+import DateFilter from "../../components/ui/DateFilter";
+import SearchInput from "../../components/ui/SearchInput";
 import { useAchievements } from "../achievements/AchievementProvider";
 import DiaryEntryModal from "./DiaryEntryModal";
 
@@ -38,6 +39,7 @@ export default function DiaryDisplay() {
   const [drinkLogs, setDrinkLogs] = useState<DrinkLogEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [inputText, setInputText] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -132,9 +134,11 @@ export default function DiaryDisplay() {
 
     if (!drinkLog) {
       return (
-        <View style={styles.drinkSummary}>
+        <View style={[styles.drinkSummary, styles.emptyDrinkSummary]}>
           <View style={styles.drinkSummaryHeader}>
-            <Ionicons name="ellipse-outline" size={15} color="#64748b" />
+            <View style={styles.drinkSummaryIcon}>
+              <Ionicons name="remove" size={15} color="#64748b" />
+            </View>
             <Text style={styles.drinkSummaryMuted}>
               Ingen drikke registrert denne dagen
             </Text>
@@ -147,12 +151,21 @@ export default function DiaryDisplay() {
       return (
         <View style={[styles.drinkSummary, styles.whiteDrinkSummary]}>
           <View style={styles.drinkSummaryHeader}>
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={16}
-              color={theme.colors.primary}
-            />
-            <Text style={styles.whiteDrinkSummaryText}>Hvit dag</Text>
+            <View
+              style={[styles.drinkSummaryIcon, styles.whiteDrinkSummaryIcon]}
+            >
+              <Ionicons
+                name="checkmark"
+                size={15}
+                color={theme.colors.primary}
+              />
+            </View>
+            <View style={styles.drinkSummaryHeading}>
+              <Text style={styles.whiteDrinkSummaryText}>Hvit dag</Text>
+              <Text style={styles.drinkSummaryCaption}>
+                Ingen alkohol registrert
+              </Text>
+            </View>
           </View>
         </View>
       );
@@ -163,18 +176,35 @@ export default function DiaryDisplay() {
     return (
       <View style={styles.drinkSummary}>
         <View style={styles.drinkSummaryHeader}>
-          <Ionicons name="wine-outline" size={16} color="#475569" />
-          <Text style={styles.drinkSummaryMuted}>Drikkelogg:</Text>
-          <Text style={styles.drinkSummaryTotal}>
-            {totalDrinks} {totalDrinks === 1 ? "enhet" : "enheter"}
-          </Text>
+          <View style={styles.drinkSummaryIcon}>
+            <Ionicons name="wine-outline" size={16} color="#475569" />
+          </View>
+          <View style={styles.drinkSummaryHeading}>
+            <Text style={styles.drinkSummaryTitle}>Drikkelogg</Text>
+            <Text style={styles.drinkSummaryCaption}>Registrert denne dagen</Text>
+          </View>
+          <View style={styles.drinkTotalPill}>
+            <Text style={styles.drinkSummaryTotal}>{totalDrinks}</Text>
+            <Text style={styles.drinkTotalUnit}>
+              {totalDrinks === 1 ? "enhet" : "enheter"}
+            </Text>
+          </View>
         </View>
         <View style={styles.drinkBreakdownRow}>
-          <Text style={styles.drinkBreakdownChip}>Øl: {drinkLog.beerCount}</Text>
-          <Text style={styles.drinkBreakdownChip}>Vin: {drinkLog.wineCount}</Text>
-          <Text style={styles.drinkBreakdownChip}>
-            Drinker: {drinkLog.drinksCount}
-          </Text>
+          <View style={styles.drinkBreakdownChip}>
+            <Text style={styles.drinkBreakdownLabel}>Øl</Text>
+            <Text style={styles.drinkBreakdownValue}>{drinkLog.beerCount}</Text>
+          </View>
+          <View style={styles.drinkBreakdownChip}>
+            <Text style={styles.drinkBreakdownLabel}>Vin</Text>
+            <Text style={styles.drinkBreakdownValue}>{drinkLog.wineCount}</Text>
+          </View>
+          <View style={styles.drinkBreakdownChip}>
+            <Text style={styles.drinkBreakdownLabel}>Drinker</Text>
+            <Text style={styles.drinkBreakdownValue}>
+              {drinkLog.drinksCount}
+            </Text>
+          </View>
         </View>
       </View>
     );
@@ -217,14 +247,12 @@ export default function DiaryDisplay() {
           onPress={() => setModalVisible(true)}
           style={styles.addButton}
         />
-        <InputBox
-          variant="tag"
-          style={styles.searchInput}
+        <SearchInput
           placeholder="Søk i dagboken..."
           value={searchText}
           onChangeText={setSearchText}
-          returnKeyType="search"
         />
+        <DateFilter value={selectedDate} onChange={setSelectedDate} />
       </View>
       {/* filter og tags*/}
       <View style={styles.filterSection}>
@@ -261,7 +289,7 @@ export default function DiaryDisplay() {
       {/* liste */}
       <FlatList
         data={
-          filteredEntries.length > 0 || searchText
+          filteredEntries.length > 0 || searchText || selectedDate
             ? entries.filter((e) => {
                 const matchesTags =
                   filteredEntries.length === 0 ||
@@ -269,9 +297,17 @@ export default function DiaryDisplay() {
 
                 const matchesSearch =
                   !searchText ||
-                  e.text.toLowerCase().includes(searchText.toLowerCase());
+                  e.text.toLowerCase().includes(searchText.toLowerCase()) ||
+                  new Date(e.date)
+                    .toLocaleDateString("nb-NO")
+                    .includes(searchText);
 
-                return matchesTags && matchesSearch;
+                const matchesDate =
+                  !selectedDate ||
+                  createDateKey(new Date(e.date)) ===
+                    createDateKey(selectedDate);
+
+                return matchesTags && matchesSearch && matchesDate;
               })
             : entries
         }
@@ -320,17 +356,6 @@ const styles = StyleSheet.create({
 
   addButton: {
     width: "100%",
-  },
-
-  searchInput: {
-    borderWidth: 1,
-    borderRadius: theme.borderRadius.medium,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    backgroundColor: "#ffffff",
-    borderColor: "#d6e0da",
-    color: "#2f3b44",
-    fontSize: 15,
   },
 
   filterSection: {
@@ -409,25 +434,50 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   drinkSummary: {
-    alignSelf: "flex-start",
+    alignSelf: "stretch",
     backgroundColor: "#eef3f8",
     borderColor: "#d6e0ea",
-    borderRadius: theme.borderRadius.small,
+    borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    gap: 8,
+    gap: 10,
     marginTop: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    padding: 12,
+  },
+  emptyDrinkSummary: {
+    backgroundColor: "#f7f9fb",
   },
   whiteDrinkSummary: {
     backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    borderColor: "rgba(94, 156, 118, 0.45)",
   },
   drinkSummaryHeader: {
     alignItems: "center",
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 6,
+    gap: 9,
+  },
+  drinkSummaryIcon: {
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 17,
+    height: 34,
+    justifyContent: "center",
+    width: 34,
+  },
+  whiteDrinkSummaryIcon: {
+    backgroundColor: "#ffffff",
+  },
+  drinkSummaryHeading: {
+    flex: 1,
+  },
+  drinkSummaryTitle: {
+    color: "#1e293b",
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  drinkSummaryCaption: {
+    color: "#64748b",
+    fontSize: 10,
+    marginTop: 1,
   },
   drinkSummaryMuted: {
     color: "#64748b",
@@ -436,8 +486,21 @@ const styles = StyleSheet.create({
   },
   drinkSummaryTotal: {
     color: "#1e293b",
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "800",
+  },
+  drinkTotalPill: {
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    minWidth: 54,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  drinkTotalUnit: {
+    color: "#64748b",
+    fontSize: 9,
+    fontWeight: "600",
   },
   whiteDrinkSummaryText: {
     color: theme.colors.primary,
@@ -446,19 +509,28 @@ const styles = StyleSheet.create({
   },
   drinkBreakdownRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
     gap: 6,
   },
   drinkBreakdownChip: {
+    alignItems: "center",
     backgroundColor: "#ffffff",
     borderColor: "#d6e0ea",
-    borderRadius: 999,
+    borderRadius: 9,
     borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 7,
+  },
+  drinkBreakdownLabel: {
     color: "#475569",
-    fontSize: 11,
+    fontSize: 9,
+    fontWeight: "600",
+  },
+  drinkBreakdownValue: {
+    color: "#1e293b",
+    fontSize: 14,
     fontWeight: "700",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    marginTop: 1,
   },
 
   deleteButton: {

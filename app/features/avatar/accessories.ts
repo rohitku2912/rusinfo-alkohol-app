@@ -148,7 +148,7 @@ export const accessories: Accessory[] = [
     name: "Safarihatt",
     image: require("../../../assets/images/avatarAccessories/safari-hat.png"),
     position: "head",
-    size: 118,
+    size: 138,
     offsetTop: -5,
   },
   {

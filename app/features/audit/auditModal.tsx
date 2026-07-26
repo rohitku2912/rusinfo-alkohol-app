@@ -2,7 +2,14 @@ import BackButton from "@/app/components/ui/backButton";
 import RegularButton from "@/app/components/ui/button";
 import theme from "@/app/theme/constantStyling";
 import { useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import HelpButton from "../help/HelpButton";
 
 type Props = {
@@ -550,30 +557,36 @@ export default function AuditModal({
     const risk = scoreToRisk();
 
     return (
-      <View style={styles.screen}>
-        <Text style={styles.title}>Resultat</Text>
-        <View
-          style={[
-            styles.scoreBox,
-            {
-              backgroundColor: riskBackgroundColors[risk],
-              borderColor: riskColors[risk],
-            },
-          ]}
-        >
-          <Text style={styles.scoreLabel}>Din score</Text>
-          <Text style={[styles.scoreValue, { color: riskColors[risk] }]}>
-            {calculateScore()}
-          </Text>
+      <ScrollView
+        contentContainerStyle={styles.resultScrollContent}
+        showsVerticalScrollIndicator={false}
+        style={styles.resultScroll}
+      >
+        <View style={[styles.screen, styles.resultScreen]}>
+          <Text style={styles.title}>Resultat</Text>
+          <View
+            style={[
+              styles.scoreBox,
+              {
+                backgroundColor: riskBackgroundColors[risk],
+                borderColor: riskColors[risk],
+              },
+            ]}
+          >
+            <Text style={styles.scoreLabel}>Din score</Text>
+            <Text style={[styles.scoreValue, { color: riskColors[risk] }]}>
+              {calculateScore()}
+            </Text>
+          </View>
+          {renderRiskResult()}
+          {renderRiskSpectrum()}
+          <RegularButton
+            title="Ta testen på nytt"
+            onPress={restartQuiz}
+            style={styles.primaryButton}
+          />
         </View>
-        {renderRiskResult()}
-        {renderRiskSpectrum()}
-        <RegularButton
-          title="Ta testen på nytt"
-          onPress={restartQuiz}
-          style={styles.primaryButton}
-        />
-      </View>
+      </ScrollView>
     );
   }
 
@@ -601,7 +614,7 @@ export default function AuditModal({
 const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: theme.colors.background,
-    flexGrow: 1,
+    flex: 1,
     padding: 20,
     paddingTop: 56,
     paddingBottom: 32,
@@ -620,6 +633,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 2,
+  },
+  resultScroll: {
+    flex: 1,
+    marginTop: 16,
+  },
+  resultScrollContent: {
+    flexGrow: 1,
+    paddingBottom: 48,
+  },
+  resultScreen: {
+    marginTop: 0,
   },
   helpRow: {
     alignItems: "flex-end",

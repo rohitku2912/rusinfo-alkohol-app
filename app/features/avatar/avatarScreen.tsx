@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Image,
+  LayoutChangeEvent,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -33,7 +34,24 @@ export default function AvatarScreen() {
   const [pickerMode, setPickerMode] = useState<PickerMode>("avatar");
   const router = useRouter();
   const scrollY = useRef(new Animated.Value(0)).current;
+  const pickerPosition = useRef(new Animated.Value(0)).current;
+  const [pickerWidth, setPickerWidth] = useState(0);
   const previewAvatarId = selectedAvatar ?? avatars[0]?.id;
+
+  const selectPickerMode = (mode: "avatar" | "accessory") => {
+    setPickerMode(mode);
+    Animated.spring(pickerPosition, {
+      toValue: mode === "avatar" ? 0 : 1,
+      damping: 18,
+      stiffness: 180,
+      mass: 0.8,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const measurePicker = (event: LayoutChangeEvent) => {
+    setPickerWidth(event.nativeEvent.layout.width);
+  };
   const sortedAccessories = [...accessories].sort((a, b) => {
     const aIsUnlocked = unlockedAccessories.includes(a.id);
     const bIsUnlocked = unlockedAccessories.includes(b.id);
@@ -95,7 +113,7 @@ export default function AvatarScreen() {
           <BackButton
             onPress={() =>
               pickerMode === "achievements"
-                ? setPickerMode("avatar")
+                ? selectPickerMode("avatar")
                 : router.back()
             }
           />
@@ -126,13 +144,31 @@ export default function AvatarScreen() {
             )}
           </View>
 
-          <View style={styles.modeRow}>
+          <View onLayout={measurePicker} style={styles.modeRow}>
+            {pickerWidth > 0 && (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.modeSlider,
+                  {
+                    width: (pickerWidth - 8) / 2,
+                    transform: [
+                      {
+                        translateX: pickerPosition.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, (pickerWidth - 8) / 2],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
+            )}
             <Pressable
-              onPress={() => setPickerMode("avatar")}
-              style={[
-                styles.modeButton,
-                pickerMode === "avatar" && styles.modeButtonActive,
-              ]}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: pickerMode === "avatar" }}
+              onPress={() => selectPickerMode("avatar")}
+              style={styles.modeButton}
             >
               <Text
                 style={[
@@ -145,11 +181,10 @@ export default function AvatarScreen() {
             </Pressable>
 
             <Pressable
-              onPress={() => setPickerMode("accessory")}
-              style={[
-                styles.modeButton,
-                pickerMode === "accessory" && styles.modeButtonActive,
-              ]}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: pickerMode === "accessory" }}
+              onPress={() => selectPickerMode("accessory")}
+              style={styles.modeButton}
             >
               <Text
                 style={[
@@ -280,24 +315,36 @@ const styles = StyleSheet.create({
   },
 
   modeRow: {
+    backgroundColor: theme.colors.backgroundSecondary,
+    borderRadius: theme.borderRadius.medium,
     flexDirection: "row",
-    gap: 10,
     marginBottom: 16,
+    overflow: "hidden",
+    padding: 4,
+    position: "relative",
+  },
+  modeSlider: {
+    backgroundColor: "#EAF4EE",
+    borderColor: "rgba(94, 156, 118, 0.22)",
+    borderRadius: theme.borderRadius.small,
+    borderWidth: 1,
+    bottom: 4,
+    left: 4,
+    position: "absolute",
+    shadowColor: theme.colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 5,
+    top: 4,
   },
 
   modeButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
     alignItems: "center",
-    backgroundColor: theme.colors.box,
-    borderWidth: 1,
-    borderColor: "#DCE2D4",
-  },
-
-  modeButtonActive: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
+    flex: 1,
+    justifyContent: "center",
+    minHeight: 44,
+    paddingVertical: 12,
+    zIndex: 1,
   },
 
   modeButtonText: {
@@ -306,14 +353,14 @@ const styles = StyleSheet.create({
   },
 
   modeButtonTextActive: {
-    color: theme.colors.lightText,
+    color: theme.colors.primary,
   },
 
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    paddingBottom: 40,
+    paddingBottom: theme.spacing.small,
   },
 
   card: {

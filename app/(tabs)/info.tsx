@@ -25,6 +25,7 @@ import AnimatedTabHeader, {
   getAnimatedTabHeaderTopPadding,
 } from "../components/ui/AnimatedTabHeader";
 import AvatarButton from "../components/ui/avatarButton";
+import SearchInput from "../components/ui/SearchInput";
 import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
 
@@ -128,22 +129,12 @@ export default function Info() {
         ]}
       >
         {/* Søkefelt — filtrerer på tvers av alle artikler */}
-        <View style={styles.searchRow}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Søk..."
-            placeholderTextColor="#aaa"
+        <View style={styles.searchContainer}>
+          <SearchInput
+            placeholder="Søk i informasjon..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            clearButtonMode="while-editing"
-            returnKeyType="search"
             onSubmitEditing={Keyboard.dismiss}
-          />
-          <Ionicons
-            name="search"
-            size={18}
-            color="#aaa"
-            style={styles.searchIcon}
           />
         </View>
 
@@ -409,25 +400,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: theme.spacing.medium,
   },
-  searchRow: {
-    position: "relative",
+  searchContainer: {
     marginBottom: theme.spacing.large,
-  },
-  searchInput: {
-    backgroundColor: "#f5f7f3",
-    borderRadius: 22,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    paddingRight: 40,
-    fontSize: 15,
-    color: theme.colors.lightText,
-    borderWidth: 1,
-    borderColor: "#d9ddd6",
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 14,
-    top: 11,
   },
   loader: {
     marginTop: 48,
