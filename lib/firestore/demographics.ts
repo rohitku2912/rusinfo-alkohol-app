@@ -1,5 +1,5 @@
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { requireDb } from '@/lib/firebase';
 import { getOrCreateInstallationId } from '@/lib/storage/installation';
 import { getOnboardingData } from '@/lib/storage/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,8 @@ export type DemographicsPayload = {
 };
 
 export async function saveDemographics(payload: DemographicsPayload) {
+  const db = requireDb();
+
   await setDoc(doc(db, 'demographics', payload.installationId), {
     ...payload,
     createdAt: serverTimestamp(),

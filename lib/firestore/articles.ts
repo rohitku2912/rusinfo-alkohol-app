@@ -1,41 +1,103 @@
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { requireDb } from "@/lib/firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  type Timestamp,
+} from "firebase/firestore";
+
+export type TiptapMark = {
+  type: string;
+  attrs?: Record<string, unknown>;
+};
+
+export type TiptapNode = {
+  type: string;
+  text?: string;
+  attrs?: Record<string, unknown>;
+  marks?: TiptapMark[];
+  content?: TiptapNode[];
+};
+
+export type TiptapDocument = {
+  type: "doc";
+  content?: TiptapNode[];
+};
 
 export type Article = {
   id: string;
-  header: string;
-  kategori: string;
-  preamble: string;
-  body: string;
-  imageUrl?: string;
+  categoryId: string;
+  categoryName: string;
+  title: string;
+  content: TiptapDocument;
+  publishedAt: Timestamp | null;
 };
 
-function toText(value: unknown) {
-  return typeof value === 'string' ? value.trim() : '';
+function isTiptapDocument(value: unknown): value is TiptapDocument {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const document = value as Partial<TiptapDocument>;
+
+  return (
+    document.type === "doc" &&
+    (document.content === undefined || Array.isArray(document.content))
+  );
+}
+
+export function getTiptapText(node: TiptapNode): string {
+  const ownText = node.text ?? "";
+  const childText = node.content?.map(getTiptapText).join(" ") ?? "";
+
+  return `${ownText} ${childText}`.trim();
 }
 
 export async function fetchArticles(): Promise<Article[]> {
-  const snapshot = await getDocs(collection(db, 'articles'));
-  return snapshot.docs
-    .map((doc) => {
-      const data = doc.data();
-      const header = toText(data.header);
+  const db = requireDb();
 
-      if (!header) {
-        console.warn(`Skipping article ${doc.id}: missing header.`);
+  const [categorySnapshot, articleSnapshot] = await Promise.all([
+    getDocs(collection(db, "categories")),
+    getDocs(
+      query(collection(db, "articles"), where("status", "==", "published")),
+    ),
+  ]);
+
+  const categoryNames = new Map<string, string>();
+
+  categorySnapshot.docs.forEach((document) => {
+    const data = document.data();
+    const name = typeof data.name === "string" ? data.name.trim() : "";
+
+    if (name) {
+      categoryNames.set(document.id, name);
+    }
+  });
+
+  return articleSnapshot.docs
+    .map((document) => {
+      const data = document.data();
+
+      const title = typeof data.title === "string" ? data.title.trim() : "";
+
+      const categoryId =
+        typeof data.categoryId === "string" ? data.categoryId.trim() : "";
+
+      if (!title || !categoryId || !isTiptapDocument(data.content)) {
+        console.warn(`Skipping invalid article: ${document.id}`);
         return null;
       }
 
-      const imageUrl = toText(data.imageUrl);
-
       return {
-        id: doc.id,
-        header,
-        kategori: toText(data.kategori) || 'Ukategorisert',
-        preamble: toText(data.preamble),
-        body: toText(data.body),
-        ...(imageUrl ? { imageUrl } : {}),
+        id: document.id,
+        title,
+        categoryId,
+        categoryName: categoryNames.get(categoryId) ?? "Ukategorisert",
+        content: data.content,
+        publishedAt: data.publishedAt ?? null,
       };
     })
-    .filter((article): article is Article => article !== null);
+    .filter((article): article is Article => article !== null)
+    .sort((first, second) => first.title.localeCompare(second.title, "nb"));
 }

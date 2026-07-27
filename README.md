@@ -56,6 +56,27 @@ npx expo start
 ```
 Scan QR-koden med Expo Go på telefonen.
 
+## Firebase i EAS/TestFlight
+Firebase-konfigurasjonen leses fra `EXPO_PUBLIC_FIREBASE_*`-miljøvariabler.
+Lokal utvikling bruker `.env`, men `.env` er git-ignorert og blir derfor ikke
+automatisk tilgjengelig i EAS/TestFlight-builds. Legg inn de samme verdiene i
+EAS før du bygger for TestFlight:
+
+```bash
+eas env:create --environment production --name EXPO_PUBLIC_FIREBASE_API_KEY --value "<value>"
+eas env:create --environment production --name EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN --value "<value>"
+eas env:create --environment production --name EXPO_PUBLIC_FIREBASE_PROJECT_ID --value "<value>"
+eas env:create --environment production --name EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET --value "<value>"
+eas env:create --environment production --name EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID --value "<value>"
+eas env:create --environment production --name EXPO_PUBLIC_FIREBASE_APP_ID --value "<value>"
+```
+
+Bygg deretter en ny iOS production-build:
+
+```bash
+eas build --platform ios --profile production --clear-cache
+```
+
 ## Branching
 - `main` – stabil, ferdig kode
 - `dev` – aktiv utvikling (alle pusher hit)

@@ -1,10 +1,13 @@
 // Info-siden viser artikler fra Firestore gruppert i kategorier,
 // kontaktlenker til RUSinfo, og et tilbakemeldingsskjema.
 
-import { fetchArticles, type Article } from "@/lib/firestore/articles";
+import {
+  fetchArticles,
+  getTiptapText,
+  type Article,
+} from "@/lib/firestore/articles";
 import { submitFeedback } from "@/lib/firestore/feedback";
 import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -20,12 +23,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import AnimatedTabHeader, {
   getAnimatedTabHeaderTopPadding,
 } from "../components/ui/AnimatedTabHeader";
 import AvatarButton from "../components/ui/avatarButton";
 import SearchInput from "../components/ui/SearchInput";
+import TiptapRenderer from "../features/articles/Tiptap";
 import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
 
@@ -78,19 +85,21 @@ export default function Info() {
       .finally(() => setLoading(false));
   }, []);
 
-  // --- Filtrer artikler basert på søketekst (header og preamble) ---
-  const filteredArticles = searchQuery.trim()
-    ? articles.filter(
-        (a) =>
-          a.header.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          a.preamble?.toLowerCase().includes(searchQuery.toLowerCase()),
+  // --- Filtrer artikler basert på tittel, kategori og Tiptap-innhold ---
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase("nb");
+  const filteredArticles = normalizedQuery
+    ? articles.filter((article) =>
+        [article.title, article.categoryName, getTiptapText(article.content)]
+          .join(" ")
+          .toLocaleLowerCase("nb")
+          .includes(normalizedQuery),
       )
     : articles;
 
   // --- Bygg unik, alfabetisk sortert liste over kategorier ---
-  const categories = [...new Set(filteredArticles.map((a) => a.kategori))].sort(
-    (a, b) => a.localeCompare(b, "nb"),
-  );
+  const categories = [
+    ...new Set(filteredArticles.map((article) => article.categoryName)),
+  ].sort((a, b) => a.localeCompare(b, "nb"));
 
   // --- Åpne eller lukk en kategori ---
   const toggleCategory = (kategori: string) => {
@@ -159,9 +168,10 @@ export default function Info() {
 
             {/* Accordion-liste — én blokk per kategori */}
             {categories.map((kategori) => {
-              const isExpanded = expandedCategories.has(kategori);
+              const isExpanded =
+                normalizedQuery.length > 0 || expandedCategories.has(kategori);
               const categoryArticles = filteredArticles.filter(
-                (a) => a.kategori === kategori,
+                (article) => article.categoryName === kategori,
               );
 
               return (
@@ -197,7 +207,7 @@ export default function Info() {
                             activeOpacity={0.6}
                           >
                             <Text style={styles.articleText}>
-                              {article.header}
+                              {article.title}
                             </Text>
                             <Ionicons
                               name="chevron-forward"
@@ -357,7 +367,7 @@ export default function Info() {
                 />
               </TouchableOpacity>
               <Text style={styles.modalKategori}>
-                {selectedArticle.kategori}
+                {selectedArticle.categoryName}
               </Text>
             </View>
 
@@ -365,24 +375,11 @@ export default function Info() {
               contentContainerStyle={styles.modalContent}
               showsVerticalScrollIndicator={false}
             >
-              {/* Bilde vises kun hvis artikkelen har imageUrl */}
-              {selectedArticle.imageUrl && (
-                <Image
-                  source={{ uri: selectedArticle.imageUrl }}
-                  style={styles.modalImage}
-                  contentFit="cover"
-                  transition={180}
-                />
-              )}
-              <Text style={styles.modalTitle}>{selectedArticle.header}</Text>
-              {selectedArticle.preamble && (
-                <Text style={styles.modalPreamble}>
-                  {selectedArticle.preamble}
-                </Text>
-              )}
-              {selectedArticle.body && (
-                <Text style={styles.modalBody}>{selectedArticle.body}</Text>
-              )}
+              <Text style={styles.modalTitle}>{selectedArticle.title}</Text>
+              <TiptapRenderer
+                document={selectedArticle.content}
+                articleTitle={selectedArticle.title}
+              />
             </ScrollView>
           </SafeAreaView>
         )}
