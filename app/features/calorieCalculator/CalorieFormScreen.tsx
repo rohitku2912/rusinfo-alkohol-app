@@ -23,6 +23,7 @@ import {
   parsePrice,
 } from "../savingsCalculator/utils";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import HelpButton from "../help/HelpButton";
 
 type Props = {
@@ -38,6 +39,8 @@ export default function CalorieFormScreen({
   onBack,
   onSave,
 }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const presets = DRINK_PRESETS[entry.type];
   const currentCalories = calculateAvoidedCalories(entry);
   const selectedPreset = presets.find((preset) => preset.label === entry.label);
@@ -239,7 +242,7 @@ export default function CalorieFormScreen({
             style={styles.input}
             keyboardType="numeric"
             placeholder="Skriv inn egne kalorier"
-            placeholderTextColor="#9a877a"
+            placeholderTextColor={colors.darkGrey}
             value={entry.calories ? String(entry.calories) : ""}
             returnKeyType="done"
             blurOnSubmit
@@ -265,7 +268,7 @@ export default function CalorieFormScreen({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -285,18 +288,18 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.heading,
     fontSize: 30,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   heroBody: {
     marginTop: 6,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 15,
     lineHeight: 22,
   },
   summaryCard: {
     marginTop: 8,
     marginBottom: 14,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -306,7 +309,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   summaryValue: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontSize: 24,
     fontWeight: "700",
     marginTop: 4,
@@ -317,21 +320,21 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   section: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: 16,
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
   },
   sectionLabel: {
     fontSize: 15,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 12,
   },
   helperText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     marginBottom: 10,
   },
@@ -343,9 +346,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   presetCard: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.small,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -354,38 +357,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   presetCardSelected: {
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
   },
   presetTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   presetTitleSelected: {
-    color: theme.colors.primary,
+    color: colors.primary,
   },
   presetDetails: {
     marginTop: 4,
     fontSize: 13,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   presetDetailsSelected: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   presetValue: {
     fontSize: 18,
     fontWeight: "700",
-    color: theme.colors.primary,
+    color: colors.primary,
   },
   presetValueSelected: {
-    color: theme.colors.primary,
+    color: colors.primary,
   },
   amountCard: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: theme.borderRadius.medium,
     padding: 10,
   },
@@ -396,7 +399,7 @@ const styles = StyleSheet.create({
   amountValue: {
     fontSize: 28,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   optionButton: {
     flex: 1,
@@ -406,13 +409,13 @@ const styles = StyleSheet.create({
   input: {
     marginTop: 12,
     borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
-    backgroundColor: theme.colors.box,
+    borderColor: colors.border,
+    backgroundColor: colors.box,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
     borderRadius: theme.borderRadius.small,
-    color: theme.colors.text,
+    color: colors.text,
   },
   dateButton: {
     width: "100%",
@@ -421,11 +424,11 @@ const styles = StyleSheet.create({
   pickerContainer: {
     marginTop: 10,
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     alignItems: "center",
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
   },
   actionRow: {
     flexDirection: "row",
@@ -435,11 +438,11 @@ const styles = StyleSheet.create({
   secondaryAction: {
     flex: 1,
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: theme.colors.darkGrey,
+    backgroundColor: colors.darkGrey,
   },
   primaryAction: {
     flex: 1,
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
   },
 });

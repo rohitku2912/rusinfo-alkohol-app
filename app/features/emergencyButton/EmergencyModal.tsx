@@ -1,6 +1,7 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { Ionicons } from "@expo/vector-icons";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import {
   Linking,
   Modal,
@@ -21,6 +22,8 @@ type Props = {
 };
 
 export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const scrollRef = useRef<ScrollView>(null);
   const sectionOffsets = useRef({ plan: 0, motivation: 0 });
   const closeModal = () => setIsVisible(false);
@@ -73,7 +76,7 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
                 onPress={closeModal}
                 style={[styles.headerAction, styles.closeButton]}
               >
-                <Ionicons name="close" size={22} color={theme.colors.text} />
+                <Ionicons name="close" size={22} color={colors.text} />
               </Pressable>
             </View>
 
@@ -90,7 +93,7 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
                 <Ionicons
                   name="information-circle-outline"
                   size={21}
-                  color={theme.colors.attention}
+                  color={colors.attention}
                 />
                 <Text style={styles.acuteTitle}>Hvis du trenger akutt hjelp</Text>
               </View>
@@ -118,7 +121,7 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
                   <Ionicons
                     name="call-outline"
                     size={20}
-                    color={theme.colors.primary}
+                    color={colors.primary}
                   />
                 </View>
                 <View style={styles.rusinfoContent}>
@@ -139,7 +142,7 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
                     <Ionicons
                       name="call"
                       size={16}
-                      color={theme.colors.lightText}
+                      color={colors.lightText}
                     />
                     <Text style={styles.rusinfoNumber}>915 08 588</Text>
                   </Pressable>
@@ -178,7 +181,7 @@ export default function EmergencyModal({ isVisible, setIsVisible }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
@@ -188,7 +191,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(15, 23, 42, 0.4)",
   },
   sheet: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     maxHeight: "94%",
@@ -211,7 +214,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    borderBottomColor: "#d6e0da",
+    borderBottomColor: colors.border,
     borderBottomWidth: 1,
     flexDirection: "row",
     paddingBottom: theme.spacing.medium,
@@ -229,20 +232,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.small,
   },
   title: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 23,
     fontWeight: "800",
     textAlign: "center",
   },
   subtitle: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     lineHeight: 17,
     marginTop: 2,
     textAlign: "center",
   },
   closeButton: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 20,
   },
   scrollContent: {
@@ -252,9 +255,9 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing.medium,
   },
   acuteSection: {
-    backgroundColor: theme.colors.box,
-    borderColor: "#e4d8d8",
-    borderLeftColor: theme.colors.attention,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
+    borderLeftColor: colors.attention,
     borderLeftWidth: 4,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
@@ -267,29 +270,29 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   acuteTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     fontWeight: "800",
   },
   acuteText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 20,
     marginBottom: 7,
   },
   acuteNumber: {
-    color: theme.colors.attention,
+    color: colors.attention,
     fontWeight: "800",
   },
   acuteFootnote: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 11,
     fontWeight: "600",
     lineHeight: 16,
     marginTop: 2,
   },
   rusinfoSection: {
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderColor: "rgba(94, 156, 118, 0.35)",
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
@@ -299,7 +302,7 @@ const styles = StyleSheet.create({
   },
   rusinfoIcon: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 20,
     height: 40,
     justifyContent: "center",
@@ -309,18 +312,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   rusinfoTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     fontWeight: "800",
   },
   rusinfoText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 19,
     marginTop: 4,
   },
   rusinfoHours: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 11,
     fontWeight: "600",
     marginTop: 6,
@@ -328,7 +331,7 @@ const styles = StyleSheet.create({
   rusinfoCallButton: {
     alignItems: "center",
     alignSelf: "flex-start",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: 999,
     flexDirection: "row",
     gap: 7,
@@ -337,7 +340,7 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
   },
   rusinfoNumber: {
-    color: theme.colors.lightText,
+    color: colors.lightText,
     fontSize: 14,
     fontWeight: "800",
   },
@@ -346,12 +349,12 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing.small,
   },
   personalTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 19,
     fontWeight: "800",
   },
   personalDescription: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 19,
     marginTop: 3,

@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
+import { useMemo, type ReactNode } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import theme from "../../theme/constantStyling";
@@ -38,6 +39,8 @@ export default function AnimatedTabHeader({
   rightSlot,
 }: AnimatedTabHeaderProps) {
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const titleFontSize = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
@@ -58,7 +61,7 @@ export default function AnimatedTabHeader({
 
   const headerColor = scrollY.interpolate({
     inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [theme.colors.background, theme.colors.backgroundSecondary],
+    outputRange: [colors.background, colors.backgroundSecondary],
     extrapolate: "clamp",
   });
 
@@ -110,7 +113,7 @@ export default function AnimatedTabHeader({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   headerSection: {
     left: 0,
     position: "absolute",
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.medium,
   },
   title: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "800",
     includeFontPadding: false,
   },

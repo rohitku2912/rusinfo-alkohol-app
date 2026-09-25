@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,6 +11,8 @@ import TriggerDisplay from "../features/diary/TriggerDisplay";
 import HelpButton from "../features/help/HelpButton";
 
 export default function Trigger() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
   const headerScrollY = useRef(new Animated.Value(0)).current;
 
@@ -33,10 +36,10 @@ export default function Trigger() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,

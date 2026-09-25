@@ -2,7 +2,7 @@ import { clearOnboardingData } from "@/lib/storage/onboarding";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import theme from "../theme/constantStyling";
+import theme from "./onboardingStyling";
 
 export default function Welcome() {
   const router = useRouter();
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.heading,
   },
   body: {
-    color: "#555",
+    color: theme.colors.darkGrey,
     fontSize: 16,
     lineHeight: 24,
     fontFamily: theme.fonts.main,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: "#fff",
+    color: theme.colors.buttonText,
     fontSize: 16,
     fontWeight: "600",
   },

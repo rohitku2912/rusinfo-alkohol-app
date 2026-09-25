@@ -1,5 +1,6 @@
 import FunctionBox from "@/app/components/ui/functionBox";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -26,6 +27,8 @@ type Props = {
 };
 
 export default function CallAFriend({ onEditingStart }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [phone, setPhone] = useState<string | null>(null);
   const [draftPhone, setDraftPhone] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -115,7 +118,7 @@ export default function CallAFriend({ onEditingStart }: Props) {
             keyboardType="phone-pad"
             onChangeText={handleChangePhone}
             placeholder="For eksempel 91234567"
-            placeholderTextColor="#8a958a"
+            placeholderTextColor={colors.darkGrey}
             style={[styles.input, error ? styles.inputError : null]}
             value={draftPhone}
           />
@@ -150,7 +153,7 @@ export default function CallAFriend({ onEditingStart }: Props) {
         <>
           <View style={styles.contactPanel}>
             <View style={styles.phoneIcon}>
-              <Ionicons name="person" size={20} color={theme.colors.primary} />
+              <Ionicons name="person" size={20} color={colors.primary} />
             </View>
             <View style={styles.contactText}>
               <Text style={styles.contactLabel}>Din trygge kontakt</Text>
@@ -158,14 +161,14 @@ export default function CallAFriend({ onEditingStart }: Props) {
             </View>
           </View>
           <TouchableOpacity onPress={callFriend} style={styles.callButton}>
-            <Ionicons name="call" size={18} color={theme.colors.buttonText} />
+            <Ionicons name="call" size={18} color={colors.buttonText} />
             <Text style={styles.primaryButtonText}>Ring nå</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={startEditing} style={styles.textButton}>
             <Ionicons
               name="create-outline"
               size={16}
-              color={theme.colors.primary}
+              color={colors.primary}
             />
             <Text style={styles.textButtonText}>Endre nummer</Text>
           </TouchableOpacity>
@@ -177,7 +180,7 @@ export default function CallAFriend({ onEditingStart }: Props) {
               <Ionicons
                 name="person-add-outline"
                 size={20}
-                color={theme.colors.primary}
+                color={colors.primary}
               />
             </View>
             <Text style={styles.emptyText}>
@@ -185,7 +188,7 @@ export default function CallAFriend({ onEditingStart }: Props) {
             </Text>
           </View>
           <TouchableOpacity onPress={startEditing} style={styles.callButton}>
-            <Ionicons name="add" size={18} color={theme.colors.buttonText} />
+            <Ionicons name="add" size={18} color={colors.buttonText} />
             <Text style={styles.primaryButtonText}>Legg til kontakt</Text>
           </TouchableOpacity>
         </>
@@ -194,11 +197,11 @@ export default function CallAFriend({ onEditingStart }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   contactPanel: {
     alignItems: "center",
-    backgroundColor: theme.colors.background,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.background,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flexDirection: "row",
@@ -207,8 +210,8 @@ const styles = StyleSheet.create({
   },
   emptyPanel: {
     alignItems: "center",
-    backgroundColor: theme.colors.background,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.background,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flexDirection: "row",
@@ -217,7 +220,7 @@ const styles = StyleSheet.create({
   },
   phoneIcon: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: 22,
     height: 44,
     justifyContent: "center",
@@ -227,25 +230,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contactLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 11,
     fontWeight: "700",
   },
   phoneNumber: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 18,
     fontWeight: "800",
     marginTop: 2,
   },
   emptyText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     flex: 1,
     fontSize: 13,
     lineHeight: 19,
   },
   callButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     flexDirection: "row",
     gap: 8,
@@ -255,14 +258,14 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     flex: 1,
     justifyContent: "center",
     minHeight: 46,
   },
   primaryButtonText: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontWeight: "700",
   },
   textButton: {
@@ -274,7 +277,7 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   textButtonText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontSize: 13,
     fontWeight: "700",
   },
@@ -282,25 +285,25 @@ const styles = StyleSheet.create({
     gap: theme.spacing.small,
   },
   fieldLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     fontWeight: "700",
   },
   input: {
-    backgroundColor: theme.colors.background,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.background,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     minHeight: 50,
     paddingHorizontal: 14,
   },
   inputError: {
-    borderColor: theme.colors.attention,
+    borderColor: colors.attention,
   },
   error: {
-    color: theme.colors.attention,
+    color: colors.attention,
     fontSize: 12,
   },
   actions: {
@@ -309,8 +312,8 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flex: 1,
@@ -318,7 +321,7 @@ const styles = StyleSheet.create({
     minHeight: 46,
   },
   secondaryButtonText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "700",
   },
   disabledButton: {
@@ -329,7 +332,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing.small,
   },
   removeButtonText: {
-    color: theme.colors.attention,
+    color: colors.attention,
     fontSize: 13,
     fontWeight: "700",
   },

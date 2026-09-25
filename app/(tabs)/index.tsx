@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setProgramStartDate } from "@/lib/storage/onboarding";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../components/ui/button";
 import FunctionBox from "../components/ui/functionBox";
@@ -11,6 +11,10 @@ import ProgramTimer from "../features/programTimer/ProgramTimer";
 import SavingsCalcModal from "../features/savingsCalculator/SavingsCalcModal";
 import { SavedEntry } from "../features/savingsCalculator/config";
 import theme from "../theme/constantStyling";
+import {
+  AppColors,
+  useAppTheme,
+} from "../theme/ThemeProvider";
 
 import AuditModal from "../features/audit/auditModal";
 import {
@@ -30,23 +34,23 @@ import HelpButton from "../features/help/HelpButton";
 import PartyPlanner from "../features/partyPlanner/partyPlanner";
 import SettingsModal from "../features/settings/SettingsModal";
 
-const auditRiskColors: Record<string, string> = {
-  "Lav risiko": "#5E9C76",
-  "Økende risiko": "#D6A53A",
-  "Høy risiko": "#D97845",
-  "Svært høy risiko": "#C74747",
-};
-
-const auditRiskBackgroundColors: Record<string, string> = {
-  "Lav risiko": "#EAF4EE",
-  "Økende risiko": "#FFF5D8",
-  "Høy risiko": "#FFF0E8",
-  "Svært høy risiko": "#FDECEC",
-};
-
 export default function Dashboard() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+  const auditRiskColors = {
+    "Lav risiko": colors.riskLow,
+    "Økende risiko": colors.riskIncreasing,
+    "Høy risiko": colors.riskHigh,
+    "Svært høy risiko": colors.riskVeryHigh,
+  };
+  const auditRiskBackgroundColors = {
+    "Lav risiko": colors.primarySoft,
+    "Økende risiko": colors.warningSoft,
+    "Høy risiko": colors.warningSoft,
+    "Svært høy risiko": colors.dangerSoft,
+  };
 
   const [isDrinkLoggerVisible, setIsDrinkLoggerVisible] = useState(false);
 
@@ -138,12 +142,14 @@ export default function Dashboard() {
 
   const auditResultColor =
     auditRiskGroup === null
-      ? theme.colors.primary
-      : auditRiskColors[auditRiskGroup];
+      ? colors.primary
+      : auditRiskColors[auditRiskGroup as keyof typeof auditRiskColors];
   const auditResultBackground =
     auditRiskGroup === null
-      ? "#EAF4EE"
-      : auditRiskBackgroundColors[auditRiskGroup];
+      ? colors.primarySoft
+      : auditRiskBackgroundColors[
+          auditRiskGroup as keyof typeof auditRiskBackgroundColors
+        ];
 
   return (
     <View style={styles.outerContainer}>
@@ -271,7 +277,7 @@ export default function Dashboard() {
         <Ionicons
           name="settings-outline"
           size={23}
-          color={theme.colors.lightText}
+          color="#FFFFFF"
         />
       </Pressable>
       <View style={styles.EmergencyButton}>
@@ -319,7 +325,7 @@ export default function Dashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   EmergencyButton: {
     position: "absolute",
     bottom: 100,
@@ -340,11 +346,11 @@ const styles = StyleSheet.create({
   },
   outerContainer: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   settingsButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.darkGrey,
+    backgroundColor: colors.darkGrey,
     borderRadius: 100,
     bottom: 100,
     height: 45,
@@ -365,7 +371,7 @@ const styles = StyleSheet.create({
   },
   functionText: {
     fontSize: 28,
-    color: theme.colors.text,
+    color: colors.text,
     textAlign: "center",
     marginTop: 5,
     marginBottom: 5,
@@ -377,7 +383,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   auditScoreLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 14,
   },
   auditScoreValue: {
@@ -386,19 +392,19 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   auditRiskText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 18,
     marginTop: -4,
     textAlign: "center",
   },
   auditRiskValue: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 18,
     fontWeight: "700",
   },
   debugCard: {
     width: "100%",
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     marginBottom: theme.spacing.large,
@@ -406,22 +412,22 @@ const styles = StyleSheet.create({
   debugTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: theme.colors.lightText,
+    color: "#FFFFFF",
     marginBottom: theme.spacing.small,
   },
   debugText: {
     fontSize: 15,
-    color: theme.colors.lightText,
+    color: "#FFFFFF",
     marginBottom: 6,
   },
   smallText: {
     fontSize: 14,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
 
   bigText: {
     fontSize: 26,
     fontWeight: "bold",
-    color: theme.colors.text,
+    color: colors.text,
   },
 });

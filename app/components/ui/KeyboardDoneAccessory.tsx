@@ -1,7 +1,9 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import {
   InputAccessoryView,
   Keyboard,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,6 +15,12 @@ type Props = {
 };
 
 export default function KeyboardDoneAccessory({ nativeID }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
+  if (Platform.OS !== "ios") {
+    return null;
+  }
+
   return (
     <InputAccessoryView nativeID={nativeID}>
       <View style={styles.container}>
@@ -24,11 +32,11 @@ export default function KeyboardDoneAccessory({ nativeID }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     alignItems: "flex-end",
-    backgroundColor: "#f2f2ed",
-    borderTopColor: "#c8c8c1",
+    backgroundColor: colors.surfaceMuted,
+    borderTopColor: colors.border,
     borderTopWidth: 1,
     paddingHorizontal: theme.spacing.medium,
     paddingVertical: theme.spacing.small,
@@ -38,7 +46,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   text: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontSize: 16,
     fontWeight: "700",
   },

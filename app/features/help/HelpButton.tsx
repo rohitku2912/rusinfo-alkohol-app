@@ -1,5 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
+import React, { useMemo, useState } from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { helpContent } from "./helpContent";
 
@@ -9,6 +10,8 @@ type Props = {
 
 export default function HelpButton({ helpKey }: Props) {
   const [open, setOpen] = useState(false);
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const content = helpContent[helpKey];
 
@@ -30,7 +33,7 @@ export default function HelpButton({ helpKey }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   icon: {
     fontSize: 22,
     color: "#2F4FA3",
@@ -45,13 +48,16 @@ const styles = StyleSheet.create({
   },
 
   modal: {
-    backgroundColor: "white",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
+    borderWidth: 1,
     padding: 20,
     borderRadius: 12,
     maxWidth: 320,
   },
 
   title: {
+    color: colors.text,
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 8,
@@ -59,7 +65,7 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 14,
-    color: "#374151",
+    color: colors.darkGrey,
     lineHeight: 20,
   },
 });

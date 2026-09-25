@@ -4,7 +4,7 @@ import PlusButton from "@/app/components/ui/plusbutton";
 import theme from "@/app/theme/constantStyling";
 import { clearDrinkLogs, saveDrinkLog } from "@/lib/storage/drinkLogs";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Modal,
   Platform,
@@ -16,6 +16,7 @@ import {
 import { Dropdown } from "react-native-element-dropdown";
 import { useAchievements } from "../achievements/AchievementProvider";
 import HelpButton from "../help/HelpButton";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
 type Props = {
   isVisible: boolean;
@@ -24,6 +25,8 @@ type Props = {
 
 export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
   const { checkAchievements } = useAchievements();
+  const { colors, isDark } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -71,6 +74,7 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
             value={date}
             mode="date"
             display={Platform.OS === "ios" ? "spinner" : "default"}
+            themeVariant={isDark ? "dark" : "light"}
             onChange={handleDateChange}
           />
           {Platform.OS === "ios" && (
@@ -146,7 +150,7 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
       transparent
     >
       <View style={styles.modalContainer}>
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: colors.background }]}>
           <View style={styles.topLine}>
             <HelpButton helpKey="drinklog" />
             <Text style={styles.title}>Drikkelogg</Text>
@@ -155,7 +159,7 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
             </Pressable>
           </View>
 
-          <View style={styles.headerCard}>
+          <View style={[styles.headerCard, { backgroundColor: colors.box }]}>
             <Text style={styles.description}>
               Registrer alkohol eller marker dagen som alkoholfri.
             </Text>
@@ -164,8 +168,10 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Dato</Text>
             <Dropdown
+              activeColor={isDark ? "#24372B" : "#EAF4EE"}
               style={styles.dropdown}
               containerStyle={styles.dropdownMenu}
+              itemContainerStyle={styles.dropdownItem}
               selectedTextStyle={styles.dropdownText}
               placeholderStyle={styles.dropdownText}
               itemTextStyle={styles.dropdownText}
@@ -237,7 +243,7 @@ export default function DrinkLogger({ isVisible, setIsVisible }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   modalContainer: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "90%",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 20,
     padding: 20,
   },
@@ -265,23 +271,24 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.small,
   },
   close: {
+    color: colors.text,
     fontSize: 20,
   },
   title: {
     fontSize: 28,
     fontFamily: theme.fonts.heading,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   description: {
     marginTop: theme.spacing.small,
     fontSize: 16,
     lineHeight: 22,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   section: {
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     gap: theme.spacing.small,
@@ -289,43 +296,47 @@ const styles = StyleSheet.create({
     padding: theme.spacing.medium,
   },
   sectionTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     fontWeight: "700",
   },
   dropdown: {
     width: "100%",
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderWidth: 1,
     borderRadius: theme.borderRadius.medium,
     height: 48,
     paddingHorizontal: theme.spacing.medium,
   },
   dropdownMenu: {
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
   },
+  dropdownItem: {
+    backgroundColor: colors.box,
+  },
   dropdownText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 15,
   },
   addDrinkContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: theme.borderRadius.small,
     paddingHorizontal: theme.spacing.medium,
     paddingVertical: 12,
   },
   drinkTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 15,
     fontWeight: "700",
   },
   drinkMeta: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     marginTop: 2,
   },
@@ -335,7 +346,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing.small,
   },
   counterValue: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 20,
     fontWeight: "700",
     minWidth: 28,
@@ -343,7 +354,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.small,
     justifyContent: "center",
     minWidth: 48,
@@ -351,7 +362,7 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
   },
   addButtonText: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontSize: 14,
     fontWeight: "700",
   },
@@ -361,15 +372,15 @@ const styles = StyleSheet.create({
   },
   whiteDayButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.box,
+    borderColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     height: 50,
     justifyContent: "center",
   },
   whiteDayButtonText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontWeight: "700",
   },
   clearButton: {
@@ -377,25 +388,25 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.small,
   },
   clearButtonText: {
-    color: theme.colors.attention,
+    color: colors.attention,
     fontSize: 13,
     fontWeight: "700",
   },
   datePickerCard: {
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     overflow: "hidden",
   },
   doneDateButton: {
     alignItems: "center",
-    borderTopColor: theme.colors.lightGrey,
+    borderTopColor: colors.border,
     borderTopWidth: 1,
     padding: theme.spacing.small,
   },
   doneDateText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontWeight: "700",
   },
 });

@@ -35,11 +35,14 @@ import SearchInput from "../components/ui/SearchInput";
 import TiptapRenderer from "../features/articles/Tiptap";
 import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
 const PREVIOUS_QUESTIONS_URL = "https://rusinfo.no/2018/12/chat-apningstid/";
 const RUSINFO_PHONE_URL = "tel:+4791508588";
 
 export default function Info() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
   const headerScrollY = useRef(new Animated.Value(0)).current;
 
@@ -151,7 +154,7 @@ export default function Info() {
         {loading ? (
           <ActivityIndicator
             style={styles.loader}
-            color={theme.colors.primary}
+            color={colors.primary}
           />
         ) : error ? (
           <Text style={styles.errorText}>{error}</Text>
@@ -243,7 +246,7 @@ export default function Info() {
                 <Ionicons
                   name="call-outline"
                   size={20}
-                  color={theme.colors.primary}
+                  color={colors.primary}
                 />
                 <View style={styles.qaTextBlock}>
                   <Text style={styles.qaTitle}>Ring RUSinfo</Text>
@@ -260,7 +263,7 @@ export default function Info() {
                 <Ionicons
                   name="chatbubble-outline"
                   size={20}
-                  color={theme.colors.primary}
+                  color={colors.primary}
                 />
                 <View style={styles.qaTextBlock}>
                   <Text style={styles.qaTitle}>Chat med oss</Text>
@@ -279,7 +282,7 @@ export default function Info() {
               <Ionicons
                 name="chatbox-outline"
                 size={20}
-                color={theme.colors.primary}
+                color={colors.primary}
               />
               <View style={styles.qaTextBlock}>
                 <Text style={styles.qaTitle}>Gi tilbakemelding</Text>
@@ -304,7 +307,7 @@ export default function Info() {
               onPress={() => setFeedbackVisible(false)}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             >
-              <Ionicons name="close" size={24} color={theme.colors.lightText} />
+              <Ionicons name="close" size={24} color={colors.lightText} />
             </TouchableOpacity>
             <Text style={styles.modalKategori}>Tilbakemelding</Text>
           </View>
@@ -318,7 +321,7 @@ export default function Info() {
             <TextInput
               style={styles.feedbackInput}
               placeholder="Skriv her..."
-              placeholderTextColor="#aaa"
+              placeholderTextColor={colors.darkGrey}
               multiline
               maxLength={500}
               value={feedbackText}
@@ -363,7 +366,7 @@ export default function Info() {
                 <Ionicons
                   name="close"
                   size={24}
-                  color={theme.colors.lightText}
+                  color={colors.lightText}
                 />
               </TouchableOpacity>
               <Text style={styles.modalKategori}>
@@ -388,10 +391,10 @@ export default function Info() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
@@ -413,14 +416,14 @@ const styles = StyleSheet.create({
   categoriesTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
     marginBottom: theme.spacing.small,
   },
   categoryBlock: {
     borderRadius: theme.borderRadius.medium,
     overflow: "hidden",
-    backgroundColor: "#eef1ec",
+    backgroundColor: colors.surfaceMuted,
   },
   categoryRow: {
     flexDirection: "row",
@@ -430,7 +433,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 16,
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "500",
     flex: 1,
   },
@@ -438,7 +441,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   articleList: {
-    backgroundColor: "#eef1ec",
+    backgroundColor: colors.surfaceMuted,
     paddingHorizontal: 18,
     paddingBottom: 8,
   },
@@ -451,12 +454,12 @@ const styles = StyleSheet.create({
   },
   articleText: {
     fontSize: 15,
-    color: theme.colors.text,
+    color: colors.text,
     flex: 1,
   },
   divider: {
     height: 1,
-    backgroundColor: "#d9ddd6",
+    backgroundColor: colors.border,
   },
   qaSection: {
     marginTop: theme.spacing.large * 2.5,
@@ -465,18 +468,18 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
   },
   sectionBody: {
     fontSize: 14,
     lineHeight: 20,
-    color: "#666",
+    color: colors.darkGrey,
     marginBottom: theme.spacing.small,
   },
   qaButton: {
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: "#eef1ec",
+    backgroundColor: colors.surfaceMuted,
     padding: theme.spacing.medium,
     flexDirection: "row",
     alignItems: "center",
@@ -489,15 +492,15 @@ const styles = StyleSheet.create({
   qaTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: colors.text,
   },
   qaSubtitle: {
     fontSize: 13,
-    color: "#666",
+    color: colors.darkGrey,
   },
   modalSafe: {
     flex: 1,
-    backgroundColor: "#f7f8f4",
+    backgroundColor: colors.background,
   },
   modalHeader: {
     flexDirection: "row",
@@ -505,12 +508,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.large,
     paddingVertical: theme.spacing.medium,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: colors.border,
     gap: theme.spacing.medium,
   },
   modalKategori: {
     fontSize: 13,
-    color: "#888",
+    color: colors.darkGrey,
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
@@ -523,36 +526,36 @@ const styles = StyleSheet.create({
     aspectRatio: 16 / 9,
     borderRadius: theme.borderRadius.medium,
     marginBottom: theme.spacing.large,
-    backgroundColor: "#e8e8e3",
+    backgroundColor: colors.surfaceMuted,
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: theme.spacing.medium,
     fontFamily: theme.fonts.heading,
   },
   modalPreamble: {
     fontSize: 16,
-    color: "#444",
+    color: colors.text,
     lineHeight: 24,
     marginBottom: theme.spacing.large,
     fontWeight: "500",
   },
   modalBody: {
     fontSize: 15,
-    color: "#555",
+    color: colors.darkGrey,
     lineHeight: 24,
   },
   errorText: {
     marginTop: 32,
     fontSize: 14,
-    color: theme.colors.attention,
+    color: colors.attention,
     textAlign: "center",
   },
   feedbackButton: {
     borderRadius: theme.borderRadius.medium,
-    backgroundColor: "#eef1ec",
+    backgroundColor: colors.surfaceMuted,
     padding: theme.spacing.medium,
     flexDirection: "row",
     alignItems: "center",
@@ -565,35 +568,35 @@ const styles = StyleSheet.create({
   feedbackTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: theme.spacing.small,
     fontFamily: theme.fonts.heading,
   },
   feedbackSubtitle: {
     fontSize: 14,
-    color: "#666",
+    color: colors.darkGrey,
     lineHeight: 20,
     marginBottom: theme.spacing.large,
   },
   feedbackInput: {
-    backgroundColor: "#f5f7f3",
-    borderColor: "#d9ddd6",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     fontSize: 15,
-    color: theme.colors.lightText,
+    color: colors.text,
     height: 160,
     borderWidth: 1,
   },
   feedbackCount: {
     fontSize: 12,
-    color: "#aaa",
+    color: colors.darkGrey,
     alignSelf: "flex-end",
     marginTop: 6,
     marginBottom: theme.spacing.large,
   },
   feedbackSendButton: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
     alignItems: "center",

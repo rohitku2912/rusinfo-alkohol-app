@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export default function DateFilter({ value, onChange }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [showPicker, setShowPicker] = useState(false);
 
   return (
@@ -23,7 +26,7 @@ export default function DateFilter({ value, onChange }: Props) {
           <Ionicons
             name="calendar-outline"
             size={17}
-            color={value ? theme.colors.primary : theme.colors.darkGrey}
+            color={value ? colors.primary : colors.darkGrey}
           />
           <Text style={[styles.text, value && styles.activeText]}>
             {value ? value.toLocaleDateString("nb-NO") : "Filtrer på dato"}
@@ -36,7 +39,7 @@ export default function DateFilter({ value, onChange }: Props) {
             onPress={() => onChange(null)}
             style={styles.clearButton}
           >
-            <Ionicons name="close" size={17} color={theme.colors.darkGrey} />
+            <Ionicons name="close" size={17} color={colors.darkGrey} />
             <Text style={styles.clearText}>Fjern</Text>
           </TouchableOpacity>
         )}
@@ -60,7 +63,7 @@ export default function DateFilter({ value, onChange }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   row: {
     alignItems: "center",
     flexDirection: "row",
@@ -69,8 +72,8 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     alignSelf: "flex-start",
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: 999,
     borderWidth: 1,
     flexDirection: "row",
@@ -79,16 +82,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   activeButton: {
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
   },
   text: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     fontWeight: "700",
   },
   activeText: {
-    color: theme.colors.primary,
+    color: colors.primary,
   },
   clearButton: {
     alignItems: "center",
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   clearText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     fontWeight: "600",
   },

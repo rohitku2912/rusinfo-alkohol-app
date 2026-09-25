@@ -1,5 +1,6 @@
 import BackButton from "@/app/components/ui/backButton";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
@@ -80,6 +81,8 @@ export default function RegisterTriggerModal({
   onAddProtectionFactorWithText,
   onBack,
 }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [inputText, setInputText] = useState("");
 
   const addTrigger = () => {
@@ -151,6 +154,7 @@ export default function RegisterTriggerModal({
                   </Text>
                   <TextInput
                     placeholder="Skriv en annen trigger..."
+                    placeholderTextColor={colors.darkGrey}
                     value={inputText}
                     onChangeText={setInputText}
                     style={styles.input}
@@ -181,7 +185,7 @@ export default function RegisterTriggerModal({
                         <Ionicons
                           name="chevron-forward"
                           size={18}
-                          color={theme.colors.darkGrey}
+                          color={colors.darkGrey}
                         />
                       </TouchableOpacity>
                     ))}
@@ -200,7 +204,7 @@ export default function RegisterTriggerModal({
                     <Ionicons
                       name="flash-outline"
                       size={18}
-                      color={theme.colors.primary}
+                      color={colors.primary}
                     />
                     <Text style={styles.selected}>{selectedTrigger}</Text>
                   </View>
@@ -213,6 +217,7 @@ export default function RegisterTriggerModal({
                   </Text>
                   <TextInput
                     placeholder="Skriv hva som hjalp..."
+                    placeholderTextColor={colors.darkGrey}
                     value={protectionText}
                     onChangeText={onSetProtectionText}
                     style={[styles.input, styles.factorInput]}
@@ -276,7 +281,7 @@ export default function RegisterTriggerModal({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.35)",
@@ -294,11 +299,11 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 420,
     maxHeight: "100%",
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     borderRadius: theme.borderRadius.large,
     padding: 16,
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
   },
 
   header: {
@@ -312,7 +317,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     textAlign: "center",
   },
   headerAction: {
@@ -322,20 +327,20 @@ const styles = StyleSheet.create({
     width: 40,
   },
   closeButton: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 20,
   },
   subtitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 4,
   },
 
   close: {
     fontSize: 18,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: colors.text,
   },
 
   section: {
@@ -344,12 +349,12 @@ const styles = StyleSheet.create({
 
   input: {
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     padding: 12,
     marginBottom: theme.spacing.small,
-    backgroundColor: theme.colors.box,
-    color: theme.colors.text,
+    backgroundColor: colors.box,
+    color: colors.text,
     minHeight: 50,
   },
   factorInput: {
@@ -358,7 +363,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     minHeight: 50,
     padding: 12,
     borderRadius: theme.borderRadius.medium,
@@ -369,13 +374,13 @@ const styles = StyleSheet.create({
 
   buttonText: {
     fontWeight: "700",
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
   },
   disabledButton: {
     opacity: 0.45,
   },
   listLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     fontWeight: "700",
     marginBottom: theme.spacing.small,
@@ -386,26 +391,26 @@ const styles = StyleSheet.create({
 
   item: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     flexDirection: "row",
     justifyContent: "space-between",
     minHeight: 48,
     padding: 12,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
   },
 
   itemText: {
     fontSize: 15,
-    color: theme.colors.text,
+    color: colors.text,
   },
 
   selected: {
     flex: 1,
     fontSize: 15,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   backRow: {
     alignItems: "center",
@@ -414,14 +419,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.small,
   },
   stepText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     fontWeight: "600",
   },
   selectedCard: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flexDirection: "row",
@@ -437,25 +442,25 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 13,
     fontWeight: "700",
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     marginBottom: theme.spacing.small,
   },
 
   chip: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     padding: 12,
     borderRadius: theme.borderRadius.medium,
     marginBottom: theme.spacing.small,
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
   },
   chipText: {
-    color: theme.colors.text,
+    color: colors.text,
     lineHeight: 20,
   },
 
   helper: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 18,
     marginBottom: theme.spacing.medium,

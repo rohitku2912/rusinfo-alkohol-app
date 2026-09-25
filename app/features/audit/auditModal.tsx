@@ -1,7 +1,7 @@
 import BackButton from "@/app/components/ui/backButton";
 import RegularButton from "@/app/components/ui/button";
 import theme from "@/app/theme/constantStyling";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import HelpButton from "../help/HelpButton";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
 type Props = {
   isVisible: boolean;
@@ -61,20 +62,6 @@ const riskTitles: Record<RiskLevel, string> = {
   okende: "Økende risiko",
   hoy: "Høy risiko",
   svaertHoy: "Svært høy risiko",
-};
-
-const riskColors: Record<RiskLevel, string> = {
-  lav: "#5E9C76",
-  okende: "#D6A53A",
-  hoy: "#D97845",
-  svaertHoy: "#C74747",
-};
-
-const riskBackgroundColors: Record<RiskLevel, string> = {
-  lav: "#EAF4EE",
-  okende: "#FFF5D8",
-  hoy: "#FFF0E8",
-  svaertHoy: "#FDECEC",
 };
 
 const questions: Question[] = [
@@ -235,6 +222,20 @@ export default function AuditModal({
   setIsVisible,
   onScoreChange,
 }: Props) {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+  const riskColors = {
+    lav: colors.riskLow,
+    okende: colors.riskIncreasing,
+    hoy: colors.riskHigh,
+    svaertHoy: colors.riskVeryHigh,
+  };
+  const riskBackgroundColors = {
+    lav: colors.primarySoft,
+    okende: colors.warningSoft,
+    hoy: colors.warningSoft,
+    svaertHoy: colors.dangerSoft,
+  };
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const currentQuestion = questions[currentQuestionNumber];
@@ -603,7 +604,7 @@ export default function AuditModal({
       animationType="slide"
       onRequestClose={closeModal}
     >
-      <View style={styles.modalContent}>
+      <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
         <BackButton onPress={closeModal} style={styles.backButton} />
         {controllScreen()}
       </View>
@@ -611,9 +612,9 @@ export default function AuditModal({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   modalContent: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     flex: 1,
     padding: 20,
     paddingTop: 56,
@@ -623,7 +624,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   screen: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: theme.borderRadius.medium,
     gap: 14,
     marginTop: 16,
@@ -649,44 +650,44 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   title: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
     fontSize: 28,
     fontWeight: "700",
   },
   lead: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.main,
     fontSize: 17,
     fontWeight: "700",
     lineHeight: 23,
   },
   bodyText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontFamily: theme.fonts.main,
     fontSize: 15,
     lineHeight: 22,
   },
   option: {
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 13,
   },
   selectedOption: {
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
   },
   optionText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.main,
     fontSize: 15,
     lineHeight: 20,
   },
   selectedOptionText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontWeight: "700",
   },
   primaryButton: {
@@ -696,24 +697,24 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   progressText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontFamily: theme.fonts.main,
     fontSize: 13,
     fontWeight: "700",
   },
   progressTrack: {
-    backgroundColor: theme.colors.lightGrey,
+    backgroundColor: colors.lightGrey,
     borderRadius: theme.borderRadius.large,
     height: 8,
     overflow: "hidden",
   },
   progressFill: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.large,
     height: "100%",
   },
   questionText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
     fontSize: 22,
     fontWeight: "700",
@@ -721,13 +722,13 @@ const styles = StyleSheet.create({
   },
   scoreBox: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderWidth: 1,
     borderRadius: theme.borderRadius.medium,
     padding: 16,
   },
   scoreLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontFamily: theme.fonts.main,
     fontSize: 14,
   },
@@ -744,17 +745,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   resultTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
     fontSize: 24,
     fontWeight: "700",
   },
   resultRange: {
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
     borderRadius: theme.borderRadius.large,
     borderWidth: 1,
-    color: theme.colors.primary,
+    color: colors.primary,
     fontFamily: theme.fonts.main,
     fontSize: 13,
     fontWeight: "700",
@@ -763,7 +764,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   riskSpectrumCard: {
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     gap: 10,
@@ -776,13 +777,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   riskGroupsTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
     fontSize: 18,
     fontWeight: "700",
   },
   spectrumScoreLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     flexShrink: 0,
     fontFamily: theme.fonts.main,
     fontSize: 13,
@@ -813,14 +814,14 @@ const styles = StyleSheet.create({
     width: 14,
   },
   spectrumMarkerLine: {
-    backgroundColor: theme.colors.text,
+    backgroundColor: colors.text,
     borderRadius: 2,
     flex: 1,
     width: 3,
   },
   spectrumMarkerDot: {
-    backgroundColor: theme.colors.text,
-    borderColor: theme.colors.box,
+    backgroundColor: colors.text,
+    borderColor: colors.box,
     borderRadius: 7,
     borderWidth: 2,
     height: 14,
@@ -833,7 +834,7 @@ const styles = StyleSheet.create({
     marginTop: -2,
   },
   spectrumEndpointText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontFamily: theme.fonts.main,
     fontSize: 12,
     fontWeight: "700",
@@ -844,7 +845,7 @@ const styles = StyleSheet.create({
   },
   spectrumLegendItem: {
     alignItems: "stretch",
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.small,
     borderWidth: 1,
     gap: 8,
@@ -868,7 +869,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   riskGroupTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     flexShrink: 1,
     fontFamily: theme.fonts.main,
     fontSize: 13,
@@ -876,7 +877,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   riskGroupRange: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     flexShrink: 1,
     fontFamily: theme.fonts.main,
     fontSize: 12,
@@ -884,15 +885,15 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   riskDescriptionText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontFamily: theme.fonts.main,
     fontSize: 13,
     lineHeight: 18,
     paddingLeft: 18,
   },
   callBox: {
-    backgroundColor: "#FFF4D2",
-    borderColor: theme.colors.accent,
+    backgroundColor: colors.warningSoft,
+    borderColor: colors.accent,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     gap: 4,
@@ -900,18 +901,18 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   callLabel: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.main,
     fontWeight: "700",
   },
   callNumber: {
-    color: theme.colors.text,
+    color: colors.text,
     fontFamily: theme.fonts.heading,
     fontSize: 26,
     fontWeight: "700",
   },
   callTime: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontFamily: theme.fonts.main,
   },
 });

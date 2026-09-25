@@ -1,10 +1,18 @@
 import RegularButton from "@/app/components/ui/button";
 import EditButton from "@/app/components/ui/editButton";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import HelpButton from "../help/HelpButton";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
 /*typer*/
 type Props = {
@@ -20,7 +28,15 @@ type Props = {
   }) => void;
 };
 
+type AndroidPickerState = {
+  target: "start" | "end";
+  mode: "date" | "time";
+  value: Date;
+};
+
 export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
+  const { colors, isDark } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [start, setStart] = useState(new Date());
   const [end, setEnd] = useState(new Date());
 
@@ -31,6 +47,8 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
 
   const [editingStart, setEditingStart] = useState(false);
   const [editingEnd, setEditingEnd] = useState(false);
+  const [androidPicker, setAndroidPicker] =
+    useState<AndroidPickerState | null>(null);
 
   function renderDrinkCounter(
     label: string,
@@ -70,6 +88,7 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
       setSoberParty(false);
       setEditingStart(false);
       setEditingEnd(false);
+      setAndroidPicker(null);
     }
   }, [visible]);
 
@@ -83,6 +102,67 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
       }
       return nextValue;
     });
+  }
+
+  function openDatePicker(target: "start" | "end") {
+    if (Platform.OS === "android") {
+      setAndroidPicker({
+        target,
+        mode: "date",
+        value: target === "start" ? start : end,
+      });
+      return;
+    }
+
+    if (target === "start") {
+      setEditingStart(true);
+    } else {
+      setEditingEnd(true);
+    }
+  }
+
+  function handleAndroidPickerChange(
+    event: { type: string },
+    selectedValue?: Date,
+  ) {
+    if (!androidPicker || event.type === "dismissed" || !selectedValue) {
+      setAndroidPicker(null);
+      return;
+    }
+
+    if (androidPicker.mode === "date") {
+      const nextValue = new Date(androidPicker.value);
+      nextValue.setFullYear(
+        selectedValue.getFullYear(),
+        selectedValue.getMonth(),
+        selectedValue.getDate(),
+      );
+      setAndroidPicker({
+        ...androidPicker,
+        mode: "time",
+        value: nextValue,
+      });
+      return;
+    }
+
+    const nextValue = new Date(androidPicker.value);
+    nextValue.setHours(
+      selectedValue.getHours(),
+      selectedValue.getMinutes(),
+      0,
+      0,
+    );
+
+    if (androidPicker.target === "start") {
+      setStart(nextValue);
+      if (end < nextValue) {
+        setEnd(nextValue);
+      }
+    } else {
+      setEnd(nextValue < start ? start : nextValue);
+    }
+
+    setAndroidPicker(null);
   }
 
   return (
@@ -125,7 +205,7 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
           {!soberParty && (
             <View style={styles.drinkCounterList}>
               {renderDrinkCounter("Øl", beer, setBeer)}
-              {renderDrinkCounter("Vin", wine, setWine)}
+              {renderDrinkCounter("Vinglass", wine, setWine)}
               {renderDrinkCounter("Drinker", drinks, setDrinks)}
             </View>
           )}
@@ -133,20 +213,20 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
           {/* start-tid */}
           <Text style={styles.subtitle}>Start</Text>
 
-          {!editingStart ? (
+          {Platform.OS === "android" || !editingStart ? (
             <Pressable
-              onPress={() => setEditingStart(true)}
+              onPress={() => openDatePicker("start")}
               style={styles.timeButton}
             >
-              <Text>
-  {start.toLocaleString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })}
-</Text>
+              <Text style={styles.timeText}>
+                {start.toLocaleString("nb-NO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
             </Pressable>
           ) : (
             <View style={styles.pickerBox}>
@@ -154,6 +234,7 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
                 value={start}
                 mode="datetime"
                 display="spinner"
+                themeVariant={isDark ? "dark" : "light"}
                 onChange={(e, date) => {
                   if (!date) {
                     return;
@@ -176,20 +257,20 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
           {/* slutt-tid*/}
           <Text style={styles.subtitle}>Slutt</Text>
 
-          {!editingEnd ? (
+          {Platform.OS === "android" || !editingEnd ? (
             <Pressable
-              onPress={() => setEditingEnd(true)}
+              onPress={() => openDatePicker("end")}
               style={styles.timeButton}
             >
-              <Text>
-  {end.toLocaleString("nb-NO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })}
-</Text>
+              <Text style={styles.timeText}>
+                {end.toLocaleString("nb-NO", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </Text>
             </Pressable>
           ) : (
             <View style={styles.pickerBox}>
@@ -198,6 +279,7 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
                 mode="datetime"
                 display="spinner"
                 minimumDate={start}
+                themeVariant={isDark ? "dark" : "light"}
                 onChange={(e, date) => {
                   if (!date) {
                     return;
@@ -211,6 +293,22 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
                 onPress={() => setEditingEnd(false)}
               />
             </View>
+          )}
+
+          {Platform.OS === "android" && androidPicker && (
+            <DateTimePicker
+              display="default"
+              key={`${androidPicker.target}-${androidPicker.mode}`}
+              minimumDate={
+                androidPicker.target === "end" &&
+                androidPicker.mode === "date"
+                  ? start
+                  : undefined
+              }
+              mode={androidPicker.mode}
+              onChange={handleAndroidPickerChange}
+              value={androidPicker.value}
+            />
           )}
 
           {/* lagre*/}
@@ -235,7 +333,7 @@ export default function PartyPlannerModal({ visible, onClose, onSave }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -245,7 +343,9 @@ const styles = StyleSheet.create({
 
   card: {
     width: "90%",
-    backgroundColor: "white",
+    backgroundColor: colors.background,
+    borderColor: colors.border,
+    borderWidth: 1,
     borderRadius: 20,
     padding: 20,
   },
@@ -258,6 +358,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
+    color: colors.text,
     fontSize: 22,
     fontWeight: "bold",
     flex: 1,
@@ -265,17 +366,19 @@ const styles = StyleSheet.create({
   },
 
   close: {
+    color: colors.text,
     fontSize: 20,
   },
 
   subtitle: {
+    color: colors.text,
     marginTop: 15,
     fontWeight: "bold",
   },
 
   soberButton: {
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     gap: 4,
@@ -283,19 +386,19 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   soberButtonSelected: {
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
   },
   soberButtonTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     fontWeight: "700",
   },
   soberButtonTitleSelected: {
-    color: theme.colors.primary,
+    color: colors.primary,
   },
   soberButtonText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
   },
   drinkCounterList: {
@@ -306,7 +409,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   drinkLabel: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     fontWeight: "700",
   },
@@ -314,7 +417,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: theme.borderRadius.medium,
     padding: 10,
   },
@@ -323,7 +426,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.small,
   },
   amountValue: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 28,
     fontWeight: "700",
     minWidth: 36,
@@ -331,13 +434,18 @@ const styles = StyleSheet.create({
   },
 
   timeButton: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: colors.surfaceMuted,
     padding: 12,
     borderRadius: 10,
     marginTop: 10,
   },
+  timeText: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: "600",
+  },
   pickerBox: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 12,
     padding: 10,
     marginTop: 10,

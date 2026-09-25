@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { StyleSheet, Text, View } from "react-native";
 
 export type Achievement = {
@@ -15,6 +16,8 @@ type Props = {
 };
 
 export default function AchievementCard({ achievement }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const cappedProgress = Math.min(
     achievement.currentProgress,
     achievement.goal,
@@ -37,7 +40,9 @@ export default function AchievementCard({ achievement }: Props) {
       <View style={styles.titleLine}>
         <Text style={styles.title}>{achievement.title}</Text>
         <View style={completed ? styles.completedPill : styles.lockedPill}>
-          <Text style={styles.pillText}>
+          <Text
+            style={[styles.pillText, completed && styles.completedPillText]}
+          >
             {completed ? "Fullført" : "Pågår"}
           </Text>
         </View>
@@ -56,16 +61,16 @@ export default function AchievementCard({ achievement }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   achievementCard: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     padding: theme.spacing.medium,
     marginBottom: theme.spacing.small,
     borderRadius: theme.borderRadius.medium,
     gap: theme.spacing.small,
   },
   completedAchievementCard: {
-    borderColor: theme.colors.primary,
+    borderColor: colors.primary,
     borderWidth: 1,
   },
   titleLine: {
@@ -78,36 +83,38 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   description: {
     fontSize: 13,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   progressText: {
     fontSize: 13,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   fullBar: {
     height: 12,
-    backgroundColor: theme.colors.lightGrey,
+    backgroundColor: colors.lightGrey,
     borderRadius: 999,
     overflow: "hidden",
   },
   progressBar: {
     height: "100%",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: 999,
   },
   completedPill: {
-    backgroundColor: "#E6F4EA",
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
+    borderWidth: 1,
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
   lockedPill: {
-    backgroundColor: theme.colors.lightGrey,
+    backgroundColor: colors.lightGrey,
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -115,6 +122,9 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: 11,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
+  },
+  completedPillText: {
+    color: colors.primary,
   },
 });

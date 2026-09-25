@@ -13,7 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "./onboardingStyling";
 
 const ageGroups = ["Under 18", "18-20", "21-25", "26-30", "31-40", "41+"];
 const genders = ["Mann", "Kvinne", "Ikke-binær", "Vil ikke oppgi"];
@@ -242,12 +242,12 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#666",
+    color: theme.colors.darkGrey,
     marginBottom: theme.spacing.large,
     lineHeight: 20,
   },
   infoCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     marginBottom: theme.spacing.large,
@@ -258,20 +258,20 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     marginBottom: 4,
   },
-  infoCardText: { fontSize: 14, color: "#666" },
+  infoCardText: { fontSize: 14, color: theme.colors.darkGrey },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#e8e8e3",
+    backgroundColor: theme.colors.surfaceMuted,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     marginBottom: theme.spacing.small,
   },
   label: { fontSize: 16, color: theme.colors.text },
-  select: { fontSize: 14, color: "#666" },
+  select: { fontSize: 14, color: theme.colors.darkGrey },
   option: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.box,
     padding: 14,
     borderRadius: theme.borderRadius.small,
     marginBottom: 6,
@@ -289,16 +289,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonDisabled: { opacity: 0.45 },
-  buttonText: { fontSize: 16, color: "#fff" },
+  buttonText: { fontSize: 16, color: theme.colors.buttonText },
   secondaryButton: {
     borderWidth: 1,
-    borderColor: "#c8c8c1",
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
     alignItems: "center",
-    backgroundColor: "#f2f2ed",
+    backgroundColor: theme.colors.surfaceMuted,
   },
-  secondaryButtonSelected: { backgroundColor: "#e2e2db" },
+  secondaryButtonSelected: { backgroundColor: theme.colors.primarySoft },
   secondaryButtonText: {
     fontSize: 16,
     color: theme.colors.text,

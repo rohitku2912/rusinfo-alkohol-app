@@ -50,8 +50,9 @@ export function useAchievements() {
 }
 
 export default function AchievementProvider({ children }: Props) {
-  const [visibleAchievement, setVisibleAchievement] =
-    useState<Achievement | null>(null);
+  const [visibleAchievements, setVisibleAchievements] = useState<
+    Achievement[]
+  >([]);
   const [visibleRewardId, setVisibleRewardId] = useState<string | null>(null);
   const [accessoryVersion, setAccessoryVersion] = useState(0);
 
@@ -59,28 +60,35 @@ export default function AchievementProvider({ children }: Props) {
     checkAchievements();
   }, []);
 
-  function findNewAchievement(
+  function findNewAchievements(
     achievements: Achievement[],
     unlockedIds: string[],
   ) {
-    return achievements.find(
+    return achievements.filter(
       (achievement) =>
         isAchievementCompleted(achievement) &&
         !unlockedIds.includes(achievement.id),
     );
   }
 
-  function showAchievement(
-    achievement: Achievement,
+  function showAchievements(
+    achievements: Achievement[],
     rewardId: string | null,
   ) {
-    setVisibleAchievement(achievement);
+    setVisibleAchievements(achievements);
     setVisibleRewardId(rewardId);
 
-    setTimeout(() => {
-      setVisibleAchievement(null);
-      setVisibleRewardId(null);
-    }, 3000);
+    if (achievements.length === 1) {
+      setTimeout(() => {
+        setVisibleAchievements([]);
+        setVisibleRewardId(null);
+      }, 4000);
+    }
+  }
+
+  function dismissNotification() {
+    setVisibleAchievements([]);
+    setVisibleRewardId(null);
   }
 
   async function checkAchievements() {
@@ -103,33 +111,49 @@ export default function AchievementProvider({ children }: Props) {
       whitePartyCount,
     );
     const unlockedIds = await getUnlockedAchievementIds();
-    const newAchievement = findNewAchievement(achievements, unlockedIds);
+    const newAchievements = findNewAchievements(achievements, unlockedIds);
 
-    if (!newAchievement) {
+    if (newAchievements.length === 0) {
       return;
     }
 
-    //lås opp accessories
-    const rewardId = achievementRewards[newAchievement.id];
+    const unlockedAccessories = await getUnlockedAccessories();
+    let unlockedNewAccessory = false;
 
-    if (rewardId) {
-      const unlockedAccessories = await getUnlockedAccessories();
+    for (const achievement of newAchievements) {
+      const rewardId = achievementRewards[achievement.id];
 
-      if (!unlockedAccessories.includes(rewardId)) {
+      if (rewardId && !unlockedAccessories.includes(rewardId)) {
         await unlockAccessory(rewardId);
-        setAccessoryVersion((version) => version + 1);
+        unlockedAccessories.push(rewardId);
+        unlockedNewAccessory = true;
       }
     }
 
-    showAchievement(newAchievement, rewardId ?? null);
-    await saveUnlockedAchievementIds([...unlockedIds, newAchievement.id]);
+    if (unlockedNewAccessory) {
+      setAccessoryVersion((version) => version + 1);
+    }
+
+    const singleRewardId =
+      newAchievements.length === 1
+        ? achievementRewards[newAchievements[0].id] ?? null
+        : null;
+
+    showAchievements(newAchievements, singleRewardId);
+    await saveUnlockedAchievementIds([
+      ...new Set([
+        ...unlockedIds,
+        ...newAchievements.map((achievement) => achievement.id),
+      ]),
+    ]);
   }
 
   return (
     <AchievementContext value={{ checkAchievements, accessoryVersion }}>
       {children}
       <AchievementNotification
-        achievement={visibleAchievement}
+        achievements={visibleAchievements}
+        onDismiss={dismissNotification}
         rewardAccessoryId={visibleRewardId}
       />
     </AchievementContext>

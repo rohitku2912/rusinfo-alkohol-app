@@ -1,3 +1,4 @@
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import {
   DrinkLogEntry,
   getDrinkLogs,
@@ -9,7 +10,7 @@ import {
   saveWeeklyGoalsResult,
   WeeklyGoalsResult,
 } from "@/lib/storage/goals";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router/react-navigation";
 import { useCallback, useRef, useState } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,6 +26,8 @@ import theme from "../theme/constantStyling";
 import { getPreviousWeek } from "../utils/weekHelpers";
 
 export default function OverView() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
   const headerScrollY = useRef(new Animated.Value(0)).current;
   const [logs, setLogs] = useState<DrinkLogEntry[]>([]);
@@ -123,83 +126,90 @@ export default function OverView() {
         titleAccessory={<HelpButton helpKey="overview" />}
         rightSlot={<AvatarButton />}
       />
-      <View
-        style={[
+      <Animated.ScrollView
+        contentContainerStyle={[
           styles.content,
           { paddingTop: getAnimatedTabHeaderTopPadding(insets.top) },
         ]}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: headerScrollY } } }],
+          { useNativeDriver: false },
+        )}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
       >
         <Goals logs={logs} />
         {showLastWeekResult()}
         <Stats logs={logs} />
         <DrinkChart logs={logs} />
-      </View>
+      </Animated.ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    flex: 1,
-  },
-  lastWeekCard: {
-    backgroundColor: "#ffffff",
-    borderRadius: theme.borderRadius.medium,
-    padding: theme.spacing.medium,
-    marginHorizontal: theme.spacing.medium,
-    marginBottom: theme.spacing.small,
-    gap: 6,
-  },
-  lastWeekTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: theme.colors.text,
-    marginBottom: 2,
-  },
-  resultText: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: theme.colors.primary,
-  },
-  successPill: {
-    backgroundColor: "#E6F4EA",
-    borderColor: theme.colors.primary,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  failPill: {
-    backgroundColor: "#FDECEC",
-    borderColor: theme.colors.attention,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  pillText: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: theme.colors.text,
-  },
-  resultLine: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: theme.spacing.small,
-  },
-  resultLabel: {
-    fontSize: 14,
-    color: theme.colors.text,
-    flex: 1,
-  },
-  resultValue: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-});
+const createStyles = (colors: AppColors) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      paddingBottom: 130,
+    },
+    lastWeekCard: {
+      backgroundColor: colors.box,
+      borderRadius: theme.borderRadius.medium,
+      padding: theme.spacing.medium,
+      marginHorizontal: theme.spacing.medium,
+      marginBottom: theme.spacing.small,
+      gap: 6,
+    },
+    lastWeekTitle: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: colors.text,
+      marginBottom: 2,
+    },
+    resultText: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.primary,
+    },
+    successPill: {
+      backgroundColor: colors.primarySoft,
+      borderColor: colors.primary,
+      borderWidth: 1,
+      borderRadius: 999,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+    },
+    failPill: {
+      backgroundColor: colors.dangerSoft,
+      borderColor: colors.attention,
+      borderWidth: 1,
+      borderRadius: 999,
+      paddingHorizontal: 8,
+      paddingVertical: 3,
+    },
+    pillText: {
+      fontSize: 12,
+      fontWeight: "700",
+      color: colors.text,
+    },
+    resultLine: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: theme.spacing.small,
+    },
+    resultLabel: {
+      fontSize: 14,
+      color: colors.text,
+      flex: 1,
+    },
+    resultValue: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+  });

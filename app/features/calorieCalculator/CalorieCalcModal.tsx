@@ -22,6 +22,7 @@ import {
   createSavedEntry,
 } from "../savingsCalculator/utils";
 import theme from "@/app/theme/constantStyling";
+import { useAppTheme } from "@/app/theme/ThemeProvider";
 
 type Screen = "menu" | "form";
 
@@ -42,6 +43,7 @@ export default function CalorieCalcModal({
   onDeleteEntry,
   onUpdateEntry,
 }: Props) {
+  const { colors } = useAppTheme();
   const [screen, setScreen] = useState<Screen>("menu");
   const [currentEntry, setCurrentEntry] = useState<Entry>(createDefaultEntry());
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
@@ -130,7 +132,7 @@ export default function CalorieCalcModal({
           style={styles.backdropDismissArea}
           onPress={Keyboard.dismiss}
         />
-        <View style={styles.modalBox}>
+        <View style={[styles.modalBox, { backgroundColor: colors.box }]}>
           {screen === "menu" && (
             <ScrollView
               keyboardShouldPersistTaps="handled"
@@ -177,7 +179,6 @@ const styles = StyleSheet.create({
   modalBox: {
     width: "90%",
     height: "90%",
-    backgroundColor: theme.colors.box,
     borderRadius: 20,
     padding: 20,
   },

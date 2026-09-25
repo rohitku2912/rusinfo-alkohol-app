@@ -8,8 +8,11 @@ import AvatarButton from "../components/ui/avatarButton";
 import DiaryDisplay from "../features/diary/DiaryDisplay";
 import HelpButton from "../features/help/HelpButton";
 import theme from "../theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
 export default function Diary() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const insets = useSafeAreaInsets();
   const headerScrollY = useRef(new Animated.Value(0)).current;
 
@@ -35,14 +38,14 @@ export default function Diary() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     paddingHorizontal: theme.spacing.medium,
     paddingTop: theme.spacing.medium,
   },

@@ -1,22 +1,25 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
 import theme from "../../theme/constantStyling";
+import { AppColors, useAppTheme } from "../../theme/ThemeProvider";
 
 type SearchInputProps = Omit<TextInputProps, "style">;
 
 export default function SearchInput(props: SearchInputProps) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.container}>
       <Ionicons
         name="search-outline"
         size={19}
-        color="#718078"
+        color={colors.darkGrey}
         style={styles.icon}
       />
       <TextInput
         {...props}
         clearButtonMode="while-editing"
-        placeholderTextColor="#829088"
+        placeholderTextColor={colors.darkGrey}
         returnKeyType="search"
         style={styles.input}
       />
@@ -24,11 +27,11 @@ export default function SearchInput(props: SearchInputProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flexDirection: "row",
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   input: {
-    color: theme.colors.text,
+    color: colors.text,
     flex: 1,
     fontSize: 15,
     paddingVertical: 10,

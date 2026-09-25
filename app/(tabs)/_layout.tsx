@@ -5,10 +5,11 @@ import { Tabs } from "expo-router";
 import { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AchievementProvider from "../features/achievements/AchievementProvider";
-import theme from "../theme/constantStyling";
+import { useAppTheme } from "../theme/ThemeProvider";
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const { colors } = useAppTheme();
   useEffect(() => {
     void flushPendingDemographics();
 
@@ -27,7 +28,8 @@ export default function TabsLayout() {
     <AchievementProvider>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: theme.colors.primary,
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.darkGrey,
 
           headerShown: false,
           tabBarStyle: {
@@ -38,12 +40,14 @@ export default function TabsLayout() {
             borderRadius: 24,
             bottom: Math.max(insets.bottom, 12),
             borderWidth: 2,
+            backgroundColor: colors.box,
+            borderColor: colors.border,
             paddingTop: 6,
             paddingBottom: 8,
           },
 
           sceneStyle: {
-            backgroundColor: theme.colors.background,
+            backgroundColor: colors.background,
           },
         }}
       >

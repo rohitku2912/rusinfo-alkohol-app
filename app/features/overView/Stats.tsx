@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import {
   DrinkLogEntry,
   getLogsForLastDays,
@@ -12,6 +13,8 @@ type Props = {
 };
 
 export default function Stats({ logs }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   function totalWhiteDaysPerMonth(logs: DrinkLogEntry[]) {
     const last30DaysLogs = getLogsForLastDays(logs, 30);
     return getWhiteDayCount(last30DaysLogs);
@@ -64,9 +67,9 @@ export default function Stats({ logs }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     marginHorizontal: theme.spacing.medium,
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 2,
   },
   row: {
@@ -87,11 +90,11 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
     fontSize: 13,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   value: {
     fontSize: 14,
     fontWeight: "700",
-    color: theme.colors.primary,
+    color: colors.primary,
   },
 });

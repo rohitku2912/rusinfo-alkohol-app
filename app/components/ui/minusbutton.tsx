@@ -7,6 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 import theme from "../../theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
 type MinusButtonProps = {
   onPress: () => void;
@@ -19,6 +20,8 @@ export default function MinusButton({
   disabled = false,
   style,
 }: MinusButtonProps) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -26,14 +29,14 @@ export default function MinusButton({
       activeOpacity={0.7}
       disabled={disabled}
     >
-      <Ionicons name="remove" size={18} color={theme.colors.buttonText} />
+      <Ionicons name="remove" size={18} color={colors.buttonText} />
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.no,
+    backgroundColor: colors.no,
     alignItems: "center",
     borderRadius: 999,
     justifyContent: "center",
@@ -44,7 +47,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   text: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontFamily: theme.fonts.main,
     fontWeight: "bold",
   },

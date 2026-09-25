@@ -7,6 +7,7 @@ import {
   ViewStyle,
 } from "react-native";
 import theme from "../../theme/constantStyling";
+import { AppColors, useAppTheme } from "../../theme/ThemeProvider";
 
 type RegularButtonProps = {
   title: string;
@@ -19,6 +20,8 @@ export default function RegularButton({
   onPress,
   style,
 }: RegularButtonProps) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -30,9 +33,9 @@ export default function RegularButton({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   button: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     alignItems: "center",
     justifyContent: "center",
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
     // plasserer knappen til høyre
   },
   text: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontWeight: "bold",
     fontFamily: theme.fonts.main,
     alignItems: "center",

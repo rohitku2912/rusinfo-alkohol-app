@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { PieChart } from "react-native-gifted-charts";
 import Svg, {
   Circle,
   Line,
@@ -7,6 +8,7 @@ import Svg, {
   Text as SvgText,
 } from "react-native-svg";
 import theme from "../../theme/constantStyling";
+import { AppColors, useAppTheme } from "../../theme/ThemeProvider";
 
 type TriggerEntry = {
   trigger: string;
@@ -24,12 +26,23 @@ type RankingItem = {
   value: number;
 };
 
+const getChartColors = (primary: string) => [
+  primary,
+  "#E3A45B",
+  "#668CC7",
+  "#A17AC1",
+  "#D97878",
+  "#B8C0B8",
+];
+
 type ActivityDay = {
   date: Date;
   count: number;
 };
 
 function FrequencyLineChart({ days }: { days: ActivityDay[] }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const maxValue = Math.max(...days.map((day) => day.count), 1);
   const points = days.map((day, index) => {
     const x = 15 + index * 45;
@@ -60,7 +73,7 @@ function FrequencyLineChart({ days }: { days: ActivityDay[] }) {
         <Polyline
           fill="none"
           points={points.map((point) => `${point.x},${point.y}`).join(" ")}
-          stroke={theme.colors.primary}
+          stroke={colors.primary}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={3}
@@ -70,9 +83,9 @@ function FrequencyLineChart({ days }: { days: ActivityDay[] }) {
             key={`${point.x}-${point.y}`}
             cx={point.x}
             cy={point.y}
-            fill={theme.colors.box}
+            fill={colors.box}
             r={4.5}
-            stroke={theme.colors.primary}
+            stroke={colors.primary}
             strokeWidth={3}
           />
         ))}
@@ -81,7 +94,7 @@ function FrequencyLineChart({ days }: { days: ActivityDay[] }) {
           .map((point) => (
             <SvgText
               key={`label-${point.x}`}
-              fill={theme.colors.primary}
+              fill={colors.primary}
               fontSize={9}
               fontWeight="700"
               textAnchor="middle"
@@ -114,10 +127,12 @@ function SummaryCard({
   label: string;
   value: number;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryIcon}>
-        <Ionicons name={icon} size={18} color={theme.colors.primary} />
+        <Ionicons name={icon} size={18} color={colors.primary} />
       </View>
       <Text style={styles.summaryValue}>{value}</Text>
       <Text style={styles.summaryLabel}>{label}</Text>
@@ -125,66 +140,77 @@ function SummaryCard({
   );
 }
 
-function Ranking({
+function PieOverview({
   items,
   total,
   emptyText,
-  singularUnit,
-  pluralUnit,
 }: {
   items: RankingItem[];
   total: number;
   emptyText: string;
-  singularUnit: string;
-  pluralUnit: string;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
+  const chartColors = getChartColors(colors.primary);
   if (items.length === 0) {
     return <Text style={styles.empty}>{emptyText}</Text>;
   }
 
-  const largestValue = Math.max(...items.map((item) => item.value), 1);
+  const visibleTotal = items.reduce((sum, item) => sum + item.value, 0);
+  const remaining = Math.max(total - visibleTotal, 0);
+  const chartItems =
+    remaining > 0
+      ? [...items, { label: "Andre", value: remaining }]
+      : items;
+  const pieData = chartItems.map((item, index) => ({
+    value: item.value,
+    color: chartColors[index % chartColors.length],
+  }));
 
   return (
-    <View style={styles.ranking}>
-      {items.map((item, index) => {
-        const percentage =
-          total > 0 ? Math.round((item.value / total) * 100) : 0;
+    <View style={styles.pieContent}>
+      <View style={styles.pieChart}>
+        <PieChart
+          data={pieData}
+          focusOnPress
+          radius={76}
+          sectionAutoFocus
+        />
+      </View>
 
-        return (
-          <View key={item.label} style={styles.rankingItem}>
-            <View style={styles.rankingHeader}>
-              <View style={styles.rankingTitle}>
-                <Text style={styles.rank}>{index + 1}</Text>
-                <Text numberOfLines={2} style={styles.rankingLabel}>
-                  {item.label}
-                </Text>
-              </View>
-              <Text style={styles.rankingValue}>
-                {item.value} {item.value === 1 ? singularUnit : pluralUnit}
-                {total > 0 ? ` · ${percentage}%` : ""}
-              </Text>
-            </View>
-            <View style={styles.barTrack}>
+      <View style={styles.pieLegend}>
+        {chartItems.map((item, index) => {
+          const percentage =
+            total > 0 ? Math.round((item.value / total) * 100) : 0;
+
+          return (
+            <View key={item.label} style={styles.pieLegendRow}>
               <View
                 style={[
-                  styles.barFill,
+                  styles.pieLegendDot,
                   {
-                    width: `${Math.max(
-                      (item.value / largestValue) * 100,
-                      5,
-                    )}%`,
+                    backgroundColor:
+                      chartColors[index % chartColors.length],
                   },
                 ]}
               />
+              <Text numberOfLines={2} style={styles.pieLegendLabel}>
+                {item.label}
+              </Text>
+              <Text style={styles.pieLegendValue}>
+                {percentage}%
+              </Text>
             </View>
-          </View>
-        );
-      })}
+          );
+        })}
+      </View>
     </View>
   );
 }
 
 export default function TriggerStats({ triggerEntries }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const totalRegistrations = triggerEntries.reduce(
     (total, entry) => total + entry.count,
     0,
@@ -274,6 +300,10 @@ export default function TriggerStats({ triggerEntries }: Props) {
     .sort((first, second) => second.count - first.count)
     .slice(0, 5)
     .map((factor) => ({ label: factor.label, value: factor.count }));
+  const totalFactorUses = [...factorMap.values()].reduce(
+    (total, factor) => total + factor.count,
+    0,
+  );
 
   const topTrigger = topTriggers[0];
   const topTriggerPercentage =
@@ -310,7 +340,7 @@ export default function TriggerStats({ triggerEntries }: Props) {
             <Ionicons
               name="bulb-outline"
               size={22}
-              color={theme.colors.primary}
+              color={colors.primary}
             />
           </View>
           <View style={styles.insightText}>
@@ -327,7 +357,7 @@ export default function TriggerStats({ triggerEntries }: Props) {
           <Ionicons
             name="analytics-outline"
             size={28}
-            color={theme.colors.primary}
+            color={colors.primary}
           />
           <Text style={styles.welcomeTitle}>Oversikten bygges over tid</Text>
           <Text style={styles.welcomeText}>
@@ -343,7 +373,7 @@ export default function TriggerStats({ triggerEntries }: Props) {
             <Ionicons
               name="calendar-outline"
               size={19}
-              color={theme.colors.primary}
+              color={colors.primary}
             />
           </View>
           <View style={styles.sectionHeading}>
@@ -397,7 +427,7 @@ export default function TriggerStats({ triggerEntries }: Props) {
             <Ionicons
               name="stats-chart-outline"
               size={19}
-              color={theme.colors.primary}
+              color={colors.primary}
             />
           </View>
           <View style={styles.sectionHeading}>
@@ -405,12 +435,10 @@ export default function TriggerStats({ triggerEntries }: Props) {
             <Text style={styles.sectionSubtitle}>Dine fem mest registrerte</Text>
           </View>
         </View>
-        <Ranking
+        <PieOverview
           items={topTriggers}
           total={totalRegistrations}
           emptyText="Ingen triggere registrert enda."
-          singularUnit="gang"
-          pluralUnit="ganger"
         />
       </View>
 
@@ -420,7 +448,7 @@ export default function TriggerStats({ triggerEntries }: Props) {
             <Ionicons
               name="shield-checkmark-outline"
               size={19}
-              color={theme.colors.primary}
+              color={colors.primary}
             />
           </View>
           <View style={styles.sectionHeading}>
@@ -430,19 +458,17 @@ export default function TriggerStats({ triggerEntries }: Props) {
             </Text>
           </View>
         </View>
-        <Ranking
+        <PieOverview
           items={topFactors}
-          total={triggerEntries.length}
+          total={totalFactorUses}
           emptyText="Ingen tiltak registrert enda."
-          singularUnit="trigger"
-          pluralUnit="triggere"
         />
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   content: {
     gap: theme.spacing.medium,
     paddingBottom: 120,
@@ -454,8 +480,8 @@ const styles = StyleSheet.create({
   },
   summaryCard: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flex: 1,
@@ -465,7 +491,7 @@ const styles = StyleSheet.create({
   },
   summaryIcon: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: 18,
     height: 34,
     justifyContent: "center",
@@ -473,18 +499,18 @@ const styles = StyleSheet.create({
     width: 34,
   },
   summaryValue: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 23,
     fontWeight: "800",
   },
   summaryLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 11,
     fontWeight: "600",
     textAlign: "center",
   },
   insightCard: {
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderColor: "rgba(94, 156, 118, 0.35)",
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
@@ -494,7 +520,7 @@ const styles = StyleSheet.create({
   },
   insightIcon: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 22,
     height: 44,
     justifyContent: "center",
@@ -504,47 +530,47 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   insightEyebrow: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.8,
   },
   insightTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 18,
     fontWeight: "800",
     marginTop: 2,
   },
   insightDescription: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 19,
     marginTop: 4,
   },
   welcomeCard: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderColor: "rgba(94, 156, 118, 0.35)",
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     padding: theme.spacing.large,
   },
   welcomeTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 17,
     fontWeight: "800",
     marginTop: theme.spacing.small,
   },
   welcomeText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 19,
     marginTop: 4,
     textAlign: "center",
   },
   sectionCard: {
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     padding: theme.spacing.medium,
@@ -557,7 +583,7 @@ const styles = StyleSheet.create({
   },
   sectionIcon: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: 18,
     height: 36,
     justifyContent: "center",
@@ -567,18 +593,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 16,
     fontWeight: "800",
   },
   sectionSubtitle: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     marginTop: 2,
   },
   frequencySummary: {
     alignItems: "stretch",
-    backgroundColor: "#f6f8f6",
+    backgroundColor: colors.surfaceMuted,
     borderRadius: theme.borderRadius.small,
     flexDirection: "row",
     paddingVertical: 12,
@@ -589,12 +615,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   frequencyValue: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 20,
     fontWeight: "800",
   },
   frequencyLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 10,
     fontWeight: "600",
     marginTop: 2,
@@ -614,61 +640,48 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   dayLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     flex: 1,
     fontSize: 10,
     fontWeight: "600",
     textAlign: "center",
   },
-  ranking: {
-    gap: 14,
+  pieContent: {
+    alignItems: "center",
   },
-  rankingItem: {
-    gap: 7,
+  pieChart: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 4,
   },
-  rankingHeader: {
+  pieLegend: {
+    gap: 9,
+    marginTop: theme.spacing.medium,
+    width: "100%",
+  },
+  pieLegendRow: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 8,
-    justifyContent: "space-between",
+    gap: 9,
   },
-  rankingTitle: {
-    alignItems: "center",
+  pieLegendDot: {
+    borderRadius: 5,
+    height: 10,
+    width: 10,
+  },
+  pieLegendLabel: {
+    color: colors.text,
     flex: 1,
-    flexDirection: "row",
-    gap: 8,
-  },
-  rank: {
-    color: theme.colors.primary,
-    fontSize: 11,
-    fontWeight: "800",
-    width: 14,
-  },
-  rankingLabel: {
-    color: theme.colors.text,
-    flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: "700",
   },
-  rankingValue: {
-    color: theme.colors.darkGrey,
+  pieLegendValue: {
+    color: colors.darkGrey,
     fontSize: 11,
     fontWeight: "600",
   },
-  barTrack: {
-    backgroundColor: theme.colors.lightGrey,
-    borderRadius: 999,
-    height: 8,
-    marginLeft: 22,
-    overflow: "hidden",
-  },
-  barFill: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: 999,
-    height: "100%",
-  },
   empty: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     paddingVertical: theme.spacing.medium,
     textAlign: "center",

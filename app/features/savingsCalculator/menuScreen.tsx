@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import RegularButton from "../../components/ui/button";
 import theme from "../../theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import HelpButton from "../help/HelpButton";
 import { DrinkType, SavedEntry } from "./config";
 import { calculateSavings, formatNumber, getSavedEntryText } from "./utils";
@@ -22,6 +23,8 @@ export default function MenuScreen({
   onSelect,
   onClose,
 }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <>
       <View style={styles.hero}>
@@ -106,7 +109,7 @@ export default function MenuScreen({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   hero: {
     paddingTop: 2,
     paddingBottom: 12,
@@ -122,19 +125,19 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "700",
     textAlign: "left",
-    color: theme.colors.text,
+    color: colors.text,
   },
   body: {
     fontSize: 15,
     lineHeight: 22,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     textAlign: "left",
     marginTop: 6,
   },
   savedCard: {
     marginTop: 8,
     marginBottom: 12,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     paddingVertical: 18,
     paddingHorizontal: 20,
@@ -145,7 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   savedAmount: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     textAlign: "left",
     fontSize: 30,
     fontWeight: "700",
@@ -153,26 +156,26 @@ const styles = StyleSheet.create({
   savedList: {
     marginTop: 4,
     marginBottom: 12,
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: 16,
     borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
     gap: 12,
   },
   savedListTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   emptyText: {
     fontSize: 14,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   savedItem: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.small,
     padding: 12,
     flexDirection: "row",
@@ -190,35 +193,35 @@ const styles = StyleSheet.create({
   savedItemTitle: {
     fontSize: 15,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   savedItemMeta: {
     fontSize: 13,
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
   editButton: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.small,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   editButtonText: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontWeight: "700",
   },
   deleteButton: {
-    backgroundColor: theme.colors.lightGrey,
+    backgroundColor: colors.lightGrey,
     borderRadius: theme.borderRadius.small,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
   deleteButtonText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "700",
   },
   buttons: {
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     gap: 10,
@@ -232,7 +235,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginTop: 8,
-    backgroundColor: theme.colors.darkGrey,
+    backgroundColor: colors.darkGrey,
     borderRadius: theme.borderRadius.medium,
   },
 });

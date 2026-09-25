@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -14,6 +14,7 @@ import {
 
 import BackButton from "@/app/components/ui/backButton";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import ShowAchievements from "../achievements/ShowAchievements";
 import { accessories, lockedAccessoryImage } from "./accessories";
 import {
@@ -28,6 +29,11 @@ import { getSelectedAvatar, saveSelectedAvatar } from "./avatarStorage";
 type PickerMode = "avatar" | "accessory" | "achievements";
 
 export default function AvatarScreen() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
+  const { showAchievements } = useLocalSearchParams<{
+    showAchievements?: string;
+  }>();
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [selectedAccessories, setSelectedAccessories] = useState<string[]>([]);
   const [unlockedAccessories, setUnlockedAccessories] = useState<string[]>([]);
@@ -62,6 +68,12 @@ export default function AvatarScreen() {
   useEffect(() => {
     loadAvatarData();
   }, []);
+
+  useEffect(() => {
+    if (showAchievements === "1") {
+      setPickerMode("achievements");
+    }
+  }, [showAchievements]);
 
   async function loadAvatarData() {
     const avatarId = await getSelectedAvatar();
@@ -272,10 +284,10 @@ export default function AvatarScreen() {
     </View>
   );
 }
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     paddingTop: 60,
     paddingHorizontal: 16,
   },
@@ -301,21 +313,21 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "800",
-    color: theme.colors.text,
+    color: colors.text,
     textAlign: "center",
   },
 
   currentAvatarSection: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
 
     paddingVertical: 18,
     marginBottom: 16,
   },
 
   modeRow: {
-    backgroundColor: theme.colors.backgroundSecondary,
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: theme.borderRadius.medium,
     flexDirection: "row",
     marginBottom: 16,
@@ -324,14 +336,14 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   modeSlider: {
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderColor: "rgba(94, 156, 118, 0.22)",
-    borderRadius: theme.borderRadius.small,
+    borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     bottom: 4,
     left: 4,
     position: "absolute",
-    shadowColor: theme.colors.primary,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 5,
@@ -348,12 +360,12 @@ const styles = StyleSheet.create({
   },
 
   modeButtonText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "700",
   },
 
   modeButtonTextActive: {
-    color: theme.colors.primary,
+    color: colors.primary,
   },
 
   grid: {
@@ -365,22 +377,22 @@ const styles = StyleSheet.create({
 
   card: {
     width: "47%",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#DCE2D4",
+    borderColor: colors.border,
   },
 
   cardSelected: {
-    borderColor: theme.colors.primary,
+    borderColor: colors.primary,
     borderWidth: 2,
   },
 
   cardLocked: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
   },
 
   image: {
@@ -414,18 +426,18 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "600",
     textAlign: "center",
   },
 
   lockedName: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
   },
 
   selectedText: {
     marginTop: 6,
-    color: theme.colors.primary,
+    color: colors.primary,
     fontWeight: "700",
   },
   achievementsButton: {
@@ -434,12 +446,12 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
     alignItems: "center",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderWidth: 1,
-    borderColor: "#DCE2D4"
+    borderColor: colors.border
   },
   achievementsButtonText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "700",
   },
 });

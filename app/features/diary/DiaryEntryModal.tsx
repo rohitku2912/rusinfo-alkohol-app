@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import {
   Alert,
   Keyboard,
@@ -47,6 +48,8 @@ export default function DiaryEntryModal({
   onSaveTags,
   onClose,
 }: DiaryEntryModalProps) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const canSave = inputText.trim().length > 0;
 
   const saveEntry = () => {
@@ -210,7 +213,7 @@ export default function DiaryEntryModal({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.35)",
@@ -233,17 +236,17 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 420,
     maxHeight: "100%",
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
   },
 
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
     textAlign: "center",
     flex: 1,
   },
@@ -254,24 +257,24 @@ const styles = StyleSheet.create({
     width: 40,
   },
   closeButton: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 20,
   },
   label: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 14,
     fontWeight: "700",
     marginBottom: theme.spacing.small,
   },
   entryInput: {
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     marginBottom: theme.spacing.large,
     minHeight: 140,
     padding: 14,
   },
   helperText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     lineHeight: 17,
     marginBottom: theme.spacing.small,
@@ -287,22 +290,22 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
     borderRadius: 999,
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
   },
 
   selectedTag: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
 
   tagText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "600",
   },
   selectedTagText: {
-    color: theme.colors.lightText,
+    color: colors.lightText,
   },
   newTagRow: {
     alignItems: "center",
@@ -314,19 +317,19 @@ const styles = StyleSheet.create({
   },
 
   tagInput: {
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
   },
   addTagButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     height: 50,
     justifyContent: "center",
     paddingHorizontal: theme.spacing.medium,
   },
   addTagButtonText: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontWeight: "700",
   },
 
@@ -343,19 +346,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cancelButton: {
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderWidth: 1,
   },
   cancelButtonText: {
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "700",
   },
   saveButton: {
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
   },
   saveButtonText: {
-    color: theme.colors.buttonText,
+    color: colors.buttonText,
     fontWeight: "700",
   },
   disabledButton: {
@@ -365,6 +368,6 @@ const styles = StyleSheet.create({
   closeText: {
     fontSize: 18,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: colors.text,
   },
 });

@@ -1,4 +1,4 @@
-import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import React from "react";
 import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
 
@@ -11,10 +11,15 @@ export default function InputBox({
   style,
   ...props
 }: InputBoxProps) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View>
       <TextInput
         {...props}
+        placeholderTextColor={
+          props.placeholderTextColor ?? colors.darkGrey
+        }
         style={[
           styles.base,
           variant === "entry" && styles.entry,
@@ -26,14 +31,14 @@ export default function InputBox({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   base: {
     borderWidth: 1,
-    borderColor: "#ddcbcb",
+    borderColor: colors.border,
     borderRadius: 10,
     padding: 10,
-    color: theme.colors.text,
-    backgroundColor: "#ffffff"
+    color: colors.text,
+    backgroundColor: colors.box,
   },
 
   entry: {

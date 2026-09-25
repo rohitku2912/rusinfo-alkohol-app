@@ -1,6 +1,8 @@
 import RegularButton from "@/app/components/ui/button";
 import FunctionBox from "@/app/components/ui/functionBox";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
+import { FontAwesome6 } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useAchievements } from "../achievements/AchievementProvider";
@@ -24,6 +26,7 @@ type PartyState = {
 /*helpers*/
 
 function Ring({ value, label }: { value: number; label: string }) {
+  const { colors } = useAppTheme();
   return (
     <View
   style={{
@@ -38,16 +41,42 @@ function Ring({ value, label }: { value: number; label: string }) {
           height: 76,
           borderRadius: 38,
           borderWidth: 2.5,
-          borderColor: theme.colors.primary,
+          borderColor: colors.primary,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Text style={{ fontSize: 26, fontWeight: "800", color: theme.colors.text }}>
+        <Text style={{ fontSize: 26, fontWeight: "800", color: colors.text }}>
           {value}
         </Text>
       </View>
-      <Text style={{ fontSize: 12, color: theme.colors.text }}>{label}</Text>
+      <Text style={{ fontSize: 12, color: colors.text }}>{label}</Text>
+    </View>
+  );
+}
+
+function DrinkGoalCard({
+  icon,
+  value,
+  label,
+}: {
+  icon: keyof typeof FontAwesome6.glyphMap;
+  value: number;
+  label: string;
+}) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
+  return (
+    <View style={styles.drinkCard}>
+      <View style={styles.drinkIcon}>
+        <FontAwesome6
+          name={icon}
+          size={18}
+          color={colors.primary}
+        />
+      </View>
+      <Text style={styles.cardValue}>{value}</Text>
+      <Text style={styles.cardLabel}>{label}</Text>
     </View>
   );
 }
@@ -64,6 +93,8 @@ function format(ms: number) {
 /* main*/
 
 export default function PartyPlanner() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const { checkAchievements } = useAchievements();
   const [showModal, setShowModal] = useState(false);
   const [now, setNow] = useState(new Date());
@@ -235,24 +266,22 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
                 </View>
               ) : (
                 <View style={styles.drinkCards}>
-  <View style={styles.drinkCard}>
-    <Text style={styles.cardEmoji}>🍺</Text>
-    <Text style={styles.cardValue}>{party.beer}</Text>
-    <Text style={styles.cardLabel}>Øl</Text>
-  </View>
-
-  <View style={styles.drinkCard}>
-    <Text style={styles.cardEmoji}>🍷</Text>
-    <Text style={styles.cardValue}>{party.wine}</Text>
-    <Text style={styles.cardLabel}>Vin</Text>
-  </View>
-
-  <View style={styles.drinkCard}>
-    <Text style={styles.cardEmoji}>🍸</Text>
-    <Text style={styles.cardValue}>{party.drinks}</Text>
-    <Text style={styles.cardLabel}>Drinker</Text>
-  </View>
-</View>
+                  <DrinkGoalCard
+                    icon="beer-mug-empty"
+                    value={party.beer}
+                    label="Øl"
+                  />
+                  <DrinkGoalCard
+                    icon="wine-glass"
+                    value={party.wine}
+                    label="Vinglass"
+                  />
+                  <DrinkGoalCard
+                    icon="martini-glass-citrus"
+                    value={party.drinks}
+                    label="Drinker"
+                  />
+                </View>
               )}
             </View>
           )}
@@ -278,24 +307,22 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
                 </View>
               ) : (
                 <View style={styles.drinkCards}>
-  <View style={styles.drinkCard}>
-    <Text style={styles.cardEmoji}>🍺</Text>
-    <Text style={styles.cardValue}>{party.beer}</Text>
-    <Text style={styles.cardLabel}>Øl</Text>
-  </View>
-
-  <View style={styles.drinkCard}>
-    <Text style={styles.cardEmoji}>🍷</Text>
-    <Text style={styles.cardValue}>{party.wine}</Text>
-    <Text style={styles.cardLabel}>Vin</Text>
-  </View>
-
-  <View style={styles.drinkCard}>
-    <Text style={styles.cardEmoji}>🍸</Text>
-    <Text style={styles.cardValue}>{party.drinks}</Text>
-    <Text style={styles.cardLabel}>Drinker</Text>
-  </View>
-</View>
+                  <DrinkGoalCard
+                    icon="beer-mug-empty"
+                    value={party.beer}
+                    label="Øl"
+                  />
+                  <DrinkGoalCard
+                    icon="wine-glass"
+                    value={party.wine}
+                    label="Vinglass"
+                  />
+                  <DrinkGoalCard
+                    icon="martini-glass-citrus"
+                    value={party.drinks}
+                    label="Drinker"
+                  />
+                </View>
               )}
 
 {!feedback ? (
@@ -344,7 +371,7 @@ setFeedback("Dette gikk ikke helt etter planen, men ikke gi opp. Var det noen om
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   drinkRow: {
     flexDirection: "row",
     gap: 18,
@@ -353,7 +380,7 @@ const styles = StyleSheet.create({
   drinkItem: {
     fontSize: 16,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: colors.text,
     marginBottom: 10
   },
   
@@ -364,14 +391,14 @@ const styles = StyleSheet.create({
   },
   
   goalLabel: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 14,
   },
   
   drinkBadge: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.background,
     paddingVertical: 14,
     paddingHorizontal: 18,
     borderRadius: 18,
@@ -381,7 +408,7 @@ const styles = StyleSheet.create({
   drinkValue: {
     fontSize: 20,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   drinkCards: {
     flexDirection: "row",
@@ -393,15 +420,17 @@ const styles = StyleSheet.create({
   
   drinkCard: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.surfaceMuted,
+    borderColor: colors.border,
+    borderWidth: 1,
     borderRadius: 16,
     paddingVertical: 14,
     alignItems: "center",
   },
   soberGoalCard: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     marginBottom: 20,
@@ -411,32 +440,38 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   soberGoalTitle: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontSize: 22,
     fontWeight: "800",
   },
   soberGoalText: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 15,
     lineHeight: 21,
     marginTop: 6,
     textAlign: "center",
   },
   
-  cardEmoji: {
-    fontSize: 24,
+  drinkIcon: {
+    alignItems: "center",
+    backgroundColor: colors.primarySoft,
+    borderRadius: 17,
+    height: 34,
+    justifyContent: "center",
+    marginBottom: 7,
+    width: 34,
   },
   
   cardValue: {
     fontSize: 22,
     fontWeight: "bold",
-    color: theme.colors.text,
+    color: colors.text,
   },
   
   cardLabel: {
     fontSize: 12,
     marginTop: 4,
-    color: "#666",
+    color: colors.darkGrey,
   },
   
   finishedContainer: {
@@ -449,13 +484,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
-    color: theme.colors.text,
+    color: colors.text,
   },
   feedbackText: {
     marginTop: 10,
     padding: 16,
     borderRadius: 16,
-    backgroundColor: theme.colors.background,
+    backgroundColor: colors.surfaceMuted,
+    borderColor: colors.border,
+    borderWidth: 1,
+    color: colors.text,
     textAlign: "center",
     lineHeight: 22,
     fontSize: 15,
@@ -470,7 +508,7 @@ const styles = StyleSheet.create({
   
   yesButton: {
     flex: 1,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.medium,
     height: 50,
     paddingHorizontal: 16,
@@ -480,7 +518,7 @@ const styles = StyleSheet.create({
   
   noButton: {
     flex: 1,
-    backgroundColor: theme.colors.backgroundSecondary,
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: theme.borderRadius.medium,
     height: 50,
     paddingHorizontal: 16,
@@ -491,12 +529,12 @@ const styles = StyleSheet.create({
   answerText: {
     fontSize: 14,
     fontWeight: "600",
-    color: theme.colors.lightText,
+    color: colors.lightText,
   },
   noAnswerText: {
     fontSize: 14,
     fontWeight: "600",
-    color: theme.colors.text,
+    color: colors.text,
   },
   timerCards: {
     flexDirection: "row",
@@ -509,7 +547,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   countdownLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     fontWeight: "700",
     marginBottom: 12,

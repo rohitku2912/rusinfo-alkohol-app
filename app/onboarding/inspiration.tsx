@@ -16,7 +16,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "./onboardingStyling";
 
 const options = [
   "Styrke relasjoner med familie og venner",
@@ -199,7 +199,7 @@ export default function Inspiration() {
               <TextInput
                 style={styles.textInput}
                 placeholder="Beskriv med egne ord..."
-                placeholderTextColor="#aaa"
+                placeholderTextColor={theme.colors.darkGrey}
                 multiline
                 scrollEnabled
                 maxLength={300}
@@ -268,11 +268,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#888",
+    color: theme.colors.darkGrey,
     marginBottom: 28,
   },
   option: {
-    backgroundColor: "#e8e8e3",
+    backgroundColor: theme.colors.surfaceMuted,
     borderRadius: theme.borderRadius.medium,
     padding: 18,
     marginBottom: theme.spacing.small,
@@ -280,8 +280,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   selectedStyle: {
-    backgroundColor: "#dcefdc",
-    borderColor: "#9bc49d",
+    backgroundColor: theme.colors.primarySoft,
+    borderColor: theme.colors.primary,
   },
   optionRow: {
     flexDirection: "row",
@@ -302,10 +302,10 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: theme.borderRadius.medium,
     marginBottom: theme.spacing.small,
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.box,
     padding: theme.spacing.medium,
     borderWidth: 1,
-    borderColor: "#d9d9d3",
+    borderColor: theme.colors.border,
   },
   textInputLabel: {
     fontSize: 14,
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   characterCount: {
     marginTop: theme.spacing.small,
     fontSize: 12,
-    color: "#888",
+    color: theme.colors.darkGrey,
     alignSelf: "flex-end",
   },
   bottomBar: {
@@ -337,5 +337,5 @@ const styles = StyleSheet.create({
     padding: theme.spacing.medium,
     alignItems: "center",
   },
-  buttonText: { fontSize: 16, color: "#fff" },
+  buttonText: { fontSize: 16, color: theme.colors.buttonText },
 });

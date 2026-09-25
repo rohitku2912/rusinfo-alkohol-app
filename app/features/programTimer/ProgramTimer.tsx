@@ -2,13 +2,21 @@ import {
   getProgramDays,
   getProgramStartDate,
 } from "@/lib/storage/onboarding";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import FunctionBox from "../../components/ui/functionBox";
 import HelpButton from "../help/HelpButton";
-import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 
-function Ring({ value, label }: { value: number; label: string }) {
+function Ring({
+  value,
+  label,
+  styles,
+}: {
+  value: number;
+  label: string;
+  styles: ReturnType<typeof createStyles>;
+}) {
   return (
     <View style={styles.ringWrap}>
       <View style={styles.ring}>
@@ -20,6 +28,8 @@ function Ring({ value, label }: { value: number; label: string }) {
 }
 
 export default function ProgramTimer() {
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [days, setDays] = useState(0);
 
@@ -46,14 +56,14 @@ export default function ProgramTimer() {
       helpBtn={<HelpButton helpKey="daycounter" />}
     >
       <View style={styles.ringsRow}>
-        <Ring value={days} label="Dager" />
+        <Ring value={days} label="Dager" styles={styles} />
       </View>
     </FunctionBox>
   );
 }
 
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   ringsRow: {
     alignItems: "center",
   },
@@ -66,7 +76,7 @@ const styles = StyleSheet.create({
     height: 76,
     borderRadius: 38,
     borderWidth: 2.5,
-    borderColor: theme.colors.button,
+    borderColor: colors.primary,
     backgroundColor: "rgba(255,255,255,0.07)",
     alignItems: "center",
     justifyContent: "center",
@@ -74,11 +84,11 @@ const styles = StyleSheet.create({
   ringNumber: {
     fontSize: 26,
     fontWeight: "800",
-    color: theme.colors.text,
+    color: colors.text,
   },
   ringLabel: {
     fontSize: 12,
-    color: theme.colors.text,
+    color: colors.text,
     fontWeight: "500",
   },
 });

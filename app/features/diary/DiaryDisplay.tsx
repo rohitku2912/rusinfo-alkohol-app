@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { createDateKey } from "@/app/utils/weekHelpers";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,6 +35,8 @@ const STORAGE_KEY = "diary_entries";
 const TAGS_KEY = "diary_tags";
 
 export default function DiaryDisplay() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const { checkAchievements } = useAchievements();
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [drinkLogs, setDrinkLogs] = useState<DrinkLogEntry[]>([]);
@@ -157,7 +160,7 @@ export default function DiaryDisplay() {
               <Ionicons
                 name="checkmark"
                 size={15}
-                color={theme.colors.primary}
+                color={colors.primary}
               />
             </View>
             <View style={styles.drinkSummaryHeading}>
@@ -229,7 +232,9 @@ export default function DiaryDisplay() {
         <View style={styles.entryTags}>
           {item.tags.map((tag) => (
             <View key={tag} style={styles.entryTag}>
-              <Text style={{ color: "#2f3b44", fontWeight: "600" }}>{tag}</Text>
+              <Text style={{ color: colors.text, fontWeight: "600" }}>
+                {tag}
+              </Text>
             </View>
           ))}
         </View>
@@ -343,7 +348,7 @@ export default function DiaryDisplay() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     flex: 1,
     position: "relative",
@@ -362,7 +367,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.small,
   },
   filterLabel: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     fontWeight: "700",
     marginBottom: theme.spacing.small,
@@ -378,22 +383,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderWidth: 1,
     borderRadius: 999,
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
   },
 
   selectedTag: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
 
   tagText: {
-    color: "#2e3a33",
+    color: colors.text,
     fontSize: 14,
     fontWeight: "600",
   },
   selectedTagText: {
-    color: theme.colors.lightText,
+    color: colors.lightText,
   },
 
   list: {
@@ -411,11 +416,11 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 4,
     borderWidth: 1,
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
   },
   empty: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     lineHeight: 21,
     paddingHorizontal: theme.spacing.large,
     paddingVertical: 32,
@@ -424,19 +429,19 @@ const styles = StyleSheet.create({
 
   date: {
     fontSize: 12,
-    color: "#64748b",
+    color: colors.darkGrey,
     marginBottom: 10,
   },
 
   text: {
-    color: "#1e293b",
+    color: colors.text,
     fontSize: 16,
     lineHeight: 24,
   },
   drinkSummary: {
     alignSelf: "stretch",
-    backgroundColor: "#eef3f8",
-    borderColor: "#d6e0ea",
+    backgroundColor: colors.surfaceMuted,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     gap: 10,
@@ -444,10 +449,10 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   emptyDrinkSummary: {
-    backgroundColor: "#f7f9fb",
+    backgroundColor: colors.surfaceMuted,
   },
   whiteDrinkSummary: {
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderColor: "rgba(94, 156, 118, 0.45)",
   },
   drinkSummaryHeader: {
@@ -457,53 +462,53 @@ const styles = StyleSheet.create({
   },
   drinkSummaryIcon: {
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.box,
     borderRadius: 17,
     height: 34,
     justifyContent: "center",
     width: 34,
   },
   whiteDrinkSummaryIcon: {
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.box,
   },
   drinkSummaryHeading: {
     flex: 1,
   },
   drinkSummaryTitle: {
-    color: "#1e293b",
+    color: colors.text,
     fontSize: 13,
     fontWeight: "800",
   },
   drinkSummaryCaption: {
-    color: "#64748b",
+    color: colors.darkGrey,
     fontSize: 10,
     marginTop: 1,
   },
   drinkSummaryMuted: {
-    color: "#64748b",
+    color: colors.darkGrey,
     fontSize: 12,
     fontWeight: "600",
   },
   drinkSummaryTotal: {
-    color: "#1e293b",
+    color: colors.text,
     fontSize: 16,
     fontWeight: "800",
   },
   drinkTotalPill: {
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.box,
     borderRadius: 10,
     minWidth: 54,
     paddingHorizontal: 8,
     paddingVertical: 5,
   },
   drinkTotalUnit: {
-    color: "#64748b",
+    color: colors.darkGrey,
     fontSize: 9,
     fontWeight: "600",
   },
   whiteDrinkSummaryText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontSize: 13,
     fontWeight: "800",
   },
@@ -513,8 +518,8 @@ const styles = StyleSheet.create({
   },
   drinkBreakdownChip: {
     alignItems: "center",
-    backgroundColor: "#ffffff",
-    borderColor: "#d6e0ea",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: 9,
     borderWidth: 1,
     flex: 1,
@@ -522,12 +527,12 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   drinkBreakdownLabel: {
-    color: "#475569",
+    color: colors.darkGrey,
     fontSize: 9,
     fontWeight: "600",
   },
   drinkBreakdownValue: {
-    color: "#1e293b",
+    color: colors.text,
     fontSize: 14,
     fontWeight: "700",
     marginTop: 1,
@@ -537,7 +542,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 14,
     right: 14,
-    backgroundColor: "#ffecee",
+    backgroundColor: colors.dangerSoft,
     padding: 8,
     borderRadius: 999,
   },
@@ -552,10 +557,10 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 999,
-    backgroundColor: "#d7e4ef",
+    backgroundColor: colors.primarySoft,
     marginRight: 8,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: "#c5d6e6",
+    borderColor: colors.border,
   },
 });

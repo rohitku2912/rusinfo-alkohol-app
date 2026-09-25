@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import { createDateKey } from "@/app/utils/weekHelpers";
 import { DrinkLogEntry, getTotalDrinks } from "@/lib/storage/drinkLogs";
 import { useState } from "react";
@@ -28,20 +29,21 @@ function getWeeknumber(index: number) {
 function chooseDayWeekMonth(
   logs: DrinkLogEntry[],
   selectedRange: chartTimeBack,
+  primary: string,
 ) {
   if (selectedRange === "7days") {
-    return createSevenDayChartData(logs);
+    return createSevenDayChartData(logs, primary);
   }
 
   if (selectedRange === "6weeks") {
-    return createSixWeekChartData(logs);
+    return createSixWeekChartData(logs, primary);
   }
 
-  return createSixMonthChartData(logs);
+  return createSixMonthChartData(logs, primary);
 }
 
 //lag liste med 7 dager med riktig styling basert på hva som har blitt logget de siste 7 dagene
-function createSevenDayChartData(logs: DrinkLogEntry[]) {
+function createSevenDayChartData(logs: DrinkLogEntry[], primary: string) {
   const today = new Date();
   const chartData = [];
 
@@ -70,14 +72,14 @@ function createSevenDayChartData(logs: DrinkLogEntry[]) {
       chartData.push({
         label: getDayName(date),
         value: getTotalDrinks(logForDay),
-        frontColor: theme.colors.primary,
+        frontColor: primary,
       });
     }
   }
   return chartData;
 }
 
-function createSixWeekChartData(logs: DrinkLogEntry[]) {
+function createSixWeekChartData(logs: DrinkLogEntry[], primary: string) {
   const today = new Date();
   const chartData = [];
 
@@ -112,7 +114,7 @@ function createSixWeekChartData(logs: DrinkLogEntry[]) {
       chartData.push({
         label: getWeeknumber(i),
         value: totalDrinksForWeek,
-        frontColor: theme.colors.primary,
+        frontColor: primary,
       });
     }
   }
@@ -120,7 +122,7 @@ function createSixWeekChartData(logs: DrinkLogEntry[]) {
   return chartData;
 }
 
-function createSixMonthChartData(logs: DrinkLogEntry[]) {
+function createSixMonthChartData(logs: DrinkLogEntry[], primary: string) {
   const today = new Date();
   const chartData = [];
 
@@ -161,7 +163,7 @@ function createSixMonthChartData(logs: DrinkLogEntry[]) {
       chartData.push({
         label: startOfMonth.toLocaleDateString("nb-NO", { month: "short" }),
         value: totalDrinksForMonth,
-        frontColor: theme.colors.primary,
+        frontColor: primary,
       });
     }
   }
@@ -170,9 +172,12 @@ function createSixMonthChartData(logs: DrinkLogEntry[]) {
 }
 
 export default function DrinkChart({ logs }: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [chartRange, setChartRange] = useState<chartTimeBack>("7days");
+  const [chartWidth, setChartWidth] = useState(0);
 
-  const chartData = chooseDayWeekMonth(logs, chartRange);
+  const chartData = chooseDayWeekMonth(logs, chartRange, colors.primary);
 
   const highestValue = Math.max(...chartData.map((item) => item.value));
   const maxValue = Math.max(highestValue, 10);
@@ -183,42 +188,54 @@ export default function DrinkChart({ logs }: Props) {
           style={styles.TimeButton}
           onPress={() => setChartRange("7days")}
         >
-          <Text>Siste 7 dager</Text>
+          <Text style={styles.timeButtonText}>Siste 7 dager</Text>
         </Pressable>
 
         <Pressable
           style={styles.TimeButton}
           onPress={() => setChartRange("6weeks")}
         >
-          <Text>Siste 6 uker</Text>
+          <Text style={styles.timeButtonText}>Siste 6 uker</Text>
         </Pressable>
 
         <Pressable
           style={styles.TimeButton}
           onPress={() => setChartRange("6months")}
         >
-          <Text>Siste 6 måneder</Text>
+          <Text style={styles.timeButtonText}>Siste 6 måneder</Text>
         </Pressable>
       </View>
 
-      <BarChart
-        data={chartData}
-        barWidth={24}
-        spacing={20}
-        roundedTop
-        xAxisThickness={0}
-        yAxisThickness={0}
-        noOfSections={4}
-        maxValue={maxValue}
-        height={140}
-      />
+      <View
+        onLayout={(event) => setChartWidth(event.nativeEvent.layout.width)}
+        style={styles.chartClip}
+      >
+        {chartWidth > 0 && (
+          <BarChart
+            data={chartData}
+            barWidth={24}
+            spacing={20}
+            roundedTop
+            xAxisThickness={0}
+            yAxisThickness={0}
+            noOfSections={4}
+            maxValue={maxValue}
+            height={140}
+            width={Math.max(chartWidth - 48, 180)}
+            backgroundColor={colors.box}
+            rulesColor={colors.border}
+            xAxisLabelTextStyle={styles.chartLabel}
+            yAxisTextStyle={styles.chartLabel}
+          />
+        )}
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
-    backgroundColor: "#ffffff",
+    backgroundColor: colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.small,
     marginHorizontal: theme.spacing.medium,
@@ -227,7 +244,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   legend: {
     marginTop: theme.spacing.medium,
@@ -236,11 +253,27 @@ const styles = StyleSheet.create({
   ButtonContainer: {
     flexDirection: "row",
     gap: theme.spacing.small,
-    marginBottom: 4,
+    marginBottom: theme.spacing.small,
   },
   TimeButton: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
     padding: theme.spacing.small,
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.small,
+  },
+  timeButtonText: {
+    color: colors.buttonText,
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  chartLabel: {
+    color: colors.darkGrey,
+    fontSize: 11,
+  },
+  chartClip: {
+    overflow: "hidden",
+    width: "100%",
   },
 });

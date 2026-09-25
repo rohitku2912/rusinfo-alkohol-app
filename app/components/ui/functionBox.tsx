@@ -1,4 +1,5 @@
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -17,10 +18,19 @@ export default function FunctionBox({
   onPress,
   helpBtn,
 }: FunctionBoxProps) {
+  const { colors, isDark } = useAppTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
+
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={styles.container}
+      style={[
+        styles.container,
+        {
+          elevation: isDark ? 0 : 2,
+          shadowOpacity: isDark ? 0 : 0.04,
+        },
+      ]}
       activeOpacity={onPress ? 0.8 : 1} // only act as button if onpress exist
     >
       <View style={styles.header}>
@@ -35,19 +45,17 @@ export default function FunctionBox({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     width: "100%",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     padding: theme.spacing.medium,
     borderRadius: theme.borderRadius.medium,
-    borderColor: "#d6e0da",
     borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
     shadowRadius: 8,
-    elevation: 2,
   },
 
   header: {
@@ -62,14 +70,14 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 17,
     fontWeight: "800",
     letterSpacing: 0.2,
   },
 
   description: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 13,
     lineHeight: 19,
     marginTop: 4,

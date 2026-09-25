@@ -1,7 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
 import theme from "../../theme/constantStyling";
+import { AppColors, useAppTheme } from "../../theme/ThemeProvider";
 
 type Props = {
   visible: boolean;
@@ -43,10 +53,13 @@ function ResetOption({
   description,
   onPress,
 }: ResetOptionProps) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
+
   return (
     <Pressable onPress={onPress} style={styles.option}>
       <View style={styles.optionIcon}>
-        <Ionicons name={icon} size={21} color={theme.colors.primary} />
+        <Ionicons name={icon} size={21} color={colors.primary} />
       </View>
       <View style={styles.optionText}>
         <Text style={styles.optionTitle}>{title}</Text>
@@ -55,7 +68,7 @@ function ResetOption({
       <Ionicons
         name="chevron-forward"
         size={18}
-        color={theme.colors.darkGrey}
+        color={colors.darkGrey}
       />
     </Pressable>
   );
@@ -69,6 +82,9 @@ export default function SettingsModal({
   onResetProgramDays,
   onRestartOnboarding,
 }: Props) {
+  const { colors, isDark, setMode } = useAppTheme();
+  const styles = createStyles(colors);
+
   function confirmReset(
     title: string,
     message: string,
@@ -106,7 +122,7 @@ export default function SettingsModal({
               onPress={onClose}
               style={styles.closeButton}
             >
-              <Ionicons name="close" size={22} color={theme.colors.text} />
+              <Ionicons name="close" size={22} color={colors.text} />
             </Pressable>
           </View>
 
@@ -118,6 +134,36 @@ export default function SettingsModal({
             contentContainerStyle={styles.options}
             showsVerticalScrollIndicator={false}
           >
+            <View style={styles.appearanceOption}>
+              <View style={styles.optionIcon}>
+                <Ionicons
+                  name={isDark ? "moon" : "sunny-outline"}
+                  size={21}
+                  color={colors.primary}
+                />
+              </View>
+              <View style={styles.optionText}>
+                <Text style={styles.optionTitle}>Mørk modus</Text>
+                <Text style={styles.optionDescription}>
+                  Bruk mørke farger i hele appen.
+                </Text>
+              </View>
+              <Switch
+                accessibilityLabel="Slå mørk modus av eller på"
+                ios_backgroundColor={colors.lightGrey}
+                onValueChange={(enabled) =>
+                  void setMode(enabled ? "dark" : "light")
+                }
+                thumbColor={colors.box}
+                trackColor={{
+                  false: colors.lightGrey,
+                  true: colors.primary,
+                }}
+                value={isDark}
+              />
+            </View>
+
+            <Text style={styles.sectionLabel}>Nullstill data</Text>
             <ResetOption
               icon="clipboard-outline"
               title="AUDIT-resultat"
@@ -260,7 +306,7 @@ export default function SettingsModal({
               <Ionicons
                 name="trash-outline"
                 size={18}
-                color={theme.colors.attention}
+                color={colors.attention}
               />
               <Text style={styles.resetAllText}>Nullstill alle brukerdata</Text>
             </Pressable>
@@ -271,7 +317,7 @@ export default function SettingsModal({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   overlay: {
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.35)",
@@ -280,8 +326,8 @@ const styles = StyleSheet.create({
     padding: theme.spacing.medium,
   },
   card: {
-    backgroundColor: theme.colors.background,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.background,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.large,
     borderWidth: 1,
     maxHeight: "88%",
@@ -297,7 +343,7 @@ const styles = StyleSheet.create({
     width: 40,
   },
   title: {
-    color: theme.colors.text,
+    color: colors.text,
     flex: 1,
     fontSize: 22,
     fontWeight: "800",
@@ -305,14 +351,14 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     borderRadius: 20,
     height: 40,
     justifyContent: "center",
     width: 40,
   },
   intro: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     lineHeight: 20,
     marginBottom: theme.spacing.medium,
     marginTop: theme.spacing.small,
@@ -322,10 +368,29 @@ const styles = StyleSheet.create({
     gap: theme.spacing.small,
     paddingBottom: theme.spacing.small,
   },
+  appearanceOption: {
+    alignItems: "center",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
+    borderRadius: theme.borderRadius.medium,
+    borderWidth: 1,
+    flexDirection: "row",
+    gap: 12,
+    minHeight: 72,
+    padding: 12,
+  },
+  sectionLabel: {
+    color: colors.darkGrey,
+    fontSize: 12,
+    fontWeight: "700",
+    marginBottom: 2,
+    marginTop: theme.spacing.small,
+    textTransform: "uppercase",
+  },
   option: {
     alignItems: "center",
-    backgroundColor: theme.colors.box,
-    borderColor: "#d6e0da",
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flexDirection: "row",
@@ -335,7 +400,7 @@ const styles = StyleSheet.create({
   },
   optionIcon: {
     alignItems: "center",
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderRadius: 20,
     height: 40,
     justifyContent: "center",
@@ -345,19 +410,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   optionTitle: {
-    color: theme.colors.text,
+    color: colors.text,
     fontSize: 15,
     fontWeight: "700",
     marginBottom: 3,
   },
   optionDescription: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     fontSize: 12,
     lineHeight: 17,
   },
   resetAllButton: {
     alignItems: "center",
-    borderColor: theme.colors.attention,
+    borderColor: colors.attention,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     flexDirection: "row",
@@ -367,7 +432,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
   },
   resetAllText: {
-    color: theme.colors.attention,
+    color: colors.attention,
     fontWeight: "700",
   },
 });

@@ -1,5 +1,6 @@
 import AppModal from "@/app/components/ui/modal";
 import theme from "@/app/theme/constantStyling";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import {
   DrinkLogEntry,
   getLogsForThisWeek,
@@ -17,6 +18,8 @@ type Props = {
 };
 
 export default function Goals(props: Props) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [showModal, setShowModal] = useState(false);
   const [maxDrinkUnitsGoal, setMaxDrinkUnitsGoal] = useState(5);
   const [whiteDaysGoal, setWhiteDaysGoal] = useState(5);
@@ -123,7 +126,7 @@ export default function Goals(props: Props) {
           <Feather
             name="edit"
             size={22}
-            color={theme.colors.text}
+            color={colors.text}
             style={styles.editGoalsButton}
             onPress={() => setShowModal(true)}
           />
@@ -183,22 +186,22 @@ export default function Goals(props: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   fullBar: {
     height: 10,
     width: "100%",
-    backgroundColor: theme.colors.lightGrey,
+    backgroundColor: colors.lightGrey,
     borderRadius: theme.borderRadius.large,
     overflow: "hidden",
   },
   progress: {
     height: "100%",
-    backgroundColor: theme.colors.primary,
+    backgroundColor: colors.primary,
     borderRadius: theme.borderRadius.large,
   },
   goalsCard: {
-    backgroundColor: theme.colors.box,
-    borderColor: theme.colors.lightGrey,
+    backgroundColor: colors.box,
+    borderColor: colors.border,
     borderWidth: 1,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
@@ -218,17 +221,17 @@ const styles = StyleSheet.create({
   goalTitle: {
     fontSize: 14,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   goalValue: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontSize: 14,
     fontWeight: "700",
   },
   weeklyTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: theme.colors.text,
+    color: colors.text,
   },
   goalHeaderLine: {
     flexDirection: "row",

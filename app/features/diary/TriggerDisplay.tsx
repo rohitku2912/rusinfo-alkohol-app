@@ -13,10 +13,9 @@ import {
   View,
 } from "react-native";
 import RegularButton from "../../components/ui/button";
-import DateFilter from "../../components/ui/DateFilter";
 import SearchInput from "../../components/ui/SearchInput";
 import theme from "../../theme/constantStyling";
-import { createDateKey } from "../../utils/weekHelpers";
+import { AppColors, useAppTheme } from "@/app/theme/ThemeProvider";
 import RegisterTriggerModal from "./RegisterTriggerModal";
 import TriggerStats from "./TriggerStats";
 
@@ -67,9 +66,10 @@ type TriggerEntry = {
 };
 
 export default function TriggerDisplay() {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [protectionText, setProtectionText] = useState("");
   const [selectedTrigger, setSelectedTrigger] = useState<string | null>(null);
 
@@ -247,14 +247,7 @@ export default function TriggerDisplay() {
       (entry.dates ?? []).some((date) =>
         new Date(date).toLocaleDateString("nb-NO").includes(searchText),
       );
-    const matchesDate =
-      !selectedDate ||
-      (entry.dates ?? []).some(
-        (date) =>
-          createDateKey(new Date(date)) === createDateKey(selectedDate),
-      );
-
-    return matchesText && matchesDate;
+    return matchesText;
   });
 
   const renderItem = ({ item }: { item: TriggerEntry }) => (
@@ -266,22 +259,48 @@ export default function TriggerDisplay() {
         <Ionicons name="trash-outline" size={18} color="red" />
       </TouchableOpacity>
       <View style={styles.cardContent}>
+        <View style={styles.triggerLabelRow}>
+          <Ionicons
+            name="flash"
+            size={13}
+            color={colors.primary}
+          />
+          <Text style={styles.triggerLabel}>Trigger</Text>
+        </View>
         <View style={styles.triggerHeader}>
           <Text style={styles.cardText}>{item.trigger}</Text>
-          <Text style={styles.countText}>{item.count} registrert</Text>
+          <View style={styles.countPill}>
+            <Text style={styles.countText}>{item.count} registrert</Text>
+          </View>
         </View>
 
-        {item.protectionFactors.length === 0 ? (
-          <Text style={styles.noProtections}>
-            Ingen beskyttelsesfaktorer enda
-          </Text>
-        ) : (
-          item.protectionFactors.map((factor, index) => (
-            <Text key={index} style={styles.protectionText}>
-              • {factor}
+        <View style={styles.protectionSection}>
+          <View style={styles.protectionHeading}>
+            <View style={styles.protectionIcon}>
+              <Ionicons
+                name="shield-checkmark-outline"
+                size={15}
+                color={colors.primary}
+              />
+            </View>
+            <Text style={styles.protectionLabel}>Beskyttelsesfaktorer</Text>
+          </View>
+
+          {item.protectionFactors.length === 0 ? (
+            <Text style={styles.noProtections}>
+              Ingen beskyttelsesfaktorer enda
             </Text>
-          ))
-        )}
+          ) : (
+            <View style={styles.protectionList}>
+              {item.protectionFactors.map((factor, index) => (
+                <View key={`${factor}-${index}`} style={styles.protectionRow}>
+                  <View style={styles.protectionDot} />
+                  <Text style={styles.protectionText}>{factor}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -320,8 +339,8 @@ export default function TriggerDisplay() {
             size={17}
             color={
               selectedFilter === "triggere"
-                ? theme.colors.primary
-                : theme.colors.text
+                ? colors.primary
+                : colors.text
             }
           />
           <Text
@@ -345,8 +364,8 @@ export default function TriggerDisplay() {
             size={17}
             color={
               selectedFilter === "oversikt"
-                ? theme.colors.primary
-                : theme.colors.text
+                ? colors.primary
+                : colors.text
             }
           />
           <Text
@@ -373,7 +392,6 @@ export default function TriggerDisplay() {
             value={searchText}
             onChangeText={setSearchText}
           />
-          <DateFilter value={selectedDate} onChange={setSelectedDate} />
         </View>
       )}
 
@@ -427,7 +445,7 @@ export default function TriggerDisplay() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: AppColors) => StyleSheet.create({
   container: {
     flex: 1,
     position: "relative",
@@ -437,11 +455,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     marginBottom: 15,
-    color: theme.colors.lightText,
+    color: colors.lightText,
   },
 
   filterRow: {
-    backgroundColor: theme.colors.backgroundSecondary,
+    backgroundColor: colors.backgroundSecondary,
     borderRadius: theme.borderRadius.medium,
     flexDirection: "row",
     marginBottom: theme.spacing.medium,
@@ -452,13 +470,13 @@ const styles = StyleSheet.create({
 
   pickerSlider: {
     bottom: 4,
-    backgroundColor: "#EAF4EE",
+    backgroundColor: colors.primarySoft,
     borderColor: "rgba(94, 156, 118, 0.22)",
-    borderRadius: theme.borderRadius.small,
+    borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
     left: 4,
     position: "absolute",
-    shadowColor: theme.colors.primary,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 5,
@@ -474,19 +492,19 @@ const styles = StyleSheet.create({
     minHeight: 44,
     paddingHorizontal: 6,
     paddingVertical: 8,
-    borderRadius: theme.borderRadius.small,
+    borderRadius: theme.borderRadius.medium,
     zIndex: 1,
   },
 
   filterText: {
-    color: "#2f3b44",
+    color: colors.text,
     fontSize: 12,
     fontWeight: "700",
     textAlign: "center",
   },
 
   selectedFilterText: {
-    color: theme.colors.primary,
+    color: colors.primary,
   },
   list: {
     gap: theme.spacing.small,
@@ -495,11 +513,11 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: theme.colors.box,
+    backgroundColor: colors.box,
     padding: 18,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    borderColor: "#d6e0da",
+    borderColor: colors.border,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.06,
@@ -522,37 +540,97 @@ const styles = StyleSheet.create({
   },
 
   cardText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#2f3b44",
+    flex: 1,
+    fontSize: 18,
+    fontWeight: "800",
+    color: colors.text,
   },
 
+  triggerLabelRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 5,
+    marginBottom: 4,
+  },
+  triggerLabel: {
+    color: colors.primary,
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
   triggerHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    gap: 10,
+    marginBottom: 14,
+  },
+  countPill: {
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: 999,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
   },
 
   countText: {
     fontSize: 12,
-    color: "#5c6b76",
+    color: colors.darkGrey,
     fontWeight: "600",
   },
 
   protectionText: {
+    color: colors.text,
+    flex: 1,
     fontSize: 14,
-    color: "#3f4f5a",
+    lineHeight: 19,
+  },
+  protectionSection: {
+    borderColor: colors.border,
+    borderTopWidth: 1,
+    gap: 8,
+    paddingTop: 12,
+  },
+  protectionHeading: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 7,
+  },
+  protectionIcon: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  protectionLabel: {
+    color: colors.primary,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.4,
+    textTransform: "uppercase",
+  },
+  protectionList: {
+    gap: 7,
+  },
+  protectionRow: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: 8,
+  },
+  protectionDot: {
+    backgroundColor: colors.primary,
+    borderRadius: 3,
+    height: 6,
+    marginTop: 7,
+    width: 6,
   },
 
   noProtections: {
-    fontSize: 14,
-    color: "#6b7280",
+    color: colors.darkGrey,
+    fontSize: 13,
     fontStyle: "italic",
   },
 
   empty: {
-    color: theme.colors.darkGrey,
+    color: colors.darkGrey,
     lineHeight: 21,
     paddingHorizontal: theme.spacing.large,
     paddingVertical: 32,
@@ -572,7 +650,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 14,
     right: 14,
-    backgroundColor: "#fff1f2",
+    backgroundColor: colors.dangerSoft,
     padding: 8,
     borderRadius: 999,
   },

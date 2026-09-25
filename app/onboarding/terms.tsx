@@ -19,7 +19,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "./onboardingStyling";
 
 export default function Terms() {
   const router = useRouter();
@@ -168,11 +168,11 @@ const styles = StyleSheet.create({
     fontFamily: theme.fonts.heading,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.box,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     borderWidth: 1,
-    borderColor: "#d6d8d0",
+    borderColor: theme.colors.border,
   },
   cardTitle: {
     color: theme.colors.text,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   body: {
-    color: "#555",
+    color: theme.colors.darkGrey,
     fontSize: 15,
     lineHeight: 22,
     fontFamily: theme.fonts.main,
@@ -190,11 +190,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: theme.spacing.small,
-    backgroundColor: "#f2f2ed",
+    backgroundColor: theme.colors.surfaceMuted,
     borderRadius: theme.borderRadius.medium,
     padding: theme.spacing.medium,
     borderWidth: 1,
-    borderColor: "#c8c8c1",
+    borderColor: theme.colors.border,
   },
   checkbox: {
     width: 26,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.primary,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.box,
   },
   checkboxActive: {
     backgroundColor: theme.colors.primary,
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   buttonText: {
-    color: "#fff",
+    color: theme.colors.buttonText,
     fontSize: 16,
     fontWeight: "700",
   },

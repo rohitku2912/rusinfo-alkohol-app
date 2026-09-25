@@ -7,7 +7,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "./onboardingStyling";
 
 const goals = [
   "Slutte å drikke",
@@ -113,19 +113,19 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#888",
+    color: theme.colors.darkGrey,
     marginBottom: 28,
   },
   option: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#e8e8e3",
+    backgroundColor: theme.colors.surfaceMuted,
     borderRadius: theme.borderRadius.medium,
     padding: 18,
     marginBottom: theme.spacing.small,
   },
-  selectedStyle: { backgroundColor: "#d0e8d0" },
+  selectedStyle: { backgroundColor: theme.colors.primarySoft },
   optionText: { fontSize: 16, color: theme.colors.text },
   button: {
     backgroundColor: theme.colors.primary,
@@ -136,5 +136,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 32,
   },
-  buttonText: { fontSize: 16, color: "#fff" },
+  buttonText: { fontSize: 16, color: theme.colors.buttonText },
 });

@@ -5,6 +5,7 @@ import { useState } from "react";
 import {
   InputAccessoryView,
   Keyboard,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,7 +14,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import theme from "../theme/constantStyling";
+import theme from "./onboardingStyling";
 
 const PHONE_INPUT_ACCESSORY_ID = "phone-input-accessory";
 
@@ -77,13 +78,15 @@ export default function Contact() {
             <TextInput
               style={[styles.input, error ? styles.inputError : null]}
               placeholder="F.eks. 91234567"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={theme.colors.darkGrey}
               keyboardType="phone-pad"
               value={phoneNumber}
               onChangeText={handleChangePhone}
               returnKeyType="done"
               returnKeyLabel="Ferdig"
-              inputAccessoryViewID={PHONE_INPUT_ACCESSORY_ID}
+              inputAccessoryViewID={
+                Platform.OS === "ios" ? PHONE_INPUT_ACCESSORY_ID : undefined
+              }
               autoFocus
             />
             {error !== "" && (
@@ -106,16 +109,18 @@ export default function Contact() {
           </View>
         </ScrollView>
 
-        <InputAccessoryView nativeID={PHONE_INPUT_ACCESSORY_ID}>
-          <View style={styles.keyboardAccessory}>
-            <TouchableOpacity
-              style={styles.keyboardDoneButton}
-              onPress={Keyboard.dismiss}
-            >
-              <Text style={styles.keyboardDoneText}>Ferdig</Text>
-            </TouchableOpacity>
-          </View>
-        </InputAccessoryView>
+        {Platform.OS === "ios" && (
+          <InputAccessoryView nativeID={PHONE_INPUT_ACCESSORY_ID}>
+            <View style={styles.keyboardAccessory}>
+              <TouchableOpacity
+                style={styles.keyboardDoneButton}
+                onPress={Keyboard.dismiss}
+              >
+                <Text style={styles.keyboardDoneText}>Ferdig</Text>
+              </TouchableOpacity>
+            </View>
+          </InputAccessoryView>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -160,14 +165,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: "#666",
+    color: theme.colors.darkGrey,
     lineHeight: 21,
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.box,
     borderRadius: theme.borderRadius.medium,
     borderWidth: 1,
-    borderColor: "#c8c8c1",
+    borderColor: theme.colors.border,
     padding: theme.spacing.medium,
     fontSize: 18,
     color: theme.colors.text,
@@ -188,17 +193,17 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   buttonText: {
-    color: "#fff",
+    color: theme.colors.buttonText,
     fontSize: 16,
     fontWeight: "600",
   },
   secondaryButton: {
     borderWidth: 1,
-    borderColor: "#c8c8c1",
+    borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.large,
     padding: theme.spacing.medium,
     alignItems: "center",
-    backgroundColor: "#f2f2ed",
+    backgroundColor: theme.colors.surfaceMuted,
   },
   secondaryButtonText: {
     fontSize: 16,
@@ -214,9 +219,9 @@ const styles = StyleSheet.create({
   },
   keyboardAccessory: {
     alignItems: "flex-end",
-    backgroundColor: "#f2f2ed",
+    backgroundColor: theme.colors.surfaceMuted,
     borderTopWidth: 1,
-    borderTopColor: "#c8c8c1",
+    borderTopColor: theme.colors.border,
     paddingHorizontal: theme.spacing.medium,
     paddingVertical: theme.spacing.small,
   },
